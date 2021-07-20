@@ -25,7 +25,7 @@
 								<td><b>#{{ $row->code }}</b></td>
 								<td>{!! $row->f_approved !!}</td>
 								<td>
-									<json-viewer :content='@json($row->content)'></json-viewer>
+									<json-viewer :content='@json($row->content)' :approved='@json($row->approved)'></json-viewer>
 								</td>
 								<td>{!! $row->f_created_at_badge !!}</td>
 							</tr>

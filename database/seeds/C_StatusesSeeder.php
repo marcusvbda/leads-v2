@@ -73,7 +73,7 @@ class C_StatusesSeeder extends Seeder
 		]);
 		Status::create([
 			"seq"  => ++$counter,
-			"value" => "schedule_done",
+			"value" => "test_done",
 			"name" => "Vestibular Realizado",
 		]);
 		Status::create([

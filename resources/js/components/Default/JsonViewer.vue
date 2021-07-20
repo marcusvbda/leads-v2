@@ -1,8 +1,10 @@
 <template>
     <div>
         <a href="#" @click.prevent="showModal">Ver Conteúdo</a>
-        <el-dialog title="Aprovação de Request" :visible.sync="visible" width="60%">
-            <vue-json-pretty :data="content" @click="handleClick" />
+        <el-dialog title="Conteúdo do Request" :visible.sync="visible" width="60%">
+            <div :class="`${!approved ? 'clickable' : ''}`">
+                <vue-json-pretty :data="content" @click="handleClick" />
+            </div>
         </el-dialog>
     </div>
 </template>
@@ -10,7 +12,7 @@
 import VueJsonPretty from 'vue-json-pretty'
 import 'vue-json-pretty/lib/styles.css'
 export default {
-    props: ['content'],
+    props: ['content', 'approved'],
     data() {
         return {
             visible: false,
@@ -24,17 +26,20 @@ export default {
             this.visible = true
         },
         handleClick(val) {
+            if (this.approved) return
             alert('chave ' + val)
         },
     },
 }
 </script>
 <style lang="scss">
-.vjs-key {
-    cursor: pointer;
-    &:hover {
-        transition: 0.3s;
-        border: 3px dashed #6060c5;
+.clickable {
+    .vjs-key {
+        cursor: pointer;
+        &:hover {
+            transition: 0.3s;
+            border: 3px dashed #6060c5;
+        }
     }
 }
 </style>

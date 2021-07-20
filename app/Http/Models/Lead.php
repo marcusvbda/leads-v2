@@ -393,5 +393,10 @@ class Lead extends DefaultModel
 	{
 		return $this->hasMany(AutomationSentEmail::class);
 	}
+
+	public function webhook_request()
+	{
+		return $this->belongsTo(WebhookRequest::class);
+	}
 	// relations
 }
