@@ -8,6 +8,7 @@ use marcusvbda\vstack\Fields\{
 	Text,
 	Check
 };
+use Auth;
 
 class Webhooks extends Resource
 {
@@ -49,17 +50,17 @@ class Webhooks extends Resource
 
 	public function canCreate()
 	{
-		return hasPermissionTo("create-objections");
+		return  Auth::user()->hasRole(["super-admin", "admin"]);
 	}
 
 	public function canUpdate()
 	{
-		return hasPermissionTo("edit-objections");
+		return  Auth::user()->hasRole(["super-admin", "admin"]);
 	}
 
 	public function canDelete()
 	{
-		return hasPermissionTo("destroy-objections");
+		return  Auth::user()->hasRole(["super-admin", "admin"]);
 	}
 
 	public function canImport()
@@ -74,12 +75,12 @@ class Webhooks extends Resource
 
 	public function canViewList()
 	{
-		return hasPermissionTo("viewlist-objections");
+		return  Auth::user()->hasRole(["super-admin", "admin"]);
 	}
 
 	public function canView()
 	{
-		return false;
+		return  Auth::user()->hasRole(["super-admin", "admin"]);
 	}
 
 	public function fields()
@@ -107,5 +108,12 @@ class Webhooks extends Resource
 		];
 		$cards = [new Card("Informações Básicas", $fields)];
 		return $cards;
+	}
+
+	public function afterViewSlot()
+	{
+		$data = request("content")->requests()->orderBy("id", "desc")->paginate(10);
+		$resource = $this;
+		return view("admin.webhooks.requests", compact("data", "resource"));
 	}
 }

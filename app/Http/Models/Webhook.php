@@ -32,9 +32,16 @@ class Webhook extends DefaultModel
 		return $this->hasMany(Lead::class);
 	}
 
+	public function getFEnabledAttribute()
+	{
+		$icon = getEnabledIcon($this->enabled);
+		$text = $this->enabled ? " Ativo" : " Inativo";
+		return  "<div class='d-flex flex-row'><span class='mr-2'>$icon</span><span>$text</span></div>";
+	}
+
 	public function getLabelAttribute()
 	{
-		return Vstack::makeLinesHtmlAppend($this->name, $this->enabled ? " Ativo" : " Inativo");
+		return Vstack::makeLinesHtmlAppend($this->name, $this->f_enabled);
 	}
 
 	public function getUrlAttribute()

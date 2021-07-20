@@ -14,7 +14,7 @@ class CreateWebhooksRequest  extends Migration
 			$table->engine = 'InnoDB';
 			$table->bigIncrements('id');
 			$table->jsonb('content');
-			$table->boolean('processed')->default(false);
+			$table->boolean('approved')->default(false);
 			$table->unsignedBigInteger('webhook_id');
 			$table->foreign('webhook_id')
 				->references('id')

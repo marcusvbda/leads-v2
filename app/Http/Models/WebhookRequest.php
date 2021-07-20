@@ -12,7 +12,7 @@ class WebhookRequest extends DefaultModel
 	// public $restrictDeletes = [""];
 
 	public $casts = [
-		"processed" => "boolean",
+		"approved" => "boolean",
 		"content" => "json",
 	];
 
@@ -35,5 +35,12 @@ class WebhookRequest extends DefaultModel
 	public function webhooks()
 	{
 		return $this->hasMany(Webhook::class);
+	}
+
+	public function getFApprovedAttribute()
+	{
+		$icon = getEnabledIcon($this->approved);
+		$text = $this->approved ? " Aprovado" : " Aguardando";
+		return  "<div class='d-flex flex-row'><span class='mr-2'>$icon</span><span>$text</span></div>";
 	}
 }
