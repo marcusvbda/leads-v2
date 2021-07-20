@@ -19,7 +19,6 @@ class CreateLeads extends Migration
 			$table->engine = 'InnoDB';
 			$table->bigIncrements('id');
 			$table->jsonb('data');
-			$table->jsonb('custom_fields');
 			$table->unsignedBigInteger('status_id');
 			$table->foreign('status_id')
 				->references('id')

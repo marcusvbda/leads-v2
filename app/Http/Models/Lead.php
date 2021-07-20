@@ -16,8 +16,7 @@ class Lead extends DefaultModel
 	// public $restrictDeletes = [""];
 
 	public $casts = [
-		"data" => "object",
-		"custom_fields" => "object",
+		"data" => "object"
 	];
 
 	public $appends = [
