@@ -71,6 +71,7 @@ class Leads extends Resource
 		$columns = [];
 		$columns["code"] = ["label" => "Código", "sortable_index" => "id", "size" => "100px"];
 		$columns["name"] = ["label" => "Nome", "sortable_index" => "data->name"];
+		$columns["status->name"] = ["label" => "Status", "sortable_index" => "status_id"];
 		$columns["email_url"] = ["label" => "Email", "sortable_index" => "data->email"];
 		$columns["f_rating"] = ["label" => "Classificação", "sortable" => false];
 		$columns["f_updated_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];

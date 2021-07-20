@@ -53,18 +53,13 @@ class C_StatusesSeeder extends Seeder
 		]);
 		Status::create([
 			"seq"  => ++$counter,
+			"value" => "objection",
+			"name" => "Com Objeçao",
+		]);
+		Status::create([
+			"seq"  => ++$counter,
 			"value" => "interest_with_objection",
 			"name" => "Interessado com Objeção",
-		]);
-		Status::create([
-			"seq"  => ++$counter,
-			"value" => "objection",
-			"name" => "Com Objeçao",
-		]);
-		Status::create([
-			"seq"  => ++$counter,
-			"value" => "objection",
-			"name" => "Com Objeçao",
 		]);
 		Status::create([
 			"seq"  => ++$counter,

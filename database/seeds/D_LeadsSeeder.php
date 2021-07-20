@@ -58,7 +58,6 @@ class D_LeadsSeeder extends Seeder
 		foreach ($old_leads as $old_lead) {
 			$old_lead_data = json_decode($old_lead->data);
 			if (@$old_lead->id) {
-				$status = $this->getCurrentStatus($old_lead);
 				$request = null;
 				if (@$old_lead_data->lead_api) {
 					$request = $this->webhook->requests()->create([
@@ -66,6 +65,9 @@ class D_LeadsSeeder extends Seeder
 						"approved" => true
 					]);
 				}
+				$old_status = DB::connection("old_mysql")->table("_status")->where("id", @$old_lead->status_id)->first();
+				$objecao_id = @$old_lead->objecao_id ?  @$this->getObjection($old_lead->objecao_id) : null;
+				$status = $this->getCurrentStatus($old_status, $objecao_id);
 				Lead::create([
 					"polo_id" => $this->polos[$old_lead->tenant_name],
 					"tenant_id" => 1,
@@ -80,7 +82,7 @@ class D_LeadsSeeder extends Seeder
 						"obs" => @$old_lead->lead_obs == 'via RD Station' ? 'via RD Station ( ref_token :' . $old_lead->ref_token . ' )' : @$old_lead->lead_obs,
 						"comment" => @$old_lead->fila_obs,
 						"lead_api" => @$old_lead_data->lead_api,
-						"objection" => @$this->getObjection($status, $old_lead->objecao_id),
+						"objection" => $objecao_id,
 						"other_objection" => @$old_lead_data->outra_objecao,
 						"log" => $this->getLogs(@$old_lead->log ? json_decode($old_lead->log) : []),
 						"tries" => $this->getTries(@$old_lead_data->tentativa ? $old_lead_data->tentativa : []),
@@ -119,7 +121,7 @@ class D_LeadsSeeder extends Seeder
 				"type" => @$_try->tipo->nome,
 				"date" => @$_try->data,
 				"timestamp" => @$_try->hora,
-				"objection" => @$this->getObjection("Não Qualificado", $_try->resposta->objecao_id),
+				"objection" => @$_try->resposta->objecao_id ? @$this->getObjection($_try->resposta->objecao_id) : null,
 				"other_objection" => @$_try->resposta->outra_objecao,
 				"obs" => @$_try->resposta->observacoes,
 				"comment" => @$_try->resposta->comment,
@@ -128,13 +130,9 @@ class D_LeadsSeeder extends Seeder
 		return $_tries;
 	}
 
-	private function getObjection($status, $objecao_id)
+	private function getObjection($objecao_id)
 	{
-		if ($status == "Não Qualificado") {
-			$status = DB::connection("old_mysql")->table("_status")->where("id", $objecao_id)->first();
-			return $status->name;
-		}
-		return null;
+		return DB::connection("old_mysql")->table("_status")->where("id", $objecao_id)->first();
 	}
 
 	private function getPhones($row)
@@ -145,10 +143,12 @@ class D_LeadsSeeder extends Seeder
 		return $result;
 	}
 
-	private function getCurrentStatus($row)
+	private function getCurrentStatus($old_status, $objecao_id)
 	{
-		$status = DB::connection("old_mysql")->table("_status")->where("id", @$row->status_id)->first();
-		switch ($status->value) {
+		if ($objecao_id) {
+			return Status::value("objection")->id;
+		}
+		switch ($old_status->value) {
 			case "C":
 				return Status::value("canceled")->id;
 				break;
@@ -165,7 +165,7 @@ class D_LeadsSeeder extends Seeder
 				return Status::value("finished")->id;
 				break;
 			default:
-				dd($status);
+				dd($old_status);
 				break;
 		}
 	}

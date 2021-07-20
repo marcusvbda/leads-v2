@@ -11,6 +11,7 @@ class LeadsByStatus extends Filter
 	public $component   = "select-filter";
 	public $label       = "Status";
 	public $index = "status";
+	public $multiple = true;
 	public $_options = [];
 
 	public function __construct()
@@ -21,6 +22,7 @@ class LeadsByStatus extends Filter
 
 	public function apply($query, $value)
 	{
-		return $query->whereIn("status_id", Status::findOrFail($value)->sub_status()->pluck("id"));
+		$ids = explode(",", $value);
+		return $query->whereIn("status_id", $ids);
 	}
 }
