@@ -1,0 +1,59 @@
+@import "variables";
+
+.status-color {
+    &.Oportunidade {
+        color: rgb(199, 201, 57);
+    }
+    &.Não.Qualificado {
+        color: #d3561b;
+    }
+    &.Qualificado {
+        color: #43a228;
+    }
+    &.Convertido {
+        color: #233396;
+    }
+    &.Aguardando {
+        color: #c12d7c;
+    }
+    &.Provável.Qualificação {
+        color: #6a0082;
+    }
+}
+
+.status-color-bgtop {
+    &.Oportunidade {
+        border-top: 4px solid rgb(199, 201, 57);
+    }
+    &.Não.Qualificado {
+        border-top: 4px solid #d3561b;
+    }
+    &.Aguardando {
+        border-top: 4px solid #c12d7c;
+    }
+    &.Provável.Qualificação {
+        border-top: 4px solid #6a0082;
+    }
+    &.Qualificado {
+        border-top: 4px solid #43a228;
+    }
+    &.Convertido {
+        border-top: 4px solid #233396;
+    }
+}
+
+.modern-scroll {
+    &::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #555;
+    }
+    &::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+}
