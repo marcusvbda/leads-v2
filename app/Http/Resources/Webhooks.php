@@ -3,16 +3,15 @@
 namespace App\Http\Resources;
 
 use marcusvbda\vstack\Resource;
-use Auth;
 use marcusvbda\vstack\Fields\{
 	Card,
 	Text,
-	Check,
+	Check
 };
 
-class Departamentos extends Resource
+class Webhooks extends Resource
 {
-	public $model = \App\Http\Models\Department::class;
+	public $model = \App\Http\Models\Webhook::class;
 
 	public function globallySearchable()
 	{
@@ -21,17 +20,17 @@ class Departamentos extends Resource
 
 	public function label()
 	{
-		return "Departamentos";
+		return "Webhooks";
 	}
 
 	public function singularLabel()
 	{
-		return "Departamento";
+		return "Webhook";
 	}
 
 	public function icon()
 	{
-		return "el-icon-s-comment";
+		return "el-icon-finished";
 	}
 
 	public function search()
@@ -42,24 +41,25 @@ class Departamentos extends Resource
 	public function table()
 	{
 		$columns = [];
-		$columns["name"] = ["label" => "Nome"];
-		$columns["f_created_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
+		$columns["code"] = ["label" => "#", "sortable_index" => "id"];
+		$columns["label"] = ["label" => "Descrição"];
+		$columns["url"] = ["label" => "Url", "sortable_index" => "token"];
 		return $columns;
 	}
 
 	public function canCreate()
 	{
-		return Auth::user()->hasRole(["super-admin", "admin"]);
+		return hasPermissionTo("create-objections");
 	}
 
 	public function canUpdate()
 	{
-		return Auth::user()->hasRole(["super-admin", "admin"]);
+		return hasPermissionTo("edit-objections");
 	}
 
 	public function canDelete()
 	{
-		return Auth::user()->hasRole(["super-admin", "admin"]);
+		return hasPermissionTo("destroy-objections");
 	}
 
 	public function canImport()
@@ -74,7 +74,7 @@ class Departamentos extends Resource
 
 	public function canViewList()
 	{
-		return Auth::user()->hasRole(["super-admin", "admin"]);
+		return hasPermissionTo("viewlist-objections");
 	}
 
 	public function canView()
@@ -91,6 +91,19 @@ class Departamentos extends Resource
 				"required" => true,
 				"rules" => "max:255"
 			]),
+			new Text([
+				"label" => "Token",
+				"field" => "token",
+				"required" => true,
+				"disabled" => true,
+				"default" => md5(uniqid()),
+				"rules" => "max:255"
+			]),
+			new Check([
+				"label" => "Habilitado",
+				"field" => "enabled",
+				"default" => true
+			])
 		];
 		$cards = [new Card("Informações Básicas", $fields)];
 		return $cards;

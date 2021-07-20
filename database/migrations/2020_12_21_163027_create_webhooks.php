@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateApiUsers extends Migration
+class CreateWebhooks extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -13,14 +13,14 @@ class CreateApiUsers extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('api_users', function (Blueprint $table) {
+		Schema::create('webhooks', function (Blueprint $table) {
 			$table->charset = 'utf8mb4';
 			$table->collation = 'utf8mb4_unicode_ci';
 			$table->engine = 'InnoDB';
 			$table->bigIncrements('id');
+			$table->boolean("enabled")->default(true);
 			$table->string("name");
 			$table->string("token");
-			$table->string("secret_key");
 			$table->unsignedBigInteger('tenant_id');
 			$table->foreign('tenant_id')
 				->references('id')
@@ -37,6 +37,6 @@ class CreateApiUsers extends Migration
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('api_users');
+		Schema::dropIfExists('webhooks');
 	}
 }

@@ -3,7 +3,8 @@
 use Illuminate\Database\Seeder;
 use App\Http\Models\{
 	ApiUser,
-	Polo
+	Polo,
+	Webhook
 };
 
 class D_LeadsSeeder extends Seeder
@@ -17,21 +18,20 @@ class D_LeadsSeeder extends Seeder
 		DB::statement('SET AUTOCOMMIT=0;');
 		DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 		$this->polos = Polo::pluck("id", "name")->toArray();
-		$this->createUserApi();
+		$this->createWebhook();
 		$this->createleads();
 		DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 		DB::statement('SET AUTOCOMMIT=1;');
 		DB::statement('COMMIT;');
 	}
 
-	private function createUserApi()
+	private function createWebhook()
 	{
-		DB::table("api_users")->truncate();
+		DB::table("webhooks")->truncate();
 		$api_user = DB::connection("old_root_mysql")->table("_api_users")->where("client_id", "cb48038ef78ec109d520a673e1ee486b")->first();
-		$this->user_api = ApiUser::create([
+		$this->user_api = Webhook::create([
 			"name" => $api_user->nome,
 			"token" => $api_user->client_id,
-			"secret_key" => $api_user->secret_key,
 			"tenant_id" => 1,
 		]);
 	}

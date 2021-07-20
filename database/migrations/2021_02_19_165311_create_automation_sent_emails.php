@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AutomationSentEmails extends Migration
+class CreateAutomationSentEmails extends Migration
 {
 	public function up()
 	{
@@ -23,6 +23,7 @@ class AutomationSentEmails extends Migration
 				->references('id')
 				->on('leads');
 			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 
