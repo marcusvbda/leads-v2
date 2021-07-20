@@ -95,9 +95,4 @@ class Departamentos extends Resource
 		$cards = [new Card("Informações Básicas", $fields)];
 		return $cards;
 	}
-
-	public function crudType()
-	{
-		return "dialog";
-	}
 }

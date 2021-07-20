@@ -147,7 +147,7 @@ class Lead extends DefaultModel
 
 	public function getOriginAttribute()
 	{
-		return $this->api_user_id ? ApiUser::findOrFail($this->api_user_id)->name : User::findOrFail($this->user_id)->name;
+		return $this->webhook_id ? $this->webhook->name : $this->user->name;
 	}
 
 	public function getNameAttribute()
@@ -368,19 +368,15 @@ class Lead extends DefaultModel
 	// setters
 
 	// relations
-	public function users()
-	{
-		return $this->hasMany(User::class);
-	}
 
 	public function tenant()
 	{
 		return $this->belongsTo(Tenant::class);
 	}
 
-	public function apiUser()
+	public function webhook()
 	{
-		return $this->belongsTo(ApiUser::class);
+		return $this->belongsTo(Webhook::class);
 	}
 
 	public function user()
