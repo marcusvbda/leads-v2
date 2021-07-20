@@ -50,6 +50,7 @@ class Usuarios extends Resource
 		$columns["email"] = ["label" => "E-mail"];
 		if ($user->hasRole(["super-admin"])) $columns["tenant->name"] = ["label" => "Tenant", "sortable_index" => "tenant_id"];
 		$columns["role_name"] = ["label" => "Grupo de Acesso", "sortable" => false];
+		$columns["department->name"] = ["label" => "Departamento", "sortable" => false];
 		return $columns;
 	}
 

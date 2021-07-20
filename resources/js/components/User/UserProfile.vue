@@ -39,6 +39,26 @@
                                                         </tr>
                                                         <tr>
                                                             <td class="w-25">
+                                                                <span class="input-title">Selecionar Departamento</span>
+                                                            </td>
+                                                            <td>
+                                                                <div class="d-flex flex-column">
+                                                                    <div class="input-group">
+                                                                        <el-select
+                                                                            v-model="form.department_id"
+                                                                            filterable
+                                                                            required
+                                                                            class="w-100"
+                                                                            placeholder="Selecione o departamento que este usuário possui"
+                                                                        >
+                                                                            <el-option v-for="(t, i) in departments" :key="i" :label="t.name" :value="t.id" />
+                                                                        </el-select>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="w-25">
                                                                 <span class="input-title">Grupo de Acesso *</span>
                                                             </td>
                                                             <td>
@@ -113,7 +133,7 @@
 </template>
 <script>
 export default {
-    props: ['user', 'logged', 'roles', 'polos', 'polos_ids'],
+    props: ['user', 'logged', 'roles', 'polos', 'polos_ids', 'departments'],
     data() {
         return {
             loading: false,
@@ -121,7 +141,8 @@ export default {
                 id: this.user.id,
                 name: this.user.name,
                 polos: this.polos_ids,
-                role_id: this.user.role_id,
+                department_id: this.user.department_id,
+                role_id: Number(this.user.role_id),
                 change_password: false,
                 password: null,
                 password_confirm: null,

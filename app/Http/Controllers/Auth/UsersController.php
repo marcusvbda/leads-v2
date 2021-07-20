@@ -155,6 +155,7 @@ class UsersController extends Controller
 			}]
 		]);
 		$user->name = $data["name"];
+		$user->department_id = $data["department_id"];
 		if (@$data["change_password"]) $user->password = $data["password"];
 		$user->save();
 		if (Auth::user()->hasRole(['admin', 'super-admin'])) {

@@ -4,23 +4,35 @@ use Illuminate\Database\Seeder;
 use App\User;
 use App\Http\Models\{
 	Tenant,
-	Polo
+	Polo,
+	Department
 };
 
 class B_UsersSeeder extends Seeder
 {
 	private $tenant = null;
+	private $department = null;
 	public function run()
 	{
 		DB::statement('SET AUTOCOMMIT=0;');
 		DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 		$this->createTenant();
 		$this->createPolos();
+		$this->createDepartments();
 		$this->createUsers();
 		$this->createUsersTest();
 		DB::statement('SET AUTOCOMMIT=1;');
 		DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 		DB::statement('COMMIT;');
+	}
+
+	private function createDepartments()
+	{
+		DB::table("departments")->truncate();
+		$this->department = Department::create([
+			"name" => "Operador",
+			"tenant_id" => $this->tenant->id
+		]);
 	}
 
 	private function createTenant()
@@ -63,6 +75,7 @@ class B_UsersSeeder extends Seeder
 				$user->email = $old_root_user->email;
 				$user->password = "123mudar321";
 				$user->tenant_id = $this->tenant->id;
+				// $user->department_id = $this->department->id;
 				$user->save();
 				$old_polo_ids = DB::connection("old_mysql")->table("_tenants_usuarios")->where("usuario_id", $client_user->id)->pluck("tenant_id")->toArray();
 				$polo_ids = Polo::whereIn("data->old_tenant_id", $old_polo_ids)->pluck("id")->toArray();
