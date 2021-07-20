@@ -12,7 +12,7 @@
                         <tr>
                             <td style="font-size:14px; padding:10px 0px; width:100%">
                                 <p><h1>Olá!</h1></p>
-                                <p>Você foi convidado para ter acesso à {{$name}}</p>
+                                <p>Você foi convidado para ter acesso ao Ezcore Leads</p>
                             </td>
                         </tr>
                         <tr>

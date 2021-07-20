@@ -54,8 +54,8 @@ function getMenuClass($permission,$array_current=[]) {
 					<i class="el-icon-s-flag mr-2"></i>Marketing
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-					<a class="{{ getMenuClass('viewlist-email',['/admin/emails/*']) }}"  href="/admin/emails" data-label="Pré-Definição de Emails">Emails</a>
-					<a  class="{{ getMenuClass('viewlist-automation',['/admin/automacoes-customizadas/*']) }}" href="/admin/automacoes-customizadas" data-label="Automação de Campanha Customizada">Automações Customizadas</a>
+					<a class="{{ getMenuClass('viewlist-email',['/admin/emails/*']) }} disabled"  href="/admin/emails" data-label="Pré-Definição de Emails">Emails</a>
+					<a  class="{{ getMenuClass('viewlist-automation',['/admin/automacoes-customizadas/*']) }} disabled" href="/admin/automacoes-customizadas" data-label="Automação de Campanha Customizada">Automações Customizadas</a>
 				</div>
 			</li>
 			<li class="nav-item dropdown {{ currentClass(['/admin/relatorios/*']) }}">
@@ -102,6 +102,7 @@ function getMenuClass($permission,$array_current=[]) {
 					</a>
 					<a class="dropdown-item @if(!$is_admin_or_super_admin) disabled @endif" href="/admin/usuarios">Usuários</a>
 					<a class="dropdown-item @if(!$is_admin_or_super_admin) disabled @endif" href="/admin/polos">Polos</a>
+					<a class="dropdown-item @if(!$is_admin_or_super_admin) disabled @endif" href="/admin/departamentos">Departamentos</a>
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" href="/login">Sair</a>
 				</div>

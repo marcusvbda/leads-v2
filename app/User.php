@@ -12,7 +12,7 @@ use App\Http\Models\Tenant;
 use marcusvbda\vstack\Models\Scopes\TenantScope;
 use marcusvbda\vstack\Models\Observers\TenantObserver;
 use App\Http\Models\Pivots\{UserPolo};
-use App\Http\Models\{UserNotification, Polo};
+use App\Http\Models\{Department, UserNotification, Polo};
 use App\Http\Models\Scopes\{OrderByScope};
 
 class User extends Authenticatable
@@ -74,6 +74,11 @@ class User extends Authenticatable
 	public function polo()
 	{
 		return $this->belongsTo(Polo::class);
+	}
+
+	public function department()
+	{
+		return $this->belongsTo(Department::class);
 	}
 
 	public function getRoleDescriptionAttribute()

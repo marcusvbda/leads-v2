@@ -14,7 +14,7 @@ class Role extends RootRoleModel
 {
 	use hasCode;
 	protected $table = "roles";
-	public static $protected_roles = ["admin", "super-admin"];
+	public static $protected_roles = ["super-admin"];
 	public $appends = ["code", "f_created_at_for_humans", "processed_permissions", "f_access_level", "access_level"];
 
 	public static function boot()
@@ -23,7 +23,7 @@ class Role extends RootRoleModel
 		static::addGlobalScope(new OrderByScope(with(new static)->getTable()));
 		static::observe(new TenantObserver());
 		static::addGlobalScope(new TenantScope());
-		static::addGlobalScope(new RoleClientScope(static::$protected_roles));
+		// static::addGlobalScope(new RoleClientScope(static::$protected_roles));
 	}
 
 	public function getCodeAttribute()

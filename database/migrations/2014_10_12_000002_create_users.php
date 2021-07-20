@@ -23,6 +23,11 @@ class CreateUsers extends Migration
 			$table->string('password');
 			$table->jsonb('data')->nullable();
 			$table->string('recovery_token')->nullable();
+			$table->unsignedBigInteger('department_id')->nullable();
+			$table->foreign('department_id')
+				->references('id')
+				->on('departments')
+				->onDelete('restrict');
 			$table->unsignedBigInteger('polo_id')->nullable();
 			$table->foreign('polo_id')
 				->references('id')
