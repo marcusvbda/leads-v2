@@ -11,7 +11,6 @@ use App\Http\Models\{
 class B_UsersSeeder extends Seeder
 {
 	private $tenant = null;
-	private $department = null;
 	public function run()
 	{
 		DB::statement('SET AUTOCOMMIT=0;');
@@ -29,8 +28,20 @@ class B_UsersSeeder extends Seeder
 	private function createDepartments()
 	{
 		DB::table("departments")->truncate();
-		$this->department = Department::create([
-			"name" => "Operador",
+		Department::create([
+			"name" => "Vendas",
+			"tenant_id" => $this->tenant->id
+		]);
+		Department::create([
+			"name" => "Marketing",
+			"tenant_id" => $this->tenant->id
+		]);
+		Department::create([
+			"name" => "Suporte",
+			"tenant_id" => $this->tenant->id
+		]);
+		Department::create([
+			"name" => "Financeiro",
 			"tenant_id" => $this->tenant->id
 		]);
 	}

@@ -1,7 +1,7 @@
 <template>
     <div>
         <a href="#" @click.prevent="showModal">Ver Conteúdo</a>
-        <el-dialog title="Conteúdo do Request" :visible.sync="visible" width="60%">
+        <el-dialog title="Conteúdo do Request" :visible.sync="visible" width="60%" :top="10">
             <div :class="`${!approved ? 'clickable' : ''}`">
                 <vue-json-pretty :data="content" @click="handleClick" />
             </div>

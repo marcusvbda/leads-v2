@@ -58,7 +58,7 @@ class Leads extends Resource
 
 	public function icon()
 	{
-		return "el-icon-attract";
+		return "el-icon-trophy";
 	}
 
 	public function search()

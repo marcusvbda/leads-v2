@@ -31,6 +31,14 @@ class CreateLeads extends Migration
 			$table->foreign('webhook_request_id')
 				->references('id')
 				->on('webhook_requests');
+			$table->unsignedBigInteger('responsible_id')->nullable();
+			$table->foreign('responsible_id')
+				->references('id')
+				->on('users');
+			$table->unsignedBigInteger('department_id')->nullable();
+			$table->foreign('department_id')
+				->references('id')
+				->on('departments');
 			$table->unsignedBigInteger('user_id')->nullable();
 			$table->foreign('user_id')
 				->references('id')

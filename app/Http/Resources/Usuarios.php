@@ -220,9 +220,6 @@ class Usuarios extends Resource
 		$is_super_admin = $user->hasRole(["super-admin"]);
 		$cards = [];
 		$fields = [
-			new CustomComponent("<avatar-upload :form='form'/>", [
-				"field" => "avatar",
-			]),
 			new Text([
 				"label" => "Email",
 				"field" => "email",
