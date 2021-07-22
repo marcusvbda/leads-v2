@@ -33,3 +33,7 @@ export function setUser(state, payload) {
 export function setLeads(state, payload) {
 	state.leads = payload
 }
+
+export function setStatuses(state, payload) {
+	state.statuses = payload
+}

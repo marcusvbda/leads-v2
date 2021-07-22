@@ -2,6 +2,7 @@ export default function () {
 	return {
 		departments: [],
 		objections: [],
+		statuses: [],
 		answers: [],
 		types: [],
 		user: {},

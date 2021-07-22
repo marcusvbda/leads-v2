@@ -239,13 +239,14 @@ class Usuarios extends Resource
 				"default" => array_map(function ($row) {
 					return strval($row);
 				}, $user->polos()->pluck("id")->toArray()),
-				"options" => $user->tenant->polos()->select("id as id", "name as value")->get()
+				"options" => $user->tenant->polos()->select("id as id", "name as value")->get(),
+				"all_options_label" => "Todos os Polos"
 			]),
 			new BelongsTo([
 				"label" => "Departamento",
 				"field" => "department_id",
 				"required" => false,
-				"model" => Department::class
+				"model" => Department::class,
 			]),
 		];
 		if (Auth::user()->hasRole(["super-admin", "admin"]) && @request("content") && @request("content")->id != @$user->id) {

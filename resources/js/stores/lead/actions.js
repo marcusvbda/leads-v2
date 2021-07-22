@@ -32,9 +32,10 @@ export async function getDepartments({ commit }) {
 	return data
 }
 
-const makeLeadsFilter = (state, type) => {
+const makeLeadsFilter = (state, payload) => {
 	let filters = {
-		where: []
+		where: [],
+		where_in: [],
 	}
 	if (state.user.department_id) {
 		filters.where.push(["department_id", "=", state.user.department_id])
@@ -49,29 +50,43 @@ const makeLeadsFilter = (state, type) => {
 			return filters
 		}
 	}
-
-	filters = filter_types[type](filters)
+	filters.where.push(["data->name", "like", `%${(payload.filter.text ?? '').toLowerCase()}%`])
+	filters.where_in.push(["status_id", payload.filter.status_ids])
+	filters = filter_types[payload.type](filters)
 	return filters
 }
 
-export async function getLeads({ state, commit }, type) {
-	let filters = makeLeadsFilter(state, type)
+export async function getLeads({ state, commit }, payload) {
+	let filters = makeLeadsFilter(state, payload)
+	let new_page = ++state.leads[payload.type].current_pag
+	if (payload.refresh) {
+		new_page = 1
+	}
 	let { data } = await api.post('/vstack/json-api', {
 		model: '\\App\\Http\\Models\\Lead',
 		filters,
 		per_page: 20,
-		page: ++state.leads[type].current_page,
+		page: new_page,
 		order_by: ["data->name", "desc"]
 	})
 	let new_state = Object.assign({}, state.leads)
-	new_state[type].current_page = data.current_page
-	new_state[type].total = data.total
-	new_state[type].last_page = data.last_page
-	new_state[type].data = new_state[type].data.concat(data.data)
-	new_state[type].has_more = new_state[type].current_page != new_state[type].last_page
+	new_state[payload.type].current_page = data.current_page
+	new_state[payload.type].total = data.total
+	new_state[payload.type].last_page = data.last_page
+	if (payload.refresh) {
+		new_state[payload.type].data = data.data
+	} else {
+		new_state[payload.type].data = new_state[payload.type].data.concat(data.data)
+	}
+	new_state[payload.type].has_more = new_state[payload.type].current_page != new_state[payload.type].last_page
 	commit("setLeads", new_state)
 	return data
 }
 
-
-
+export async function getStatuses({ commit }) {
+	let { data } = await api.post('/vstack/json-api', {
+		model: '\\App\\Http\\Models\\Status',
+	})
+	commit("setStatuses", data)
+	return data
+}

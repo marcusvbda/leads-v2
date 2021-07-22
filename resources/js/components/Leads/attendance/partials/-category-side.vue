@@ -8,7 +8,19 @@
                         {{ user }}
                         <small class="ml-auto text-muted">{{ department }}</small>
                     </b>
-                    <el-input placeholder="Pesquisar..." suffix-icon="el-icon-search" v-model="filter" />
+                    <el-input placeholder="Pesquisar..." suffix-icon="el-icon-search" v-model="filter.text" clearable />
+                    <el-select-all
+                        v-if="!loading.statuses"
+                        v-model="filter.status_ids"
+                        class="mt-2"
+                        filterable
+                        multiple
+                        collapse-tags
+                        placeholder="Selecione o status"
+                        label="Todos os Status"
+                        clearable
+                        :options="statuses.map((x) => ({ label: x.name, value: String(x.id) }))"
+                    />
                     <el-tabs class="mt-3">
                         <el-tab-pane>
                             <span slot="label">
@@ -24,7 +36,7 @@
                                 <div class="col-12 d-flex align-items-center justify-content-center">
                                     <div class="w-100" style="overflow: auto; margin: 0">
                                         <div class="d-flex flex-column" v-infinite-scroll="loadActive" style="overflow: auto; height: 300px">
-                                            <div v-for="lead in active_leads.data" :key="lead.id">{{ lead.name }}</div>
+                                            <div v-for="lead in active_leads.data" :key="`active_${lead.id}`">{{ lead.name }}</div>
                                             <div
                                                 v-if="loading.active_leads && active_leads.has_more"
                                                 v-loading="loading.active_leads"
@@ -50,7 +62,7 @@
                                 <div class="col-12 d-flex align-items-center justify-content-center">
                                     <div class="w-100" style="overflow: auto; margin: 0">
                                         <div class="d-flex flex-column" v-infinite-scroll="loadPending" style="overflow: auto; height: 300px">
-                                            <div v-for="lead in pending_leads.data" :key="lead.id">{{ lead.name }}</div>
+                                            <div v-for="lead in pending_leads.data" :key="`pending_${lead.id}`">{{ lead.name }}</div>
                                             <div
                                                 v-if="loading.pending_leads && pending_leads.has_more"
                                                 v-loading="loading.pending_leads"
@@ -59,13 +71,6 @@
                                             />
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </el-tab-pane>
-                        <el-tab-pane label="Potenciais">
-                            <div class="row">
-                                <div class="col-12 d-flex align-items-center justify-content-center my-5">
-                                    <span class="text-muted"> Nenhum Lead Potencial</span>
                                 </div>
                             </div>
                         </el-tab-pane>
@@ -79,17 +84,42 @@
 export default {
     data() {
         return {
-            filter: '',
+            filter: {
+                text: '',
+                status_ids: [],
+            },
+            timeout: null,
             loading: {
+                statuses: true,
                 pending_leads: true,
                 active_leads: true,
             },
+            initialized: false,
         }
     },
     created() {
-        this.init()
+        this.loadStatus().then((ids) => {
+            this.getLeads(true)
+            this.initialized = true
+        })
+    },
+    watch: {
+        filter: {
+            handler(val) {
+                if (this.initialized) {
+                    clearTimeout(this.timeout)
+                    this.timeout = setTimeout(() => {
+                        this.getLeads(val, true)
+                    }, 500)
+                }
+            },
+            deep: true,
+        },
     },
     computed: {
+        statuses() {
+            return this.$store.state.statuses
+        },
         active_leads() {
             return this.$store.state.leads.active
         },
@@ -104,20 +134,26 @@ export default {
         },
     },
     methods: {
-        init() {
-            this.loadActive()
-            this.loadPending()
+        getLeads(refresh = false) {
+            this.loadActive(refresh)
+            this.loadPending(refresh)
         },
-        loadActive() {
-            if (this.active_leads.has_more) {
+        async loadStatus() {
+            let rows = await this.$store.dispatch('getStatuses')
+            this.filter.status_ids = rows.map((x) => String(x.id))
+            this.loading.statuses = false
+            return this.filter.status_ids
+        },
+        loadActive(refresh = false) {
+            if (this.active_leads.has_more || refresh) {
                 this.loading.active_leads = true
-                this.$store.dispatch('getLeads', 'active').then(() => (this.loading.active_leads = false))
+                this.$store.dispatch('getLeads', { type: 'active', filter: this.filter, refresh }).then(() => (this.loading.active_leads = false))
             }
         },
-        loadPending() {
-            if (this.pending_leads.has_more) {
+        loadPending(refresh = false) {
+            if (this.pending_leads.has_more || refresh) {
                 this.loading.pending_leads = true
-                this.$store.dispatch('getLeads', 'pending').then(() => (this.loading.pending_leads = false))
+                this.$store.dispatch('getLeads', { type: 'pending', filter: this.filter, refresh }).then(() => (this.loading.pending_leads = false))
             }
         },
     },
