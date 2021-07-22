@@ -39,19 +39,37 @@ const makeLeadsFilter = (state, type) => {
 	if (state.user.department_id) {
 		filters.where.push(["department_id", "=", state.user.department_id])
 	}
-	if (type == 'pending') {
-		filters.where.push(["responsible_id", "=", null])
+	let filter_types = {
+		pending(filters) {
+			filters.where.push(["responsible_id", "=", null])
+			return filters
+		},
+		active(filters) {
+			filters.where.push(["responsible_id", "=", state.user.id])
+			return filters
+		}
 	}
+
+	filters = filter_types[type](filters)
 	return filters
 }
 
-export async function getPendingLeads({ state, commit }) {
-	let filters = makeLeadsFilter(state, "pending")
+export async function getLeads({ state, commit }, type) {
+	let filters = makeLeadsFilter(state, type)
 	let { data } = await api.post('/vstack/json-api', {
 		model: '\\App\\Http\\Models\\Lead',
-		filters
+		filters,
+		per_page: 20,
+		page: ++state.leads[type].current_page,
+		order_by: ["data->name", "desc"]
 	})
-	commit("setDepartments", data)
+	let new_state = Object.assign({}, state.leads)
+	new_state[type].current_page = data.current_page
+	new_state[type].total = data.total
+	new_state[type].last_page = data.last_page
+	new_state[type].data = new_state[type].data.concat(data.data)
+	new_state[type].has_more = new_state[type].current_page != new_state[type].last_page
+	commit("setLeads", new_state)
 	return data
 }
 

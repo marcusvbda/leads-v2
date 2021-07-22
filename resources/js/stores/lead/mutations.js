@@ -29,3 +29,7 @@ export function setDepartments(state, payload) {
 export function setUser(state, payload) {
 	state.user = payload
 }
+
+export function setLeads(state, payload) {
+	state.leads = payload
+}
