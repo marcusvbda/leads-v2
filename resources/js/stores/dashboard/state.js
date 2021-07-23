@@ -5,5 +5,9 @@ export default function () {
 		polos: [],
 		date_range: [],
 		date_ranges: {},
+		polos_qty: 0,
+		departments_qty: 0,
+		users_qty: 0,
+		new_leads_qty: 0
 	}
 }
