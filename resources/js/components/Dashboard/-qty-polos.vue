@@ -1,6 +1,6 @@
 <template>
     <div class="col-md-3 col-sm-12 dash-card flex-fill">
-        <loading-shimmer :loading="loading" :h="218" class="h-100">
+        <loading-shimmer :loading="loading" :h="120" class="h-100">
             <div class="card shadow h-100">
                 <div class="container py-3">
                     <div class="d-flex flex-column">

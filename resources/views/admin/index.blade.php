@@ -27,7 +27,6 @@
 <dashboard-content
 	data-aos="fade-down"
 	title="Mostradores e Desempenho"
-	default_filter="_this_month_"
 	user_id="{{ $user->id }}"
 	:is_head='@json($is_head)'
 	@if(!$is_head)

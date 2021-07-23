@@ -13,13 +13,26 @@
                         <div class="row">
                             <div class="col-12 d-flex flex-row justify-content-between align-items-center">
                                 <h5 class="mb-0"><span class="el-icon-data-analysis mr-3" />{{ title }}</h5>
-                                <dash-filters :default_filter="default_filter" :user_id="user_id" :selected_polo_ids="selected_polo_ids" />
+                                <dash-filters :user_id="user_id" :selected_polo_ids="selected_polo_ids" />
                             </div>
                         </div>
                     </div>
                     <div class="card-body pt-0">
                         <div class="row mt-3 d-flex flex-wrap">
-                            <!-- <dash-trend title="Oportunidades" description="Tendência de novos leads no periôdo selecionado" action="new_leads" /> -->
+                            <div class="col-6">
+                                <div class="row">
+                                    <qty-leads class="mb-3" />
+                                    <qty-leads-finished class="mb-3" />
+                                    <qty-canceled-tax class="mb-3" />
+                                    <qty-finished-tax class="mb-3" />
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <top-departments class="mb-3" />
+                                    <top-users class="mb-3" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -30,7 +43,7 @@
 <script>
 import dashStore from '~/stores/dashboard'
 export default {
-    props: ['title', 'selected_polo_ids', 'user_id', 'default_filter', 'is_head'],
+    props: ['title', 'selected_polo_ids', 'user_id', 'is_head'],
     store: dashStore,
     components: {
         'dash-filters': require('./-dash-filters.vue').default,
@@ -38,6 +51,12 @@ export default {
         'qty-users': require('./-qty-users.vue').default,
         'qty-departments': require('./-qty-departments.vue').default,
         'qty-leads-today': require('./-qty-leads-today.vue').default,
+        'qty-leads': require('./-qty-leads.vue').default,
+        'qty-leads-finished': require('./-qty-leads-finished.vue').default,
+        'top-departments': require('./-top-departments.vue').default,
+        'top-users': require('./-top-users.vue').default,
+        'qty-canceled-tax': require('./-qty-canceled-tax.vue').default,
+        'qty-finished-tax': require('./-qty-finished-tax.vue').default,
     },
 }
 </script>

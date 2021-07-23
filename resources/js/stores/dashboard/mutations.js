@@ -1,7 +1,3 @@
-export function setPredefinedFilter(state, payload) {
-	state.predefined_filter = payload
-}
-
 export function setPoloIds(state, payload) {
 	state.polo_ids = payload
 }
@@ -33,6 +29,11 @@ export function setUsersQty(state, payload) {
 export function setNewLeadsQty(state, payload) {
 	state.new_leads_qty = payload
 }
+
+export function setFilter(state, payload) {
+	state.filter = payload
+}
+
 
 
 

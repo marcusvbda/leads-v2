@@ -10,7 +10,7 @@ export function showError({ state }, error = "") {
 	})
 }
 
-export function getPolos({ commit, dispatch }, user_id) {
+export function getPolos({ commit }, user_id) {
 	api.post('/vstack/json-api', {
 		model: '\\App\\User',
 		includes: ['polos'],
@@ -28,7 +28,7 @@ export function getPolos({ commit, dispatch }, user_id) {
 export function getDateRanges({ state, commit, dispatch }) {
 	return api.post(`${window.location.pathname}/dates/get-ranges`).then(({ data }) => {
 		commit("setDateRanges", data)
-		commit('setDateRange', data[state.predefined_filter])
+		// commit('setDateRange', data[state.predefined_filter])
 	}).catch(er => {
 		console.log(er)
 	})
@@ -55,5 +55,10 @@ export async function getUsersQty({ commit }) {
 export async function getNewLeadsQty({ commit }, payload) {
 	let { data } = await api.post('/admin/dashboard/get-data/newLeadsQty', payload)
 	commit("setNewLeadsQty", data)
+	return data
+}
+
+export async function getDashboardContent({ commit, state }, { action }) {
+	let { data } = await api.post(`/admin/dashboard/get-data/${action}`, state.filter)
 	return data
 }
