@@ -58,7 +58,7 @@ const makeLeadsFilter = (state, payload) => {
 
 export async function getLeads({ state, commit }, payload) {
 	let filters = makeLeadsFilter(state, payload)
-	let new_page = ++state.leads[payload.type].current_pag
+	let new_page = ++state.leads[payload.type].current_page
 	if (payload.refresh) {
 		new_page = 1
 	}

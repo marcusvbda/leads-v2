@@ -21,8 +21,8 @@
                         clearable
                         :options="statuses.map((x) => ({ label: x.name, value: String(x.id) }))"
                     />
-                    <el-tabs class="mt-3">
-                        <!-- <el-tab-pane>
+                    <el-tabs class="mt-3" v-model="tab">
+                        <el-tab-pane v-loading="!initialized" element-loading-text="Inicializando..." name="active">
                             <span slot="label">
                                 Ativos
                                 <template v-if="active_leads.total"> ({{ active_leads.total }}) </template>
@@ -35,8 +35,8 @@
                             <div class="row" v-else>
                                 <div class="col-12 d-flex align-items-center justify-content-center">
                                     <div class="w-100" style="overflow: auto; margin: 0">
-                                        <div class="d-flex flex-column" v-infinite-scroll="loadActive" style="overflow: auto; height: 300px">
-                                            <lead-card v-for="lead in active_leads.data" :lead="lead" :key="`active_${lead.id}`" />
+                                        <div class="d-flex flex-column" v-infinite-scroll="getLeads" style="overflow: auto; height: 300px">
+                                            <lead-card v-for="(lead, i) in active_leads.data" :lead="lead" :key="`active_${i}`" />
                                             <div
                                                 v-if="loading.active_leads && active_leads.has_more"
                                                 v-loading="loading.active_leads"
@@ -47,8 +47,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </el-tab-pane> -->
-                        <el-tab-pane>
+                        </el-tab-pane>
+                        <el-tab-pane v-loading="!initialized" element-loading-text="Inicializando..." name="pending">
                             <span slot="label">
                                 Pendentes
                                 <template v-if="pending_leads.total"> ({{ pending_leads.total }}) </template>
@@ -61,8 +61,8 @@
                             <div class="row" v-else>
                                 <div class="col-12 d-flex align-items-center justify-content-center">
                                     <div class="w-100" style="overflow: auto; margin: 0">
-                                        <div class="d-flex flex-column" v-infinite-scroll="loadPending" style="overflow: auto; height: 300px">
-                                            <lead-card v-for="lead in pending_leads.data" :lead="lead" :key="`pending_${lead.id}`" />
+                                        <div class="d-flex flex-column" v-infinite-scroll="getLeads" style="overflow: auto; height: 300px">
+                                            <lead-card v-for="(lead, i) in pending_leads.data" :lead="lead" :key="`pending_${i}`" />
                                             <div
                                                 v-if="loading.pending_leads && pending_leads.has_more"
                                                 v-loading="loading.pending_leads"
@@ -95,6 +95,7 @@ export default {
                 active_leads: true,
             },
             initialized: false,
+            tab: 'active',
         }
     },
     components: {
@@ -103,7 +104,6 @@ export default {
     created() {
         this.loadStatus().then((ids) => {
             this.getLeads(true)
-            this.initialized = true
         })
     },
     watch: {
@@ -138,8 +138,13 @@ export default {
     },
     methods: {
         getLeads(refresh = false) {
-            this.loadActive(refresh)
-            this.loadPending(refresh)
+            if (!this.initialized) {
+                Promise.all([this.leadLeads(refresh, 'active'), this.leadLeads(refresh, 'pending')]).then(() => {
+                    this.initialized = true
+                })
+            } else {
+                this.leadLeads(refresh, this.tab)
+            }
         },
         async loadStatus() {
             let rows = await this.$store.dispatch('getStatuses')
@@ -149,16 +154,10 @@ export default {
             this.loading.statuses = false
             return this.filter.status_ids
         },
-        loadActive(refresh = false) {
-            if (this.active_leads.has_more || refresh) {
-                this.loading.active_leads = true
-                this.$store.dispatch('getLeads', { type: 'active', filter: this.filter, refresh }).then(() => (this.loading.active_leads = false))
-            }
-        },
-        loadPending(refresh = false) {
-            if (this.pending_leads.has_more || refresh) {
-                this.loading.pending_leads = true
-                this.$store.dispatch('getLeads', { type: 'pending', filter: this.filter, refresh }).then(() => (this.loading.pending_leads = false))
+        async leadLeads(refresh = false, type) {
+            if (this[`${type}_leads`].has_more || refresh) {
+                this.loading[`${type}_leads`] = true
+                await this.$store.dispatch('getLeads', { type, filter: this.filter, refresh }).then(() => (this.loading[`${type}_leads`] = false))
             }
         },
     },

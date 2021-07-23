@@ -72,44 +72,6 @@
                                         <span v-html="lead.f_status_badge" />
                                     </div>
                                 </td>
-                                <td>
-                                    <div class="d-flex flex-column">
-                                        <b class="f-12 text-muted">Encontrar no Google</b>
-                                        <span class="f-12">
-                                            <a class="link" :href="`https://www.google.com.br/search?q=${lead.name}`" target="_BLANK"> Encontrar no Google </a>
-                                        </span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex flex-column">
-                                        <b class="f-12 text-muted">Encontrar no Facebook</b>
-                                        <span class="f-12">
-                                            <a class="link" :href="`https://www.facebook.com/search/top/?q=${lead.name}`" target="_BLANK">
-                                                Encontrar no Facebook
-                                            </a>
-                                        </span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex flex-column">
-                                        <b class="f-12 text-muted">Encontrar no Linkedin</b>
-                                        <span class="f-12">
-                                            <a class="link" :href="`https://www.linkedin.com/search/results/people/?keywords=${lead.name}`" target="_BLANK">
-                                                Encontrar no Linkedin
-                                            </a>
-                                        </span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex flex-column">
-                                        <b class="f-12 text-muted">Encontrar no Twitter</b>
-                                        <span class="f-12">
-                                            <a class="link" :href="`https://twitter.com/search?q=${lead.name}&f=user`" target="_BLANK">
-                                                Encontrar no Twitter
-                                            </a>
-                                        </span>
-                                    </div>
-                                </td>
                             </tr>
                         </table>
                     </div>

@@ -17,7 +17,7 @@ export default {
         },
     },
     components: {
-        // 'convert-lead': require('./partials/-convert-lead.vue').default,
+        'convert-lead': require('./convert/-convert-lead.vue').default,
     },
 }
 </script>

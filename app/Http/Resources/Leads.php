@@ -113,7 +113,7 @@ class Leads extends Resource
 
 	public function canView()
 	{
-		return hasPermissionTo("edit-leads");
+		return false;
 	}
 
 	public function canViewReport()
