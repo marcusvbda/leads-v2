@@ -247,11 +247,12 @@ export default {
             this.$store
                 .dispatch('registerContact', this.form_new_contact)
                 .then(() => {
-                   this.$store.dispatch('reloadAllLeads').then(() => {
+                    this.$store.dispatch('reloadAllLeads').then(() => {
                         this.form_new_contact = false
                         // this.$store.commit('setTab', 'active')
                         this.$store.commit('setLead', {})
                         loading.close()
+                        this.$message.success('Contato Registrado !!')
                     })
                 })
                 .catch((er) => {

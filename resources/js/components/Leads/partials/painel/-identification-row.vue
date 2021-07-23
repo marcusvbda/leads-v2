@@ -140,6 +140,7 @@ export default {
             this.$store.dispatch('transferLead', department_id).then(() => {
                 this.$store.dispatch('reloadAllLeads').then(() => {
                     this.$store.commit('setLead', {})
+                    this.$message.success('Lead Transferido !!')
                 })
             })
         },
