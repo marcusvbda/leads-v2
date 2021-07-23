@@ -247,10 +247,7 @@ export default {
             this.$store
                 .dispatch('registerContact', this.form_new_contact)
                 .then(() => {
-                    Promise.all([
-                        this.$store.dispatch('loadLeads', { refresh: true, type: 'active' }),
-                        this.$store.dispatch('loadLeads', { refresh: true, type: 'pending' }),
-                    ]).then(() => {
+                   this.$store.dispatch('reloadAllLeads').then(() => {
                         this.form_new_contact = false
                         // this.$store.commit('setTab', 'active')
                         this.$store.commit('setLead', {})

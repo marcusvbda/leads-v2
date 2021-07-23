@@ -23,6 +23,16 @@ class AttendanceController extends Controller
 		return view("admin.leads.attendance", compact("logged_user"));
 	}
 
+	public function transferDepartment($code, Request $request)
+	{
+		$resource = ResourcesHelpers::find("leads");
+		if (!$resource->canUpdate()) abort(403);
+		$lead = Lead::findByCodeOrFail($code);
+		$lead->department_id = $request["department_id"];
+		$lead->save();
+		return ["sucess" => true];
+	}
+
 	public function registerContact($code, Request $request)
 	{
 		$resource = ResourcesHelpers::find("leads");

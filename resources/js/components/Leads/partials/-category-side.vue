@@ -146,17 +146,18 @@ export default {
             return this.$store.state.user.name
         },
         department() {
+            console.log(this.user)
             return this.user.department?.name || 'Sem Departamento'
         },
     },
     methods: {
         getLeads(refresh = false) {
             if (!this.initialized) {
-                Promise.all([this.loadLead(refresh, 'active'), this.loadLead(refresh, 'pending')]).then(() => {
+                this.$store.dispatch('reloadAllLeads').then(() => {
                     this.initialized = true
                 })
             } else {
-                this.loadLead(refresh, this.tab)
+                this.$store.dispatch('loadLeads', { refresh, type: this.tab })
             }
         },
         async loadStatus() {
@@ -166,9 +167,6 @@ export default {
                 .map((x) => String(x.id))
             this.loading.statuses = false
             return this.filter.status_ids
-        },
-        async loadLead(refresh, type) {
-            this.$store.dispatch('loadLeads', { refresh, type })
         },
     },
 }

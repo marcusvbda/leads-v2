@@ -72,6 +72,28 @@
                                         <span v-html="lead.f_status_badge" />
                                     </div>
                                 </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <el-dropdown @command="actionCommand">
+                                        <span class="el-dropdown-link">
+                                            <b class="f-12 text-muted"> <span class="el-icon-menu mr-2" />Ações </b>
+                                            <i class="el-icon-arrow-down el-icon--right" />
+                                        </span>
+                                        <el-dropdown-menu slot="dropdown">
+                                            <el-dropdown-item command="transferLead">Transferir para outro <b>departamento</b></el-dropdown-item>
+                                        </el-dropdown-menu>
+                                    </el-dropdown>
+                                    <select-dialog
+                                        ref="select-department"
+                                        title="Departamentos"
+                                        description="Selecione o departamento que deseja transferir este lead"
+                                        btn_text="Selecionar"
+                                        @selected="transferToDerpartment"
+                                    />
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -101,6 +123,25 @@ export default {
         },
         resource_id() {
             return this.$store.state.resource_id
+        },
+    },
+    methods: {
+        actionCommand(command) {
+            this[command]()
+        },
+        transferLead() {
+            this.$store.dispatch('getDepartments').then((deps) => {
+                let select_dep = this.$refs['select-department']
+                select_dep.options = deps.map((x) => ({ key: x.id, label: x.name }))
+                select_dep.open()
+            })
+        },
+        transferToDerpartment(department_id) {
+            this.$store.dispatch('transferLead', department_id).then(() => {
+                this.$store.dispatch('reloadAllLeads').then(() => {
+                    this.$store.commit('setLead', {})
+                })
+            })
         },
     },
 }

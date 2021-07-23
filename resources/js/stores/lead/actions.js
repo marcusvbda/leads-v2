@@ -38,9 +38,7 @@ const makeLeadsFilter = (state, payload) => {
 		where_in: [],
 		raw_where: []
 	}
-	if (state.user.department_id) {
-		filters.where.push(["department_id", "=", state.user.department_id])
-	}
+	filters.where.push(["department_id", "=", state.user.department_id ?? null])
 	let filter_types = {
 		pending(filters) {
 			filters.where.push(["responsible_id", "=", null])
@@ -108,4 +106,16 @@ export async function loadLeads({ state, commit, dispatch }, payload) {
 		commit("setLoading", { ...state.loading, [type]: false })
 
 	}
+}
+
+export async function reloadAllLeads({ dispatch }) {
+	await Promise.all([
+		dispatch('loadLeads', { refresh: true, type: 'active' }),
+		dispatch('loadLeads', { refresh: true, type: 'pending' })
+	])
+}
+
+export async function transferLead({ state }, department_id) {
+	let { data } = await api.post(`/admin/atendimento/${state.lead.code}/transfer-department`, { department_id })
+	return data
 }
