@@ -103,8 +103,8 @@ class B_UsersSeeder extends Seeder
 	private function createUsersTest()
 	{
 		$user = new User();
-		$user->name = "Vinicius Bassalobre";
-		$user->email = "bassalobre.vinicius@gmail.com";
+		$user->name = "User de teste";
+		$user->email = "userdeteste@email.com";
 		$user->password = "senhateste";
 		$user->tenant_id = $this->tenant->id;
 		$user->polo_id = 1;
