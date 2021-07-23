@@ -76,6 +76,7 @@ class D_LeadsSeeder extends Seeder
 						"name" => @$old_lead->nome,
 						"email" => @$old_lead->email,
 						"phones" => $this->getPhones($old_lead),
+						"schedule" => @$old_lead->data . (@$old_lead->hora ? " - " . @$old_lead->hora : ""),
 						"city" => @$old_lead->cidade,
 						"interest" => @$old_lead->curso,
 						"api_ref_token" => @$old_lead->ref_token,
