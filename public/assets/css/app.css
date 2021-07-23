@@ -11480,28 +11480,40 @@ a.el-button:hover {
   margin: 0 1px;
 }
 
-.status-color.Oportunidade {
-  color: #c7c939;
+.status-color.canceled {
+  color: #9b0404;
 }
 
-.status-color.Não.Qualificado {
-  color: #d3561b;
+.status-color.schedule {
+  color: #e68e65;
 }
 
-.status-color.Qualificado {
-  color: #43a228;
+.status-color.finished {
+  color: #097349;
 }
 
-.status-color.Convertido {
-  color: #233396;
+.status-color.neutral {
+  color: #6c6c6c;
 }
 
-.status-color.Aguardando {
-  color: #c12d7c;
+.status-color.waiting {
+  color: #45b194;
 }
 
-.status-color.Provável.Qualificação {
-  color: #6a0082;
+.status-color.interest {
+  color: #5852cc;
+}
+
+.status-color.interest_with_objection {
+  color: #cc52ab;
+}
+
+.status-color.interest_with_objection {
+  color: #cc52ab;
+}
+
+.status-color.schedule_test {
+  color: #5aa03c;
 }
 
 .status-color-bgtop.Oportunidade {

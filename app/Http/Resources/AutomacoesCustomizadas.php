@@ -49,25 +49,21 @@ class AutomacoesCustomizadas extends Resource
 
 	public function canCreate()
 	{
-		return false;
 		return hasPermissionTo("create-automation");
 	}
 
 	public function canUpdate()
 	{
-		return false;
 		return hasPermissionTo("edit-automation");
 	}
 
 	public function canDelete()
 	{
-		return false;
 		return hasPermissionTo("destroy-automation");
 	}
 
 	public function canViewList()
 	{
-		return false;
 		return hasPermissionTo("viewlist-automation");
 	}
 

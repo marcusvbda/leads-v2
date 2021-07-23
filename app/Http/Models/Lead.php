@@ -103,8 +103,8 @@ class Lead extends DefaultModel
 
 	public function getFStatusBadgeAttribute()
 	{
-		$status = $this->status->name;
-		return "<small class='status-color {$status}'>{$status}</small>";
+		$status = $this->status;
+		return "<b class='status-color {$status->value}'>{$status->name}</b>";
 	}
 
 	public function status()

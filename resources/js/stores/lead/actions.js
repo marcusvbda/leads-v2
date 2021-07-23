@@ -96,7 +96,10 @@ export async function getLeads(cx, payload) {
 export async function getStatuses({ commit }) {
 	let { data } = await api.post('/vstack/json-api', {
 		model: '\\App\\Http\\Models\\Status',
-		order_by: ["seq", "desc"]
+		order_by: ["name", "asc"],
+		filters: {
+			or_where_not_in: [["value", ["finished", "canceled"]]]
+		}
 	})
 	commit("setStatuses", data)
 	return data
@@ -126,5 +129,10 @@ export async function reloadAllLeads({ dispatch }) {
 
 export async function transferLead({ state }, department_id) {
 	let { data } = await api.post(`/admin/atendimento/${state.lead.code}/transfer-department`, { department_id })
+	return data
+}
+
+export async function finishLead({ state }, payload) {
+	let { data } = await api.post(`/admin/atendimento/${state.lead.code}/finish`, payload)
 	return data
 }

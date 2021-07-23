@@ -75,6 +75,10 @@ class D_LeadsSeeder extends Seeder
 				if ($old_status->value == "A") {
 					$schedule = (@$old_lead->schedule_data && @$old_lead->schedule_hora ? (Carbon::create($old_lead->schedule_data . " " . $old_lead->schedule_hora)) : Carbon::now())->format("Y-m-d H:i:s");
 				}
+				$finished_at = null;
+				if ($old_lead->value = "V") {
+					$finished_at = Carbon::now()->format("Y-m-d H:i:s");
+				}
 				Lead::create([
 					"polo_id" => $this->polos[$old_lead->tenant_name],
 					"tenant_id" => 1,
@@ -154,7 +158,7 @@ class D_LeadsSeeder extends Seeder
 	private function getCurrentStatus($old_status, $objecao_id)
 	{
 		if ($objecao_id) {
-			return Status::value("objection")->id;
+			return Status::value("canceled")->id;
 		}
 		switch ($old_status->value) {
 			case "C":
@@ -167,7 +171,7 @@ class D_LeadsSeeder extends Seeder
 				return Status::value("waiting")->id;
 				break;
 			case "V":
-				return Status::value("test_done")->id;
+				return Status::value("finished")->id;
 				break;
 			case "F":
 				return Status::value("finished")->id;

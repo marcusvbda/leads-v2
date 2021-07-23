@@ -16,6 +16,7 @@ class CustomAutomation extends DefaultModel
 	const _TRIGGERS_ = [
 		["value" => "store", "label" => "Novo Lead"],
 		["value" => "conversion", "label" => "Conversão de Lead"],
+		["value" => "finish", "label" => "Finalização de Lead"],
 		["value" => "schedule", "label" => "Agendamento"],
 		["value" => "five_days", "label" => "A cada 5 dias"],
 		["value" => "fifteen_days", "label" => "A cada 15 dias"],

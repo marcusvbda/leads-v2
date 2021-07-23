@@ -1,18 +1,17 @@
 <template>
-    <div>
+    <div v-if="lead.id">
         <div class="row">
             <div class="col-12 d-flex flex-row justify-content-between align-items-center">
                 <div class="d-flex flex-column header">
                     <a :href="`/admin/leads/${lead.code}/edit`" class="lead-name" target="_BLANK">
                         {{ lead.name ? lead.name : undefined_text }} <small class="ml-2 f-12">#{{ lead.code }}</small>
                     </a>
-                    <small class="text-muted f-12">Data de Entrada : {{ lead.f_created_at ? lead.f_created_at : undefined_text }}</small>
                     <v-runtime-template class="mt-2" :template="lead.f_rating" />
                 </div>
-                <resource-tags-input class="mt-3" v-if="use_tags" :resource="resource_id" :resource_code="lead.code" />
+                <resource-tags-input class="mt-3" resource="leads" :resource_code="lead.code" />
             </div>
         </div>
-        <div class="row mt-3">
+        <div class="row mt-1">
             <div class="col-12">
                 <div class="card no-radius">
                     <div class="card-body">
@@ -69,34 +68,58 @@
                                 <td>
                                     <div class="d-flex flex-column">
                                         <b class="f-12 text-muted">Status</b>
-                                        <span v-html="lead.f_status_badge" />
+                                        <small v-html="lead.f_status_badge" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <b class="f-12 text-muted">Data de Entrada</b>
+                                        <small class="f-12">
+                                            {{ lead.f_created_at ? lead.f_created_at : undefined_text }}
+                                        </small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column" v-if="lead.f_schedule">
+                                        <b class="f-12 text-muted">Agendamento</b>
+                                        <small class="f-12">
+                                            {{ lead.f_schedule }}
+                                        </small>
                                     </div>
                                 </td>
                                 <td></td>
                                 <td></td>
-                                <td></td>
-                                <td></td>
                                 <td>
-                                    <el-dropdown @command="actionCommand">
-                                        <span class="el-dropdown-link">
-                                            <b class="f-12 text-muted"> <span class="el-icon-menu mr-2" />Ações </b>
-                                            <i class="el-icon-arrow-down el-icon--right" />
-                                        </span>
-                                        <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item command="transferLead">Transferir para outro <b>departamento</b></el-dropdown-item>
-                                        </el-dropdown-menu>
-                                    </el-dropdown>
-                                    <select-dialog
-                                        ref="select-department"
-                                        title="Departamentos"
-                                        description="Selecione o departamento que deseja transferir este lead"
-                                        btn_text="Selecionar"
-                                        @selected="transferToDerpartment"
-                                    />
+                                    <slot />
                                 </td>
                             </tr>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" v-if="lead.obs || lead.comment">
+            <div class="col-12">
+                <div class="bg-light p-3">
+                    <div class="d-flex flex-row align-items-center mb-3 f-12">
+                        <b class="mr-1">Observações :</b>
+                        <span v-html="lead.obs" />
+                    </div>
+                    <div class="d-flex flex-row align-items-center f-12">
+                        <b class="mr-1">Comentários :</b>
+                        <span v-html="lead.comment" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4" v-if="lead.status.value == 'canceled'">
+            <div class="col-12">
+                <div class="alert alert-danger" role="alert">
+                    <b class="alert-heading">{{ lead.f_status }}</b>
+                    <p>
+                        {{ lead.objection.name }}
+                        {{ lead.other_objection }}
+                    </p>
                 </div>
             </div>
         </div>
@@ -106,43 +129,30 @@
 import VRuntimeTemplate from 'v-runtime-template'
 
 export default {
+    props: ['lead_id', 'original_lead'],
     data() {
         return {
             undefined_text: 'Não Informado',
+            lead: this.original_lead ?? null,
         }
     },
     components: {
         'v-runtime-template': VRuntimeTemplate,
     },
-    computed: {
-        lead() {
-            return this.$store.state.lead
-        },
-        use_tags() {
-            return this.$store.state.use_tags
-        },
-        resource_id() {
-            return this.$store.state.resource_id
-        },
+    created() {
+        if (!this.lead) {
+            this.init()
+        }
     },
     methods: {
-        actionCommand(command) {
-            this[command]()
-        },
-        transferLead() {
-            this.$store.dispatch('getDepartments').then((deps) => {
-                let select_dep = this.$refs['select-department']
-                select_dep.options = deps.map((x) => ({ key: x.id, label: x.name }))
-                select_dep.open()
+        async init() {
+            let { data } = await this.$http.post('/vstack/json-api', {
+                model: '\\App\\Http\\Models\\Lead',
+                filters: {
+                    where: [['id', '=', this.lead_id]],
+                },
             })
-        },
-        transferToDerpartment(department_id) {
-            this.$store.dispatch('transferLead', department_id).then(() => {
-                this.$store.dispatch('reloadAllLeads').then(() => {
-                    this.$store.commit('setLead', {})
-                    this.$message.success('Lead Transferido !!')
-                })
-            })
+            this.lead = data[0]
         },
     },
 }

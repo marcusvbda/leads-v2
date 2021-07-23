@@ -51,6 +51,7 @@ class CreateLeads extends Migration
 			$table->foreign('polo_id')
 				->references('id')
 				->on('polos');
+			$table->timestamp("finished_at")->nullable();
 			$table->softDeletes();
 			$table->timestamps();
 		});
