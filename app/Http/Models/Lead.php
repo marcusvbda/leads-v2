@@ -23,7 +23,7 @@ class Lead extends DefaultModel
 		"code", "name", "f_status", "email", "profession", "f_last_conversion", "cellphone_number",
 		"phone_number", "obs", "f_created_at", "objection", "comment", "interest", "f_status_badge",
 		"f_birthdate", "age", "f_last_conversion_date", "api_ref_token", "other_objection", "conversions",
-		"tries", "lead_api", "f_rating", "f_schedule"
+		"tries", "lead_api", "f_rating", "f_schedule", "f_updated_at"
 	];
 
 	public static function boot()

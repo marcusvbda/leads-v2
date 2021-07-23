@@ -86,6 +86,7 @@ export async function getLeads({ state, commit }, payload) {
 export async function getStatuses({ commit }) {
 	let { data } = await api.post('/vstack/json-api', {
 		model: '\\App\\Http\\Models\\Status',
+		order_by: ["seq", "desc"]
 	})
 	commit("setStatuses", data)
 	return data

@@ -22,7 +22,7 @@
                         :options="statuses.map((x) => ({ label: x.name, value: String(x.id) }))"
                     />
                     <el-tabs class="mt-3">
-                        <el-tab-pane>
+                        <!-- <el-tab-pane>
                             <span slot="label">
                                 Ativos
                                 <template v-if="active_leads.total"> ({{ active_leads.total }}) </template>
@@ -36,7 +36,7 @@
                                 <div class="col-12 d-flex align-items-center justify-content-center">
                                     <div class="w-100" style="overflow: auto; margin: 0">
                                         <div class="d-flex flex-column" v-infinite-scroll="loadActive" style="overflow: auto; height: 300px">
-                                            <div v-for="lead in active_leads.data" :key="`active_${lead.id}`">{{ lead.name }}</div>
+                                            <lead-card v-for="lead in active_leads.data" :lead="lead" :key="`active_${lead.id}`" />
                                             <div
                                                 v-if="loading.active_leads && active_leads.has_more"
                                                 v-loading="loading.active_leads"
@@ -47,7 +47,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </el-tab-pane>
+                        </el-tab-pane> -->
                         <el-tab-pane>
                             <span slot="label">
                                 Pendentes
@@ -62,7 +62,7 @@
                                 <div class="col-12 d-flex align-items-center justify-content-center">
                                     <div class="w-100" style="overflow: auto; margin: 0">
                                         <div class="d-flex flex-column" v-infinite-scroll="loadPending" style="overflow: auto; height: 300px">
-                                            <div v-for="lead in pending_leads.data" :key="`pending_${lead.id}`">{{ lead.name }}</div>
+                                            <lead-card v-for="lead in pending_leads.data" :lead="lead" :key="`pending_${lead.id}`" />
                                             <div
                                                 v-if="loading.pending_leads && pending_leads.has_more"
                                                 v-loading="loading.pending_leads"
@@ -96,6 +96,9 @@ export default {
             },
             initialized: false,
         }
+    },
+    components: {
+        'lead-card': require('./-lead-card.vue').default,
     },
     created() {
         this.loadStatus().then((ids) => {
@@ -140,7 +143,9 @@ export default {
         },
         async loadStatus() {
             let rows = await this.$store.dispatch('getStatuses')
-            this.filter.status_ids = rows.map((x) => String(x.id))
+            this.filter.status_ids = rows
+                .filter((x) => ['schedule', 'waiting', 'interest', 'interest_with_objection', 'neutral', 'neutral_with_objection'].includes(x.value))
+                .map((x) => String(x.id))
             this.loading.statuses = false
             return this.filter.status_ids
         },
