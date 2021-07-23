@@ -32,7 +32,7 @@ export async function getDepartments({ commit }) {
 	return data
 }
 
-const makeLeadsFilter = (state, payload) => {
+const makeLeadsFilter = ({ state, getters }, payload) => {
 	let filters = {
 		where: [],
 		where_in: [],
@@ -52,13 +52,22 @@ const makeLeadsFilter = (state, payload) => {
 	if (state.filter.text) {
 		filters.raw_where.push(`lower(json_unquote(json_extract(data,'$.name'))) like '%${state.filter.text.toLowerCase()}%'`)
 	}
+	if (state.filter.schedule?.length && getters.showScheduleFilter) {
+		if (state.filter.schedule[0]) {
+			filters.raw_where.push(`TIMESTAMP(json_unquote(json_extract(data,'$.schedule'))) >= TIMESTAMP('${state.filter.schedule[0]}')`)
+		}
+		if (state.filter.schedule[1]) {
+			filters.raw_where.push(`TIMESTAMP(json_unquote(json_extract(data,'$.schedule'))) <= TIMESTAMP('${state.filter.schedule[1]}')`)
+		}
+	}
 	filters.where_in.push(["status_id", state.filter.status_ids])
 	filters = filter_types[payload.type](filters)
 	return filters
 }
 
-export async function getLeads({ state, commit }, payload) {
-	let filters = makeLeadsFilter(state, payload)
+export async function getLeads(cx, payload) {
+	let { state, commit } = cx
+	let filters = makeLeadsFilter(cx, payload)
 	let new_page = ++state.leads[payload.type].current_page
 	if (payload.refresh) {
 		new_page = 1

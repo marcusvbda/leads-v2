@@ -54,7 +54,17 @@ class AttendanceController extends Controller
 		if ($answer->need_objection) {
 			$lead->objection = $objection->description;
 			$lead->other_objection = @$request["other_objection"];
+		} else {
+			$lead->objection = null;
+			$lead->other_objection = null;
 		}
+
+		if ($answer->need_schedule) {
+			$lead->schedule = $request["schedule"];
+		} else {
+			$lead->schedule = null;
+		}
+
 		$lead->responsible_id = $user->id;
 		$lead->save();
 		Messages::send("success", "Contato Salvo");

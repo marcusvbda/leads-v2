@@ -10,8 +10,8 @@
                 <span class="text-muted">{{ lead.email }}</span>
                 <span class="text-muted">{{ lead.status.name }}</span>
             </div>
-            <div class="d-flex flex-row justify-content-end">
-                <span class="text-muted">{{ lead.f_created_at }}</span>
+            <div class="d-flex flex-row justify-content-end" v-if="lead.f_schedule">
+                <span class="text-muted">Agendamento : {{ lead.f_schedule }}</span>
             </div>
         </div>
     </div>

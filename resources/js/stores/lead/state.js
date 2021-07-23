@@ -31,6 +31,7 @@ export default function () {
 		filter: {
 			text: '',
 			status_ids: [],
+			schedule: []
 		},
 	}
 }

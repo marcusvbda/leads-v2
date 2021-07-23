@@ -21,6 +21,17 @@
                         clearable
                         :options="statuses.map((x) => ({ label: x.name, value: String(x.id) }))"
                     />
+                    <el-date-picker
+                        class="w-100 mt-2"
+                        v-if="show_schedule_filter"
+                        v-model="filter.schedule"
+                        type="datetimerange"
+                        range-separator=" - "
+                        start-placeholder=""
+                        end-placeholder=""
+                        format="dd/MM/yyyy HH:mm:ss"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                    />
                     <el-tabs class="mt-3" v-model="tab">
                         <el-tab-pane v-loading="!initialized" element-loading-text="Inicializando..." name="active">
                             <span slot="label">
@@ -114,6 +125,9 @@ export default {
         },
     },
     computed: {
+        show_schedule_filter() {
+            return this.$store.getters.showScheduleFilter
+        },
         filter: {
             set(val) {
                 return this.$store.commit('setFilter', val)
