@@ -91,3 +91,8 @@ export async function getStatuses({ commit }) {
 	commit("setStatuses", data)
 	return data
 }
+
+export async function registerContact({ state }, payload) {
+	let { data } = await api.post(`/admin/atendimento/${state.lead.code}/register-contact`, payload)
+	return data
+}
