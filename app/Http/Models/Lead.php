@@ -16,15 +16,14 @@ class Lead extends DefaultModel
 	// public $restrictDeletes = [""];
 
 	public $casts = [
-		"data" => "object",
-		"custom_fields" => "object",
+		"data" => "object"
 	];
 
 	public $appends = [
 		"code", "name", "f_status", "email", "profession", "f_last_conversion", "cellphone_number",
 		"phone_number", "obs", "f_created_at", "objection", "comment", "interest", "f_status_badge",
 		"f_birthdate", "age", "f_last_conversion_date", "api_ref_token", "other_objection", "conversions",
-		"tries", "lead_api", "f_rating", "f_schedule"
+		"tries", "lead_api", "f_rating", "f_schedule", "f_updated_at"
 	];
 
 	public static function boot()
@@ -392,6 +391,11 @@ class Lead extends DefaultModel
 	public function automation_sent_emails()
 	{
 		return $this->hasMany(AutomationSentEmail::class);
+	}
+
+	public function webhook_request()
+	{
+		return $this->belongsTo(WebhookRequest::class);
 	}
 	// relations
 }

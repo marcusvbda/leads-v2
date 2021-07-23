@@ -41,8 +41,7 @@ class runCustomAutomation extends Command
 
 	private function getLeads($automation, $status, $trigger)
 	{
-		$sub_status_id = $status->sub_status->pluck("id");
-		return Lead::whereIn("lead_substatus_id", $sub_status_id)
+		return Lead::whereIn("status_id", $status->id)
 			->where("updated_at", ">=", $automation->created_at)
 			->where("data->email", "!=", "null")
 			->whereDoesntHave("automation_sent_emails", function ($q) use ($trigger) {

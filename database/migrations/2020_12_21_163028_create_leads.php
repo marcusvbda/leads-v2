@@ -19,7 +19,6 @@ class CreateLeads extends Migration
 			$table->engine = 'InnoDB';
 			$table->bigIncrements('id');
 			$table->jsonb('data');
-			$table->jsonb('custom_fields');
 			$table->unsignedBigInteger('status_id');
 			$table->foreign('status_id')
 				->references('id')
@@ -28,6 +27,18 @@ class CreateLeads extends Migration
 			$table->foreign('webhook_id')
 				->references('id')
 				->on('webhooks');
+			$table->unsignedBigInteger('webhook_request_id')->nullable();
+			$table->foreign('webhook_request_id')
+				->references('id')
+				->on('webhook_requests');
+			$table->unsignedBigInteger('responsible_id')->nullable();
+			$table->foreign('responsible_id')
+				->references('id')
+				->on('users');
+			$table->unsignedBigInteger('department_id')->nullable();
+			$table->foreign('department_id')
+				->references('id')
+				->on('departments');
 			$table->unsignedBigInteger('user_id')->nullable();
 			$table->foreign('user_id')
 				->references('id')

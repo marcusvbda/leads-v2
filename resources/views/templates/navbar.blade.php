@@ -41,12 +41,13 @@ function getMenuClass($permission,$array_current=[]) {
 			<li class="nav-item {{ currentClass(['/admin']) }}">
 				<a class="nav-link" href="/admin"><i class="el-icon-data-line mr-2"></i>CRM Dashboard <span class="sr-only">(current)</span></a>
 			</li>
-			<li class="nav-item dropdown {{ currentClass(['/admin/leads/*']) }}">
+			<li class="nav-item dropdown {{ currentClass(['/admin/leads/*','/admin/atendimento/*']) }}">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<i class="el-icon-attract mr-2"></i>Oportunidades
+					<i class="el-icon-trophy mr-2"></i>Oportunidades
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 					<a class="{{ getMenuClass('viewlist-leads',['/admin/leads/*']) }}" href="/admin/leads" data-label="Base de Leads">Leads</a>
+					<a class="{{ getMenuClass('edit-leads',['/admin/atendimento/*']) }}" href="/admin/atendimento" data-label="Atendimento de Leads">Atendimento</a>
 				</div>
 			</li>
 			<li class="nav-item dropdown {{ currentClass(['/admin/emails/*','/admin/automacoes-customizadas/*']) }}">
@@ -64,7 +65,7 @@ function getMenuClass($permission,$array_current=[]) {
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 					<a class="{{ getMenuClass('view-leads-report',['/admin/relatorios/leads/*']) }}" href="/admin/relatorios/leads" data-label="Relatório de Leads">Leads</a>
-					<a class="{{ getMenuClass('report-automation',['/admin/relatorios/automacoes-customizadas/*']) }}" href="/admin/relatorios/automacoes-customizadas" data-label="Relatório de Automações">Automação</a>
+					<a class="{{ getMenuClass('report-automation',['/admin/relatorios/automacoes-customizadas/*']) }} disabled" href="/admin/relatorios/automacoes-customizadas" data-label="Relatório de Automações">Automação</a>
 				</div>
 			</li>
 			<li class="nav-item dropdown {{ currentClass(['/admin/resposta-contatos/*','/admin/tipos-contato/*','/admin/respostas-contato/*','/admin/regra-classificacao/*','/admin/objecoes/*']) }}">

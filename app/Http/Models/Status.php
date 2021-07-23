@@ -3,7 +3,6 @@
 namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Http\Models\Scopes\{OrderByScope};
 
 class Status extends Model
 {
@@ -15,12 +14,6 @@ class Status extends Model
 	public $casts = [
 		"data" => "object"
 	];
-
-	public static function boot()
-	{
-		parent::boot();
-		static::addGlobalScope(new OrderByScope(with(new static)->getTable(), "seq"));
-	}
 
 	public function lead()
 	{

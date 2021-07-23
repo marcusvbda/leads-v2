@@ -1,6 +1,7 @@
 <template>
     <el-dialog :title="title" :visible.sync="showing" width="30%" center>
         <div class="d-flex flex-column">
+            <span class="mb-3 text-muted" v-if="description">{{ description }}</span>
             <el-select v-model="value" filterable placeholder="">
                 <el-option v-for="item in options" :key="item.key" :label="item.label" :value="item.key" />
             </el-select>
@@ -12,7 +13,7 @@
 </template>
 <script>
 export default {
-    props: ['title', 'default', 'btn_text'],
+    props: ['title', 'description', 'default', 'btn_text'],
     data() {
         return {
             showing: false,

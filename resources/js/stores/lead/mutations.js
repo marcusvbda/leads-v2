@@ -21,3 +21,31 @@ export function setAnswers(state, payload) {
 export function setObjections(state, payload) {
 	state.objections = payload
 }
+
+export function setDepartments(state, payload) {
+	state.departments = payload
+}
+
+export function setUser(state, payload) {
+	state.user = payload
+}
+
+export function setLeads(state, payload) {
+	state.leads = payload
+}
+
+export function setStatuses(state, payload) {
+	state.statuses = payload
+}
+
+export function setTab(state, payload) {
+	state.tab = payload
+}
+
+export function setLoading(state, payload) {
+	state.loading = payload
+}
+
+export function setFilter(state, payload) {
+	state.filter = payload
+}
