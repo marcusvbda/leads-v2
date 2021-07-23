@@ -7,6 +7,7 @@ use App\Http\Models\{
 	Webhook,
 	Lead
 };
+use Carbon\Carbon;
 
 class D_LeadsSeeder extends Seeder
 {
@@ -68,6 +69,10 @@ class D_LeadsSeeder extends Seeder
 				$old_status = DB::connection("old_mysql")->table("_status")->where("id", @$old_lead->status_id)->first();
 				$objecao_id = @$old_lead->objecao_id ?  @$this->getObjection($old_lead->objecao_id) : null;
 				$status = $this->getCurrentStatus($old_status, $objecao_id);
+				$schedule = null;
+				if ($old_status->value == "A") {
+					$schedule = @$old_lead->data && @$old_lead->hora ? $old_lead->data . " - " . $old_lead->hora : Carbon::now()->format("Y-m-d H:i:s");
+				}
 				Lead::create([
 					"polo_id" => $this->polos[$old_lead->tenant_name],
 					"tenant_id" => 1,
@@ -76,7 +81,7 @@ class D_LeadsSeeder extends Seeder
 						"name" => @$old_lead->nome,
 						"email" => @$old_lead->email,
 						"phones" => $this->getPhones($old_lead),
-						"schedule" => @$old_lead->data . (@$old_lead->hora ? " - " . @$old_lead->hora : ""),
+						"schedule" => $schedule,
 						"city" => @$old_lead->cidade,
 						"interest" => @$old_lead->curso,
 						"api_ref_token" => @$old_lead->ref_token,
