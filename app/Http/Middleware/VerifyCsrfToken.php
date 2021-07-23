@@ -22,6 +22,6 @@ class VerifyCsrfToken extends Middleware
 		"api",
 		"webhook",
 		"vstack/*",
-		"admin/funil-de-conversao/filter",
+		"admin/dashboard/get-data/*",
 	];
 }

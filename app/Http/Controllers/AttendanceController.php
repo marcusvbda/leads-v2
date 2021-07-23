@@ -33,6 +33,22 @@ class AttendanceController extends Controller
 		return ["sucess" => true];
 	}
 
+	public function finish($code)
+	{
+		$resource = ResourcesHelpers::find("leads");
+		if (!$resource->canUpdate()) abort(403);
+		$lead = Lead::findByCodeOrFail($code);
+
+		$lead->status_id =  Status::value("finished")->id;
+		$lead->finished_at = Carbon::now();
+		$lead->responsible_id = Auth::user()->id;
+		$lead->save();
+		Messages::send("success", "Contato Salvo");
+		$this->sendAutomationEmail($lead, "finish");
+		return ["success" => true];
+	}
+
+
 	public function registerContact($code, Request $request)
 	{
 		$resource = ResourcesHelpers::find("leads");

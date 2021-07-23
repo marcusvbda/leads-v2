@@ -22,59 +22,40 @@ class C_StatusesSeeder extends Seeder
 		Status::truncate();
 		$counter = 0;
 		Status::create([
-			"seq"  => ++$counter,
 			"value" => "canceled",
 			"name" => "Cancelado",
 		]);
 		Status::create([
-			"seq"  => ++$counter,
 			"value" => "schedule",
 			"name" => "Contato Agendado",
 		]);
 		Status::create([
-			"seq"  => ++$counter,
 			"value" => "waiting",
 			"name" => "Aguardando",
 		]);
 		Status::create([
-			"seq"  => ++$counter,
 			"value" => "neutral",
 			"name" => "Neutro",
 		]);
 		Status::create([
-			"seq"  => ++$counter,
-			"value" => "neutral_with_objection",
-			"name" => "Neutro com Objeção",
-		]);
-		Status::create([
-			"seq"  => ++$counter,
 			"value" => "interest",
 			"name" => "Interessado",
 		]);
 		Status::create([
-			"seq"  => ++$counter,
 			"value" => "objection",
 			"name" => "Com Objeçao",
 		]);
 		Status::create([
-			"seq"  => ++$counter,
 			"value" => "interest_with_objection",
 			"name" => "Interessado com Objeção",
 		]);
 		Status::create([
-			"seq"  => ++$counter,
 			"value" => "schedule_test",
 			"name" => "Vestibular Agendado",
 		]);
 		Status::create([
-			"seq"  => ++$counter,
-			"value" => "test_done",
-			"name" => "Vestibular Realizado",
-		]);
-		Status::create([
-			"seq"  => ++$counter,
 			"value" => "finished",
-			"name" => "Matriculado",
+			"name" => "Finalizado",
 		]);
 	}
 }

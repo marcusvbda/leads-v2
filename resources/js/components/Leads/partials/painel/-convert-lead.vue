@@ -1,6 +1,24 @@
 <template>
     <div id="lead-convert">
-        <identification-row />
+        <identification-row :original_lead="lead">
+            <el-dropdown @command="actionCommand">
+                <span class="el-dropdown-link">
+                    <b class="f-12 text-muted"> <span class="el-icon-menu mr-2" />Ações </b>
+                    <i class="el-icon-arrow-down el-icon--right" />
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="transferLead">Transferir para outro <b>departamento</b></el-dropdown-item>
+                    <el-dropdown-item command="finishLead"><b>Finalizar</b> lead</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+            <select-dialog
+                ref="select-department"
+                title="Departamentos"
+                description="Selecione o departamento que deseja transferir este lead"
+                btn_text="Selecionar"
+                @selected="transferToDerpartment"
+            />
+        </identification-row>
         <div class="row">
             <div class="col-12">
                 <div class="card no-radius">
@@ -16,8 +34,12 @@
 export default {
     props: ['use_tags', 'resource_id', 'answers', 'objections'],
     components: {
-        'identification-row': require('./-identification-row').default,
         'info-obs-row': require('./-info-obs-row').default,
+    },
+    computed: {
+        lead() {
+            return this.$store.state.lead
+        },
     },
     created() {
         this.$store.commit('setUseTags', true)
@@ -30,6 +52,34 @@ export default {
         startAttendance() {
             this.$confirm('Deseja iniciar este atendimento ?', 'Confirmação').then(() => {
                 return this.$store.commit('setleadActive', 'active')
+            })
+        },
+        actionCommand(command) {
+            this[command]()
+        },
+        transferLead() {
+            this.$store.dispatch('getDepartments').then((deps) => {
+                let select_dep = this.$refs['select-department']
+                select_dep.options = deps.map((x) => ({ key: x.id, label: x.name }))
+                select_dep.open()
+            })
+        },
+        transferToDerpartment(department_id) {
+            this.$store.dispatch('transferLead', department_id).then(() => {
+                this.$store.dispatch('reloadAllLeads').then(() => {
+                    this.$store.commit('setLead', {})
+                    this.$message.success('Lead Transferido !!')
+                })
+            })
+        },
+        finishLead() {
+            this.$confirm('Deseja finalizar este Lead ?', 'Confirmar').then(() => {
+                this.$store.dispatch('finishLead').then(() => {
+                    this.$store.dispatch('reloadAllLeads').then(() => {
+                        this.$store.commit('setLead', {})
+                        this.$message.success('Lead Finalizado !!')
+                    })
+                })
             })
         },
     },

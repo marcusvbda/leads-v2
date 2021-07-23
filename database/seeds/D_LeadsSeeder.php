@@ -7,6 +7,7 @@ use App\Http\Models\{
 	Webhook,
 	Lead
 };
+use Carbon\Carbon;
 
 class D_LeadsSeeder extends Seeder
 {
@@ -45,6 +46,8 @@ class D_LeadsSeeder extends Seeder
 			->join("_fila_contato", "_fila_contato.lead_id", "=", "_leads.id")
 			->join("_tenants", "_fila_contato.tenant_id", "=", "_tenants.id")
 			->select(
+				"_fila_contato.hora as schedule_hora",
+				"_fila_contato.data as schedule_data",
 				"_fila_contato.ref_token",
 				"_fila_contato.log as log",
 				"_fila_contato.outra_objecao",
@@ -68,6 +71,14 @@ class D_LeadsSeeder extends Seeder
 				$old_status = DB::connection("old_mysql")->table("_status")->where("id", @$old_lead->status_id)->first();
 				$objecao_id = @$old_lead->objecao_id ?  @$this->getObjection($old_lead->objecao_id) : null;
 				$status = $this->getCurrentStatus($old_status, $objecao_id);
+				$schedule = null;
+				if ($old_status->value == "A") {
+					$schedule = (@$old_lead->schedule_data && @$old_lead->schedule_hora ? (Carbon::create($old_lead->schedule_data . " " . $old_lead->schedule_hora)) : Carbon::now())->format("Y-m-d H:i:s");
+				}
+				$finished_at = null;
+				if ($old_lead->value = "V") {
+					$finished_at = Carbon::now()->format("Y-m-d H:i:s");
+				}
 				Lead::create([
 					"polo_id" => $this->polos[$old_lead->tenant_name],
 					"tenant_id" => 1,
@@ -76,6 +87,7 @@ class D_LeadsSeeder extends Seeder
 						"name" => @$old_lead->nome,
 						"email" => @$old_lead->email,
 						"phones" => $this->getPhones($old_lead),
+						"schedule" => $schedule,
 						"city" => @$old_lead->cidade,
 						"interest" => @$old_lead->curso,
 						"api_ref_token" => @$old_lead->ref_token,
@@ -146,7 +158,7 @@ class D_LeadsSeeder extends Seeder
 	private function getCurrentStatus($old_status, $objecao_id)
 	{
 		if ($objecao_id) {
-			return Status::value("objection")->id;
+			return Status::value("canceled")->id;
 		}
 		switch ($old_status->value) {
 			case "C":
@@ -159,7 +171,7 @@ class D_LeadsSeeder extends Seeder
 				return Status::value("waiting")->id;
 				break;
 			case "V":
-				return Status::value("test_done")->id;
+				return Status::value("finished")->id;
 				break;
 			case "F":
 				return Status::value("finished")->id;

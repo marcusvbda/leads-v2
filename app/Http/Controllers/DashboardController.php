@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Models\Status;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use App\Http\Models\{Polo, Lead};
+use DB;
+use Auth;
 
 class DashboardController extends Controller
 {
@@ -15,72 +16,174 @@ class DashboardController extends Controller
 		return view('admin.index');
 	}
 
+	private function getDateRange($index)
+	{
+		return @(new DatesController)->getRanges()[$index];
+	}
+
 	public function getData($action, Request $request)
 	{
 		return $this->{$action}($request);
 	}
 
-	protected function new_polos(Request $request)
+	protected function polosQty()
 	{
-		$qty_divides = $this->getDotDivide($request);
-		$dates = array_map(function ($date) {
-			return Carbon::create($date);
-		}, $request["date_range"]);
-		$total =  Polo::whereDate("created_at", ">=", $dates[0])->whereDate("created_at", "<=", $dates[1])->count();
-		$qty =  0;
-		$trend = "keep";
-		$data = [
-			"qty" => $total,
-			"trend" => $trend,
-			"rows" => ["Até " . $dates[1]->format("d/m/Y") => $total]
+		$data = DB::select("select count(*) as qty from polos where tenant_id = :tenant_id", ["tenant_id" => Auth::user()->tenant_id]);
+		return response()->json($data[0]->qty);
+	}
+
+	protected function departmentesQty()
+	{
+		$data = DB::select("select count(*) as qty from departments where tenant_id = :tenant_id", ["tenant_id" => Auth::user()->tenant_id]);
+		return response()->json($data[0]->qty);
+	}
+
+	protected function usersQty()
+	{
+		$data = DB::select("select count(*) as qty from users where tenant_id = :tenant_id", ["tenant_id" => Auth::user()->tenant_id]);
+		return response()->json($data[0]->qty);
+	}
+
+	protected function newLeadsQty(Request $request)
+	{
+		$data = DB::select("select count(*) as qty from leads where tenant_id = :tenant_id and DATE(created_at) = DATE(:created_at)", [
+			"tenant_id" => Auth::user()->tenant_id,
+			"created_at" => $request["today"]
+		]);
+		return response()->json($data[0]->qty);
+	}
+
+	private function makeParameters(Request $request)
+	{
+		$filter_date = $this->getDateRange($request["selected_range"]);
+		return [
+			"tenant_id" => Auth::user()->tenant_id,
+			"start_date" => $filter_date[0],
+			"end_date" => $filter_date[1],
+			"polo_ids" => implode(",", $request["polo_ids"]),
 		];
-		for ($i = 1; $i <= $this->divisor; $i++) {
-			$dates[1] = $dates[1]->subDays($i * $qty_divides);
-			$new_qty =  Polo::whereDate("created_at", ">=", $dates[0])->whereDate("created_at", "<=", $dates[1])->count();
-			$data["rows"]["Até " . $dates[1]->format("d/m/Y")] = $new_qty;
-			$trend = $this->getTrend($qty, $new_qty);
-			$qty = $new_qty;
-		}
-		$data["rows"] = array_reverse($data["rows"]);
-		return $data;
 	}
 
-	protected function new_leads(Request $request)
+	protected function getLeadsData(Request $request)
 	{
-		$qty_divides = $this->getDotDivide($request);
-		$dates = array_map(function ($date) {
-			return Carbon::create($date);
-		}, $request["date_range"]);
-		$total =  Lead::whereDate("created_at", ">=", $dates[0])->whereDate("created_at", "<=", $dates[1])->count();
-		$qty =  0;
-		$trend = "keep";
-		$data = [
-			"qty" => $total,
-			"trend" => $trend,
-			"rows" => ["Até " . $dates[1]->format("d/m/Y") => $total]
-		];
-		for ($i = 1; $i <= $this->divisor; $i++) {
-			$dates[1] = $dates[1]->subDays($i * $qty_divides);
-			$new_qty =  Lead::whereDate("created_at", ">=", $dates[0])->whereDate("created_at", "<=", $dates[1])->count();
-			$data["rows"]["Até " . $dates[1]->format("d/m/Y")] = $new_qty;
-			$trend = $this->getTrend($qty, $new_qty);
-			$qty = $new_qty;
-		}
-		$data["rows"] = array_reverse($data["rows"]);
-		return $data;
+		$parameters = $this->makeParameters($request);
+		$data = DB::select(
+			"select count(*) as qty from leads where tenant_id = :tenant_id and 
+			( DATE(created_at) >= DATE(:start_date) and DATE(created_at) <= DATE(:end_date))
+			and polo_id in (:polo_ids)
+			",
+			$parameters
+		);
+		return response()->json($data[0]->qty);
 	}
 
-	private function getDotDivide(Request $request)
+	protected function getLeadFinishedData(Request $request)
 	{
-		$date_range = $request['date_range'];
-		$diff = Carbon::create($date_range[1])->diffInDays($date_range[0]);
-		return $diff <= 0 ? 1 : $diff / $this->divisor;
+		$finished = Status::value("finished")->id;
+		$parameters = array_merge($this->makeParameters($request), ["finished_status_id" => $finished]);
+		$data = DB::select(
+			"select count(*) as qty from leads where tenant_id = :tenant_id and 
+			( DATE(finished_at) >= DATE(:start_date) and DATE(finished_at) <= DATE(:end_date))
+			and polo_id in (:polo_ids)
+			and status_id = :finished_status_id",
+			$parameters
+		);
+		return response()->json($data[0]->qty);
 	}
 
-	private function getTrend($qty, $new_qty)
+	protected function getRankingDepartments(Request $request)
 	{
-		if ($new_qty > $qty) return "up";
-		if ($new_qty < $qty) return "down";
-		return "keep";
+		$finished = Status::value("finished")->id;
+		$parameters = array_merge($this->makeParameters($request), ["finished_status_id" => $finished]);
+		$data = DB::select(
+			"select ifnull(departments.name,'Sem departamento') as department,count(*) as qty FROM 
+			leads left join departments on departments.id=leads.department_id where leads.tenant_id = :tenant_id
+			and ( DATE(leads.finished_at) >= DATE(:start_date) and DATE(leads.finished_at) <= DATE(:end_date))
+			and leads.polo_id in (:polo_ids)
+			and leads.status_id = :finished_status_id
+			group by leads.department_id order by qty desc
+			limit 10",
+			$parameters
+		);
+		return response()->json($data);
+	}
+
+	protected function getRankingUsers(Request $request)
+	{
+		$finished = Status::value("finished")->id;
+		$parameters = array_merge($this->makeParameters($request), ["finished_status_id" => $finished]);
+		$data = DB::select(
+			"select ifnull(users.name,'Sem Responsável') as user,count(*) as qty FROM 
+			leads left join users on users.id=leads.responsible_id where leads.tenant_id = :tenant_id
+			and ( DATE(leads.finished_at) >= DATE(:start_date) and DATE(leads.finished_at) <= DATE(:end_date))
+			and leads.polo_id in (:polo_ids)
+			and leads.status_id = :finished_status_id
+			group by leads.responsible_id order by qty desc
+			limit 10",
+			$parameters
+		);
+		return response()->json($data);
+	}
+
+	protected function getCanceledTax(Request $request)
+	{
+		$parameters = $this->makeParameters($request);
+		$data = DB::select(
+			"select if(statuses.value = 'canceled','canceled','other') as status, count(*) as qty 
+			from  statuses left join leads  on leads.status_id = statuses.id  
+			where leads.tenant_id = :tenant_id
+			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
+			and leads.polo_id in (:polo_ids)
+			group by status
+			ORDER BY qty DESC",
+			$parameters
+		);
+		return response()->json($data);
+	}
+
+	protected function getFinishedTax(Request $request)
+	{
+		$parameters = $this->makeParameters($request);
+		$data = DB::select(
+			"select if(statuses.value = 'finished','finished','other') as status, count(*) as qty 
+			from statuses left join leads on leads.status_id = statuses.id  
+			where leads.tenant_id = :tenant_id
+			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
+			and leads.polo_id in (:polo_ids)
+			group by status
+			ORDER BY qty DESC",
+			$parameters
+		);
+		return response()->json($data);
+	}
+
+	protected function getLeadsPerStatus(Request $request)
+	{
+		$parameters = $this->makeParameters($request);
+		$data = DB::select(
+			"select statuses.name as status, count(*) as qty 
+			from statuses left join leads on leads.status_id = statuses.id  
+			where leads.tenant_id = :tenant_id
+			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
+			and leads.polo_id in (:polo_ids)
+			group by status",
+			$parameters
+		);
+		return response()->json($data);
+	}
+
+	protected function getLeadPerObjection(Request $request)
+	{
+		$parameters = $this->makeParameters($request);
+		$data = DB::select(
+			"select JSON_UNQUOTE(JSON_EXTRACT(data,'$.objection.name')) as objection, count(*) as qty
+			FROM leads where JSON_UNQUOTE(JSON_EXTRACT(data,'$.objection.name')) is not null 
+			and tenant_id = :tenant_id
+			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
+			and leads.polo_id in (:polo_ids) 
+			group by objection",
+			$parameters
+		);
+		return response()->json($data);
 	}
 }

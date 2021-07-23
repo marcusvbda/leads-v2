@@ -6,7 +6,7 @@
 	<div class="col-12">
 		<nav aria-label="breadcrumb">
 			<nav aria-label="breadcrumb">
-				<ol class="breadcrumb">
+				<ol class="breadcrumb mb-0">
 					<li class="breadcrumb-item">
 						<a href="/admin" class="link">Dashboard</a>
 					</li>
@@ -27,7 +27,6 @@
 <dashboard-content
 	data-aos="fade-down"
 	title="Mostradores e Desempenho"
-	default_filter="_this_month_"
 	user_id="{{ $user->id }}"
 	:is_head='@json($is_head)'
 	@if(!$is_head)

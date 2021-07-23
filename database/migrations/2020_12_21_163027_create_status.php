@@ -18,7 +18,6 @@ class CreateStatus extends Migration
 			$table->collation = 'utf8mb4_unicode_ci';
 			$table->engine = 'InnoDB';
 			$table->bigIncrements('id');
-			$table->integer('seq')->default(0);
 			$table->jsonb('data');
 			$table->string("ref")->nullable();
 			$table->string("value");

@@ -1,23 +1,32 @@
 @import "variables";
 
 .status-color {
-    &.Oportunidade {
-        color: rgb(199, 201, 57);
+    &.canceled {
+        color: #9b0404;
     }
-    &.Não.Qualificado {
-        color: #d3561b;
+    &.schedule {
+        color: #e68e65;
     }
-    &.Qualificado {
-        color: #43a228;
+    &.finished {
+        color: #097349;
     }
-    &.Convertido {
-        color: #233396;
+    &.neutral {
+        color: #6c6c6c;
     }
-    &.Aguardando {
-        color: #c12d7c;
+    &.waiting {
+        color: #45b194;
     }
-    &.Provável.Qualificação {
-        color: #6a0082;
+    &.interest {
+        color: #5852cc;
+    }
+    &.interest_with_objection {
+        color: #cc52ab;
+    }
+    &.interest_with_objection {
+        color: #cc52ab;
+    }
+    &.schedule_test {
+        color: #5aa03c;
     }
 }
 
