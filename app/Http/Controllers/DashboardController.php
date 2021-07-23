@@ -102,7 +102,7 @@ class DashboardController extends Controller
 			and leads.polo_id in (:polo_ids)
 			and leads.status_id = :finished_status_id
 			group by leads.department_id order by qty desc
-			limit 5",
+			limit 10",
 			$parameters
 		);
 		return response()->json($data);
@@ -119,7 +119,7 @@ class DashboardController extends Controller
 			and leads.polo_id in (:polo_ids)
 			and leads.status_id = :finished_status_id
 			group by leads.responsible_id order by qty desc
-			limit 5",
+			limit 10",
 			$parameters
 		);
 		return response()->json($data);
@@ -130,7 +130,7 @@ class DashboardController extends Controller
 		$parameters = $this->makeParameters($request);
 		$data = DB::select(
 			"select if(statuses.value = 'canceled','canceled','other') as status, count(*) as qty 
-			from leads join statuses on leads.status_id = statuses.id  
+			from  statuses left join leads  on leads.status_id = statuses.id  
 			where leads.tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
 			and leads.polo_id in (:polo_ids)
@@ -146,12 +146,42 @@ class DashboardController extends Controller
 		$parameters = $this->makeParameters($request);
 		$data = DB::select(
 			"select if(statuses.value = 'finished','finished','other') as status, count(*) as qty 
-			from leads join statuses on leads.status_id = statuses.id  
+			from statuses left join leads on leads.status_id = statuses.id  
 			where leads.tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
 			and leads.polo_id in (:polo_ids)
 			group by status
 			ORDER BY qty DESC",
+			$parameters
+		);
+		return response()->json($data);
+	}
+
+	protected function getLeadsPerStatus(Request $request)
+	{
+		$parameters = $this->makeParameters($request);
+		$data = DB::select(
+			"select statuses.name as status, count(*) as qty 
+			from statuses left join leads on leads.status_id = statuses.id  
+			where leads.tenant_id = :tenant_id
+			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
+			and leads.polo_id in (:polo_ids)
+			group by status",
+			$parameters
+		);
+		return response()->json($data);
+	}
+
+	protected function getLeadPerObjection(Request $request)
+	{
+		$parameters = $this->makeParameters($request);
+		$data = DB::select(
+			"select JSON_UNQUOTE(JSON_EXTRACT(data,'$.objection.name')) as objection, count(*) as qty
+			FROM leads where JSON_UNQUOTE(JSON_EXTRACT(data,'$.objection.name')) is not null 
+			and tenant_id = :tenant_id
+			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
+			and leads.polo_id in (:polo_ids) 
+			group by objection",
 			$parameters
 		);
 		return response()->json($data);

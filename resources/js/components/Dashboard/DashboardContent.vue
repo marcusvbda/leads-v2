@@ -25,6 +25,8 @@
                                     <qty-leads-finished class="mb-3" />
                                     <qty-canceled-tax class="mb-3" />
                                     <qty-finished-tax class="mb-3" />
+                                    <chart-status class="mb-3" />
+                                    <chart-objection class="mb-3" />
                                 </div>
                             </div>
                             <div class="col-6">
@@ -57,6 +59,8 @@ export default {
         'top-users': require('./-top-users.vue').default,
         'qty-canceled-tax': require('./-qty-canceled-tax.vue').default,
         'qty-finished-tax': require('./-qty-finished-tax.vue').default,
+        'chart-status': require('./-chart-status.vue').default,
+        'chart-objection': require('./-chart-objection.vue').default,
     },
 }
 </script>

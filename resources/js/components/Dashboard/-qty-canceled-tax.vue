@@ -9,7 +9,7 @@
                             <div class="number">{{ percentage }}%</div>
                             <small class="text-muted ml-3">{{ canceled }} de {{ total }}</small>
                         </div>
-                        <small class="description">Considerando o filtro</small>
+                        <small class="description">Leads criados e cancelados no periodo considerado no filtro</small>
                     </div>
                 </div>
             </div>

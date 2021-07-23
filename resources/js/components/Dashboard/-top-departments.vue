@@ -1,15 +1,15 @@
 <template>
-    <div class="col-12 dash-card flex-fill">
-        <loading-shimmer :loading="loading" :h="450" class="h-100">
+    <div class="col-12 dash-card flex-fill" style="min-height: 400px">
+        <loading-shimmer :loading="loading" :h="400" class="h-100">
             <div class="card shadow h-100">
                 <div class="container py-3">
                     <div class="d-flex flex-column">
                         <b class="mb-1">
                             <span class="el-icon-s-comment mr-2" />
-                            Top 5 - Atendimentos por Departamento
+                            Top 10 - Atendimentos por Departamento
                         </b>
-                        <small class="text-muted"> Saiba qual sãos os departamentos mais produtivos considerando o filtro </small>
-                        <table class="table table-sm">
+                        <small class="text-muted mb-3"> Saiba qual sãos os departamentos mais produtivos considerando o filtro </small>
+                        <table class="table table-sm table-striped">
                             <thead>
                                 <tr>
                                     <th></th>

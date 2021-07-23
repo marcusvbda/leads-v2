@@ -8,7 +8,7 @@
                         <div class="d-flex flex-row align-items-end">
                             <div class="number">{{ qty }}</div>
                         </div>
-                        <small class="description">Considerando o filtro</small>
+                        <small class="description">Finalizados no periodo do filtro</small>
                     </div>
                 </div>
             </div>
