@@ -10,8 +10,7 @@
                 <span class="text-muted">{{ lead.email }}</span>
                 <span class="text-muted">{{ lead.status.name }}</span>
             </div>
-            <div class="d-flex flex-row justify-content-between">
-                <resource-tags-input resource="leads" :resource_code="lead.code" only_view style="zoom: 0.7" class="mt-2" />
+            <div class="d-flex flex-row justify-content-end">
                 <span class="text-muted">{{ lead.f_created_at }}</span>
             </div>
         </div>

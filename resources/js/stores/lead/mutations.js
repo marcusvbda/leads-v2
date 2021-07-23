@@ -37,3 +37,15 @@ export function setLeads(state, payload) {
 export function setStatuses(state, payload) {
 	state.statuses = payload
 }
+
+export function setTab(state, payload) {
+	state.tab = payload
+}
+
+export function setLoading(state, payload) {
+	state.loading = payload
+}
+
+export function setFilter(state, payload) {
+	state.filter = payload
+}

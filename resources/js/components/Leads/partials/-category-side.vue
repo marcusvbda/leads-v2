@@ -38,8 +38,8 @@
                                         <div class="d-flex flex-column" v-infinite-scroll="getLeads" style="overflow: auto; height: 300px">
                                             <lead-card v-for="(lead, i) in active_leads.data" :lead="lead" :key="`active_${i}`" />
                                             <div
-                                                v-if="loading.active_leads && active_leads.has_more"
-                                                v-loading="loading.active_leads"
+                                                v-if="loading_leads.active && active_leads.has_more"
+                                                v-loading="loading_leads.active"
                                                 class="py-5 my-3"
                                                 element-loading-text="Loading ..."
                                             />
@@ -64,8 +64,8 @@
                                         <div class="d-flex flex-column" v-infinite-scroll="getLeads" style="overflow: auto; height: 300px">
                                             <lead-card v-for="(lead, i) in pending_leads.data" :lead="lead" :key="`pending_${i}`" />
                                             <div
-                                                v-if="loading.pending_leads && pending_leads.has_more"
-                                                v-loading="loading.pending_leads"
+                                                v-if="loading_leads.pending && pending_leads.has_more"
+                                                v-loading="loading_leads.pending"
                                                 class="py-5 my-3"
                                                 element-loading-text="Loading ..."
                                             />
@@ -84,18 +84,11 @@
 export default {
     data() {
         return {
-            filter: {
-                text: '',
-                status_ids: [],
-            },
             timeout: null,
             loading: {
                 statuses: true,
-                pending_leads: true,
-                active_leads: true,
             },
             initialized: false,
-            tab: 'active',
         }
     },
     components: {
@@ -112,7 +105,8 @@ export default {
                 if (this.initialized) {
                     clearTimeout(this.timeout)
                     this.timeout = setTimeout(() => {
-                        this.getLeads(val, true)
+                        this.initialized = false
+                        this.getLeads(true)
                     }, 500)
                 }
             },
@@ -120,6 +114,25 @@ export default {
         },
     },
     computed: {
+        filter: {
+            set(val) {
+                return this.$store.commit('setFilter', val)
+            },
+            get() {
+                return this.$store.state.filter
+            },
+        },
+        tab: {
+            set(val) {
+                return this.$store.commit('setTab', val)
+            },
+            get() {
+                return this.$store.state.tab
+            },
+        },
+        loading_leads() {
+            return this.$store.state.loading
+        },
         statuses() {
             return this.$store.state.statuses
         },
@@ -139,11 +152,11 @@ export default {
     methods: {
         getLeads(refresh = false) {
             if (!this.initialized) {
-                Promise.all([this.leadLeads(refresh, 'active'), this.leadLeads(refresh, 'pending')]).then(() => {
+                Promise.all([this.loadLead(refresh, 'active'), this.loadLead(refresh, 'pending')]).then(() => {
                     this.initialized = true
                 })
             } else {
-                this.leadLeads(refresh, this.tab)
+                this.loadLead(refresh, this.tab)
             }
         },
         async loadStatus() {
@@ -154,11 +167,8 @@ export default {
             this.loading.statuses = false
             return this.filter.status_ids
         },
-        async leadLeads(refresh = false, type) {
-            if (this[`${type}_leads`].has_more || refresh) {
-                this.loading[`${type}_leads`] = true
-                await this.$store.dispatch('getLeads', { type, filter: this.filter, refresh }).then(() => (this.loading[`${type}_leads`] = false))
-            }
+        async loadLead(refresh, type) {
+            this.$store.dispatch('loadLeads', { refresh, type })
         },
     },
 }

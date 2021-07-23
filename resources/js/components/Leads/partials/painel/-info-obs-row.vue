@@ -247,7 +247,15 @@ export default {
             this.$store
                 .dispatch('registerContact', this.form_new_contact)
                 .then(() => {
-                    loading.close()
+                    Promise.all([
+                        this.$store.dispatch('loadLeads', { refresh: true, type: 'active' }),
+                        this.$store.dispatch('loadLeads', { refresh: true, type: 'pending' }),
+                    ]).then(() => {
+                        this.form_new_contact = false
+                        // this.$store.commit('setTab', 'active')
+                        this.$store.commit('setLead', {})
+                        loading.close()
+                    })
                 })
                 .catch((er) => {
                     console.log(er)

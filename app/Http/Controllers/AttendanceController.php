@@ -45,7 +45,7 @@ class AttendanceController extends Controller
 			$lead->objection = $objection->description;
 			$lead->other_objection = @$request["other_objection"];
 		}
-
+		$lead->responsible_id = $user->id;
 		$lead->save();
 		Messages::send("success", "Contato Salvo");
 		$this->sendAutomationEmail($lead, "conversion");

@@ -1,5 +1,6 @@
 export default function () {
 	return {
+		tab: "active",
 		departments: [],
 		objections: [],
 		statuses: [],
@@ -21,7 +22,15 @@ export default function () {
 				has_more: true
 			}
 		},
+		loading: {
+			active: true,
+			pending: true,
+		},
 		resource_id: null,
 		use_tags: false,
+		filter: {
+			text: '',
+			status_ids: [],
+		},
 	}
 }

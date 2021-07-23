@@ -26,6 +26,13 @@ export default {
         this.$store.dispatch('getAnswers')
         this.$store.dispatch('getObjections')
     },
+    methods: {
+        startAttendance() {
+            this.$confirm('Deseja iniciar este atendimento ?', 'Confirmação').then(() => {
+                return this.$store.commit('setleadActive', 'active')
+            })
+        },
+    },
 }
 </script>
 <style lang="scss">

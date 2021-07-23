@@ -36,6 +36,7 @@ const makeLeadsFilter = (state, payload) => {
 	let filters = {
 		where: [],
 		where_in: [],
+		raw_where: []
 	}
 	if (state.user.department_id) {
 		filters.where.push(["department_id", "=", state.user.department_id])
@@ -50,8 +51,10 @@ const makeLeadsFilter = (state, payload) => {
 			return filters
 		}
 	}
-	filters.where.push(["data->name", "like", `%${(payload.filter.text ?? '').toLowerCase()}%`])
-	filters.where_in.push(["status_id", payload.filter.status_ids])
+	if (state.filter.text) {
+		filters.raw_where.push(`lower(json_unquote(json_extract(data,'$.name'))) like '%${state.filter.text.toLowerCase()}%'`)
+	}
+	filters.where_in.push(["status_id", state.filter.status_ids])
 	filters = filter_types[payload.type](filters)
 	return filters
 }
@@ -95,4 +98,14 @@ export async function getStatuses({ commit }) {
 export async function registerContact({ state }, payload) {
 	let { data } = await api.post(`/admin/atendimento/${state.lead.code}/register-contact`, payload)
 	return data
+}
+
+export async function loadLeads({ state, commit, dispatch }, payload) {
+	let { refresh, type } = payload
+	if (state.leads[type].has_more || refresh) {
+		commit("setLoading", { ...state.loading, [type]: true })
+		await dispatch('getLeads', { type, refresh })
+		commit("setLoading", { ...state.loading, [type]: false })
+
+	}
 }
