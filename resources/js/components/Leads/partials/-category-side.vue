@@ -5,7 +5,7 @@
                 <div class="d-flex flex-column">
                     <b class="mb-3 d-flex align-items-center">
                         <span class="el-icon-user-solid mr-2" />
-                        {{ user }}
+                        {{ user.name }}
                         <small class="ml-auto text-muted">{{ department }}</small>
                     </b>
                     <el-input placeholder="Pesquisar..." suffix-icon="el-icon-search" v-model="filter.text" clearable />
@@ -143,10 +143,9 @@ export default {
             return this.$store.state.leads.pending
         },
         user() {
-            return this.$store.state.user.name
+            return this.$store.state.user
         },
         department() {
-            console.log(this.user)
             return this.user.department?.name || 'Sem Departamento'
         },
     },
