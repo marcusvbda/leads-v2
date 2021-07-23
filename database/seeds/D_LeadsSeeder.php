@@ -46,8 +46,8 @@ class D_LeadsSeeder extends Seeder
 			->join("_fila_contato", "_fila_contato.lead_id", "=", "_leads.id")
 			->join("_tenants", "_fila_contato.tenant_id", "=", "_tenants.id")
 			->select(
-				"_fila_contato.hora",
-				"_fila_contato.data",
+				"_fila_contato.hora as schedule_hora",
+				"_fila_contato.data as schedule_data",
 				"_fila_contato.ref_token",
 				"_fila_contato.log as log",
 				"_fila_contato.outra_objecao",
@@ -73,7 +73,7 @@ class D_LeadsSeeder extends Seeder
 				$status = $this->getCurrentStatus($old_status, $objecao_id);
 				$schedule = null;
 				if ($old_status->value == "A") {
-					$schedule = @$old_lead->data && @$old_lead->hora ? ($old_lead->data . " - " . $old_lead->hora) : Carbon::now()->format("Y-m-d H:i:s");
+					$schedule = (@$old_lead->schedule_data && @$old_lead->schedule_hora ? (Carbon::create($old_lead->schedule_data . " " . $old_lead->schedule_hora)) : Carbon::now())->format("Y-m-d H:i:s");
 				}
 				Lead::create([
 					"polo_id" => $this->polos[$old_lead->tenant_name],
