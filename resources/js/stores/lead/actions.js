@@ -51,7 +51,6 @@ const makeLeadsFilter = ({ state, getters }, payload) => {
 		},
 		active(filters) {
 			filters.where.push(["responsible_id", "=", state.user.id])
-			filters.where.push(["department_id", "=", state.user.department_id])
 			return filters
 		}
 	}
