@@ -38,14 +38,20 @@ const makeLeadsFilter = ({ state, getters }, payload) => {
 		where_in: [],
 		raw_where: []
 	}
-	filters.where.push(["department_id", "=", state.user.department_id ?? null])
 	let filter_types = {
+		potential(filters) {
+			filters.where.push(["responsible_id", "=", null])
+			filters.where.push(["department_id", "=", null])
+			return filters
+		},
 		pending(filters) {
 			filters.where.push(["responsible_id", "=", null])
+			filters.where.push(["department_id", "=", state.user.department_id])
 			return filters
 		},
 		active(filters) {
 			filters.where.push(["responsible_id", "=", state.user.id])
+			filters.where.push(["department_id", "=", state.user.department_id])
 			return filters
 		}
 	}
@@ -112,6 +118,9 @@ export async function registerContact({ state }, payload) {
 
 export async function loadLeads({ state, commit, dispatch }, payload) {
 	let { refresh, type } = payload
+	if (!state.user.department_id && type == "pending") {
+		return
+	}
 	if (state.leads[type].has_more || refresh) {
 		commit("setLoading", { ...state.loading, [type]: true })
 		await dispatch('getLeads', { type, refresh })
@@ -123,7 +132,8 @@ export async function loadLeads({ state, commit, dispatch }, payload) {
 export async function reloadAllLeads({ dispatch }) {
 	await Promise.all([
 		dispatch('loadLeads', { refresh: true, type: 'active' }),
-		dispatch('loadLeads', { refresh: true, type: 'pending' })
+		dispatch('loadLeads', { refresh: true, type: 'pending' }),
+		dispatch('loadLeads', { refresh: true, type: 'potential' })
 	])
 }
 

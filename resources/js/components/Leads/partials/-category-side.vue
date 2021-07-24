@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                         </el-tab-pane>
-                        <el-tab-pane v-loading="!initialized" element-loading-text="Inicializando..." name="pending">
+                        <el-tab-pane v-if="user.department_id" v-loading="!initialized" element-loading-text="Inicializando..." name="pending">
                             <span slot="label">
                                 Pendentes
                                 <template v-if="pending_leads.total"> ({{ pending_leads.total }}) </template>
@@ -77,6 +77,32 @@
                                             <div
                                                 v-if="loading_leads.pending && pending_leads.has_more"
                                                 v-loading="loading_leads.pending"
+                                                class="py-5 my-3"
+                                                element-loading-text="Loading ..."
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane v-loading="!initialized" element-loading-text="Inicializando..." name="potential">
+                            <span slot="label">
+                                Potenciais
+                                <template v-if="potential_leads.total"> ({{ potential_leads.total }}) </template>
+                            </span>
+                            <div class="row" v-if="!potential_leads.data.length">
+                                <div class="col-12 d-flex align-items-center justify-content-center my-5">
+                                    <span class="text-muted"> Nenhum Lead Pendente</span>
+                                </div>
+                            </div>
+                            <div class="row" v-else>
+                                <div class="col-12 d-flex align-items-center justify-content-center">
+                                    <div class="w-100" style="overflow: auto; margin: 0">
+                                        <div class="d-flex flex-column" v-infinite-scroll="getLeads" style="overflow: auto; height: 300px">
+                                            <lead-card v-for="(lead, i) in potential_leads.data" :lead="lead" :key="`pending_${i}`" />
+                                            <div
+                                                v-if="loading_leads.potential && potential_leads.has_more"
+                                                v-loading="loading_leads.potential"
                                                 class="py-5 my-3"
                                                 element-loading-text="Loading ..."
                                             />
@@ -155,6 +181,9 @@ export default {
         },
         pending_leads() {
             return this.$store.state.leads.pending
+        },
+        potential_leads() {
+            return this.$store.state.leads.potential
         },
         user() {
             return this.$store.state.user

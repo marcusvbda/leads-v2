@@ -41,7 +41,9 @@ class AttendanceController extends Controller
 
 		$lead->status_id =  Status::value("finished")->id;
 		$lead->finished_at = Carbon::now();
-		$lead->responsible_id = Auth::user()->id;
+		$user =  Auth::user();
+		$lead->department_id = $user->department_id;
+		$lead->responsible_id = $user->id;
 		$lead->save();
 		Messages::send("success", "Contato Salvo");
 		$this->sendAutomationEmail($lead, "finish");
