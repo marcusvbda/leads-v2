@@ -6,7 +6,7 @@
                     <div class="d-flex flex-column">
                         <b class="mb-1">Classificação de Leads Objeção </b>
                         <small class="text-muted mb-3">Distribuição dos leads criados no periodo do filtro em status</small>
-                        <pie-chart :data="chart" v-if="chart.length" />
+                        <pie-chart :data="chart" v-if="chart.length" legend="right" />
                         <div class="py-5 d-flex flex-row align-items-center justify-content-center" v-else>
                             <small class="text-muted">Não existe conteúdo para este filtro</small>
                         </div>
