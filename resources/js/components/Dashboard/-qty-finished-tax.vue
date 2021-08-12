@@ -7,9 +7,14 @@
                         <b class="mb-1">Taxa de Finalização</b>
                         <div class="d-flex flex-row align-items-end">
                             <div class="number">{{ percentage }}%</div>
-                            <small class="text-muted ml-3">{{ finished }} de {{ total }}</small>
+                            <small class="text-muted ml-3"
+                                >{{ finished }} de {{ total }}</small
+                            >
                         </div>
-                        <small class="description">Leads criados e finalizados no periodo considerado no filtro</small>
+                        <small class="description"
+                            >Leads criados e finalizados no periodo considerado
+                            no filtro</small
+                        >
                     </div>
                 </div>
             </div>
@@ -22,50 +27,54 @@ export default {
         return {
             loading: true,
             timeout: null,
-            results: [],
-        }
+            results: []
+        };
     },
     computed: {
         filter() {
-            return this.$store.state.filter
+            return this.$store.state.filter;
         },
         finished() {
             return this.results
-                .filter((x) => x.status == 'finished')
-                .map((x) => x.qty)
-                .reduce((a, b) => a + b, 0)
+                .filter(x => x.status == "finished")
+                .map(x => x.qty)
+                .reduce((a, b) => a + b, 0);
         },
         total() {
-            return this.results.map((x) => x.qty).reduce((a, b) => a + b, 0)
+            return this.results.map(x => x.qty).reduce((a, b) => a + b, 0);
         },
         percentage() {
-            return +((this.finished / this.total) * 100).toFixed(2)
-        },
+            return this.$avoidNaN(
+                +((this.finished / this.total) * 100).toFixed(2)
+            );
+        }
     },
     watch: {
         filter: {
             handler(val) {
-                clearTimeout(this.timeout)
+                clearTimeout(this.timeout);
                 this.timeout = setTimeout(() => {
-                    this.loading = true
-                    this.getData()
-                })
+                    this.loading = true;
+                    this.getData();
+                });
             },
-            deep: true,
-        },
+            deep: true
+        }
     },
     created() {
-        this.getData()
+        this.getData();
     },
     methods: {
         getData() {
-            this.$store.dispatch('getDashboardContent', { action: 'getFinishedTax' }).then((data) => {
-                this.results = data
-                this.loading = false
-            })
-        },
-    },
-}
+            this.$store
+                .dispatch("getDashboardContent", { action: "getFinishedTax" })
+                .then(data => {
+                    this.results = data;
+                    this.loading = false;
+                });
+        }
+    }
+};
 </script>
 <style lang="scss" scoped>
 .dash-card {
