@@ -78,11 +78,6 @@ class Leads extends Resource
 		return $columns;
 	}
 
-	// public function tableAfterRow($row)
-	// {
-	// 	return "portal teste";
-	// }
-
 	public function actions()
 	{
 		return [
