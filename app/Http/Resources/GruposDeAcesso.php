@@ -117,7 +117,9 @@ class GruposDeAcesso extends Resource
 				$group_fields[] = new Check([
 					"label"   => $group_permission->description,
 					"field"   => str_replace("-", "_", $group_permission->name),
-					"default" => !@$role ? false : $role->hasPermissionTo($group_permission->name)
+					"description"   => $group_permission->name,
+					"default" => !@$role ? false : $role->hasPermissionTo($group_permission->name),
+					"required" => true
 				]);
 			}
 			$fields[] = new Card($permission->group, $group_fields);
