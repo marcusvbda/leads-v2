@@ -254,11 +254,6 @@ class Leads extends Resource
 		return true;
 	}
 
-	public function viewBlade()
-	{
-		return "admin.leads.convert";
-	}
-
 	public function tableAfterRow($row)
 	{
 		return '<identification-row lead_id="' . $row->id . '" />';
