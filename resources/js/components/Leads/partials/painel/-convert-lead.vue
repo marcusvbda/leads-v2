@@ -31,52 +31,57 @@
     </div>
 </template>
 <script>
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
     props: ['use_tags', 'resource_id', 'answers', 'objections'],
     components: {
         'info-obs-row': require('./-info-obs-row').default,
     },
     computed: {
-        lead() {
-            return this.$store.state.lead
-        },
+        ...mapGetters("lead",["lead"])
     },
     created() {
-        this.$store.commit('setUseTags', true)
-        this.$store.commit('setResourceId', 'leads')
-        this.$store.dispatch('getTypes')
-        this.$store.dispatch('getAnswers')
-        this.$store.dispatch('getObjections')
+        this.setUseTags(true)
+        this.setResourceId('leads')
+        this.getTypes()
+        this.getAnswers()
+        this.getObjections()
     },
     methods: {
+        ...mapMutations("lead",["setUseTags","setResourceId","setLead"]),        
+        ...mapActions("lead",["getTypes","getAnswers","getObjections","setleadActive","reloadAllLeads","getDepartments"]),
+        ...mapActions("lead",{
+            transferLeadAction : "transferLead",
+            finishLeadAction : "finishLead"
+        }),
         startAttendance() {
             this.$confirm('Deseja iniciar este atendimento ?', 'Confirmação').then(() => {
-                return this.$store.commit('setleadActive', 'active')
+                return this.setleadActive('active')
             })
         },
         actionCommand(command) {
             this[command]()
         },
         transferLead() {
-            this.$store.dispatch('getDepartments').then((deps) => {
+            this.getDepartments().then((deps) => {
                 let select_dep = this.$refs['select-department']
                 select_dep.options = deps.map((x) => ({ key: x.id, label: x.name }))
                 select_dep.open()
             })
         },
         transferToDerpartment(department_id) {
-            this.$store.dispatch('transferLead', department_id).then(() => {
-                this.$store.dispatch('reloadAllLeads').then(() => {
-                    this.$store.commit('setLead', {})
+            this.transferLeadAction(department_id).then(() => {
+                this.reloadAllLeads().then(() => {
+                    this.setLead({})
                     this.$message.success('Lead Transferido !!')
                 })
             })
         },
         finishLead() {
             this.$confirm('Deseja finalizar este Lead ?', 'Confirmar').then(() => {
-                this.$store.dispatch('finishLead').then(() => {
-                    this.$store.dispatch('reloadAllLeads').then(() => {
-                        this.$store.commit('setLead', {})
+                this.finishLeadAction().then(() => {
+                    this.reloadAllLeads().then(() => {
+                        this.setLead({})
                         this.$message.success('Lead Finalizado !!')
                     })
                 })

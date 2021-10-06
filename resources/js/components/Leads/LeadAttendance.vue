@@ -7,11 +7,10 @@
     </div>
 </template>
 <script>
-import leadStore from '~/stores/lead'
+import { mapMutations } from 'vuex'
 
 export default {
     props: ['user'],
-    store: leadStore,
     components: {
         'category-side': require('./partials/-category-side.vue').default,
         'lead-painel': require('./partials/painel/-lead-painel.vue').default,
@@ -20,8 +19,9 @@ export default {
         this.init()
     },
     methods: {
+        ...mapMutations("lead",["setUser"]),
         init() {
-            this.$store.commit('setUser', this.user)
+            this.setUser(this.user)
         },
     },
 }

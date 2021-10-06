@@ -6,7 +6,7 @@
                     <div class="d-flex flex-column">
                         <b class="mb-1">Departamentos</b>
                         <div class="d-flex flex-row align-items-end">
-                            <div class="number">{{ qty }}</div>
+                            <div class="number">{{ departments_qty }}</div>
                         </div>
                         <small class="description">Departamentos atualmente ativos no sistema</small>
                     </div>
@@ -16,6 +16,7 @@
     </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
 export default {
     data() {
         return {
@@ -23,16 +24,15 @@ export default {
         }
     },
     computed: {
-        qty() {
-            return this.$store.state.departments_qty
-        },
+        ...mapGetters("dashboard",["departments_qty"])
     },
     created() {
-        this.init()
+        this.getData()
     },
     methods: {
-        init() {
-            this.$store.dispatch('getDepartmentsQty').then(() => {
+        ...mapActions("dashboard",["getDepartmentsQty"]),
+        getData() {
+            this.getDepartmentsQty().then(() => {
                 this.loading = false
             })
         },

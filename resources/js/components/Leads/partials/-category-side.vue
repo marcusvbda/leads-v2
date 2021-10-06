@@ -23,7 +23,7 @@
                     />
                     <el-date-picker
                         class="w-100 mt-2"
-                        v-if="show_schedule_filter"
+                        v-if="showScheduleFilter"
                         v-model="filter.schedule"
                         type="datetimerange"
                         range-separator=" - "
@@ -118,6 +118,7 @@
     </div>
 </template>
 <script>
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
     data() {
         return {
@@ -151,59 +152,47 @@ export default {
         },
     },
     computed: {
-        show_schedule_filter() {
-            return this.$store.getters.showScheduleFilter
-        },
+        ...mapGetters("lead",["showScheduleFilter","statuses","user"]),
+        ...mapGetters("lead",{            
+            loading_leads : 'loading',
+            active_leads : "active",
+            pending_leads : "pending",
+            potential_leads : "potential",
+        }),
         filter: {
             set(val) {
-                return this.$store.commit('setFilter', val)
+                return this.setFilter(val)
             },
             get() {
-                return this.$store.state.filter
+                return this.$store.state.lead.filter
             },
         },
         tab: {
             set(val) {
-                return this.$store.commit('setTab', val)
+                return this.setTab(val)
             },
             get() {
-                return this.$store.state.tab
+                return this.$store.state.lead.tab
             },
-        },
-        loading_leads() {
-            return this.$store.state.loading
-        },
-        statuses() {
-            return this.$store.state.statuses
-        },
-        active_leads() {
-            return this.$store.state.leads.active
-        },
-        pending_leads() {
-            return this.$store.state.leads.pending
-        },
-        potential_leads() {
-            return this.$store.state.leads.potential
-        },
-        user() {
-            return this.$store.state.user
         },
         department() {
             return this.user.department?.name || 'Sem Departamento'
         },
     },
     methods: {
+        ...mapActions("lead",["getStatuses","loadLeads","reloadAllLeads"]),
+        ...mapMutations("lead",["setFilter","setTab"]),
         getLeads(refresh = false) {
             if (!this.initialized) {
-                this.$store.dispatch('reloadAllLeads').then(() => {
+                this.reloadAllLeads().then(() => {
                     this.initialized = true
                 })
             } else {
-                this.$store.dispatch('loadLeads', { refresh, type: this.tab })
+                this.loadLeads({ refresh, type: this.tab })
             }
         },
         async loadStatus() {
-            let rows = await this.$store.dispatch('getStatuses')
+            let rows = await this.getStatuses()
             this.filter.status_ids = rows
                 .filter((x) => ['schedule', 'waiting', 'interest', 'interest_with_objection', 'neutral', 'neutral_with_objection'].includes(x.value))
                 .map((x) => String(x.id))

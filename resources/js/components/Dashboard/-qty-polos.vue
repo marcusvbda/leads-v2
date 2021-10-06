@@ -6,7 +6,7 @@
                     <div class="d-flex flex-column">
                         <b class="mb-1">Polos</b>
                         <div class="d-flex flex-row align-items-end">
-                            <div class="number">{{ qty }}</div>
+                            <div class="number">{{ polos_qty }}</div>
                         </div>
                         <small class="description">Polos atualmente ativos no sistema</small>
                     </div>
@@ -16,6 +16,7 @@
     </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
 export default {
     data() {
         return {
@@ -23,16 +24,15 @@ export default {
         }
     },
     computed: {
-        qty() {
-            return this.$store.state.polos_qty
-        },
+       ...mapGetters("dashboard",["polos_qty"])
     },
     created() {
         this.init()
     },
     methods: {
+        ...mapActions("dashboard",["getPolosQty"]),        
         init() {
-            this.$store.dispatch('getPolosQty').then(() => {
+            this.getPolosQty().then(() => {
                 this.loading = false
             })
         },

@@ -18,6 +18,7 @@
 </template>
 <script>
 import VRuntimeTemplate from 'v-runtime-template'
+import { mapMutations } from 'vuex'
 export default {
     props: ['lead'],
     components: {
@@ -29,11 +30,12 @@ export default {
         },
     },
     methods: {
+        ...mapMutations("lead",["setLead"]),
         select() {
             if (this.selected_lead.id == this.lead.id) {
-                return this.$store.commit('setLead', {})
+                return this.setLead({})
             }
-            this.$store.commit('setLead', this.lead)
+            this.setLead(this.lead)
         },
     },
 }

@@ -6,15 +6,32 @@
                 <span class="text-muted"> Bem-vindo ao painel de atendimento de Leads</span>
             </div>
         </div>
-        <convert-lead v-else :lead="lead" />
+        <template v-else>
+            <convert-lead v-if="visible" :lead="lead" />            
+        </template>
     </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
     computed: {
-        lead() {
-            return this.$store.state.lead
-        },
+        ...mapGetters("lead",["lead"])
+    },
+    data() {
+        return {
+            visible : false
+        }
+    },
+    watch : {
+        lead : {
+            handler : function(newVal,oldVal){
+                this.visible = false
+                this.$nextTick(() => {
+                    this.visible = true
+                })
+            },
+            deep : true
+        }
     },
     components: {
         'convert-lead': require('./-convert-lead.vue').default,

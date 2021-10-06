@@ -6,7 +6,7 @@
                     <div class="d-flex flex-column">
                         <b class="mb-1">Novos Leads</b>
                         <div class="d-flex flex-row align-items-end">
-                            <div class="number">{{ qty }}</div>
+                            <div class="number">{{ new_leads_qty }}</div>
                         </div>
                         <small class="description">Considerando todos cadastrados no sistema com data de cadastro {{ today.format('DD/MM/YYYY') }}</small>
                     </div>
@@ -16,6 +16,7 @@
     </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
 export default {
     data() {
         return {
@@ -23,19 +24,18 @@ export default {
         }
     },
     computed: {
-        qty() {
-            return this.$store.state.new_leads_qty
-        },
+        ...mapGetters("dashboard",["new_leads_qty"]),
         today() {
             return this.$moment()
         },
     },
     created() {
-        this.init()
+        this.getData()
     },
     methods: {
-        init() {
-            this.$store.dispatch('getNewLeadsQty', { today: this.today.format('YYYY-MM-DD') }).then(() => {
+        ...mapActions("dashboard",["getNewLeadsQty"]),
+        getData() {
+            this.getNewLeadsQty({ today: this.today.format('YYYY-MM-DD') }).then(() => {
                 this.loading = false
             })
         },

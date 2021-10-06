@@ -151,6 +151,7 @@
     </div>
 </template>
 <script>
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 const new_contact = () => {
     return {
         step: 0,
@@ -175,6 +176,11 @@ export default {
         }
     },
     computed: {
+        ...mapGetters("lead",["answers","lead"]),
+        ...mapGetters("lead",{
+            objection_options : "objections",
+            contact_types : "types"
+        }),
         selected_objection() {
             if (!this.form_new_contact.objection_id) return
             return this.objection_options.find((x) => x.id == this.form_new_contact.objection_id)
@@ -193,29 +199,17 @@ export default {
                 .map((options, type) => ({ options, type }))
                 .value()
         },
-        answers() {
-            return this.$store.state.answers
-        },
-        objection_options() {
-            return this.$store.state.objections
-        },
-        contact_types() {
-            return this.$store.state.types
-        },
-        lead() {
-            return this.$store.state.lead
-        },
     },
     methods: {
+        ...mapActions("lead",["registerContact","reloadAllLeads"]),
+        ...mapMutations("lead",["setLead"]),
         confirmContact() {
             let loading = this.$loading({ text: 'Finalizando contato ...' })
-            this.$store
-                .dispatch('registerContact', this.form_new_contact)
+            this.registerContact(this.form_new_contact)
                 .then(() => {
-                    this.$store.dispatch('reloadAllLeads').then(() => {
+                    this.reloadAllLeads().then(() => {
                         this.form_new_contact = false
-                        // this.$store.commit('setTab', 'active')
-                        this.$store.commit('setLead', {})
+                        this.setLead({})
                         loading.close()
                         this.$message.success('Contato Registrado !!')
                     })

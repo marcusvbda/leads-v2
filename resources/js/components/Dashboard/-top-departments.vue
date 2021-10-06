@@ -32,6 +32,7 @@
     </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
 export default {
     data() {
         return {
@@ -41,12 +42,10 @@ export default {
         }
     },
     computed: {
-        filter() {
-            return this.$store.state.filter
-        },
-        medals() {
-            return this.$store.state.medals
-        },
+        ...mapGetters("dashboard",["filter","medals"]),
+    },
+    created() {
+        this.getData()
     },
     watch: {
         filter: {
@@ -60,12 +59,10 @@ export default {
             deep: true,
         },
     },
-    created() {
-        this.getData()
-    },
     methods: {
+        ...mapActions('dashboard', ['getDashboardContent']),
         getData() {
-            this.$store.dispatch('getDashboardContent', { action: 'getRankingDepartments' }).then((data) => {
+            this.getDashboardContent({ action: 'getRankingDepartments' }).then((data) => {
                 this.rows = data
                 this.loading = false
             })

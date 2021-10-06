@@ -22,6 +22,7 @@
     </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex';
 export default {
     data() {
         return {
@@ -31,9 +32,7 @@ export default {
         };
     },
     computed: {
-        filter() {
-            return this.$store.state.filter;
-        },
+        ...mapGetters("dashboard",["filter"]),
         canceled() {
             return this.results
                 .filter(x => x.status == "canceled")
@@ -65,9 +64,9 @@ export default {
         this.getData();
     },
     methods: {
+        ...mapActions("dashboard",["getDashboardContent"]),        
         getData() {
-            this.$store
-                .dispatch("getDashboardContent", { action: "getCanceledTax" })
+            this.getDashboardContent({ action: "getCanceledTax" })
                 .then(data => {
                     this.results = data;
                     this.loading = false;

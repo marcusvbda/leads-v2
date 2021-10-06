@@ -43,10 +43,8 @@
     </div>
 </template>
 <script>
-import dashStore from '~/stores/dashboard'
 export default {
     props: ['title', 'selected_polo_ids', 'user_id', 'is_head'],
-    store: dashStore,
     components: {
         'dash-filters': require('./-dash-filters.vue').default,
         'qty-polos': require('./-qty-polos.vue').default,
