@@ -5,4 +5,3 @@ Vue.prototype.$getEnabledIcons = function(enabled) {
     return icons[enabled ? "true" : "false"];
 };
 
-Vue.prototype.$avoidNaN = value => (isNaN(value) ? 0 : value);
