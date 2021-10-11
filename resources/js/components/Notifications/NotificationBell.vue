@@ -12,36 +12,45 @@
 </template>
 <script>
 export default {
-    props: ['polo_id', 'active'],
+    props: ["polo_id", "active"],
     data() {
         return {
-            qty: 0,
-        }
+            qty: 0
+        };
     },
     created() {
-        this.getNotificationQty()
-        this.initiatPusherListenUser()
+        this.getNotificationQty();
+        this.initiatPusherListenUser();
     },
     methods: {
         initiatPusherListenUser() {
             if (laravel.user.id && laravel.chat.pusher_key) {
-                this.$echo.private(`App.User.${laravel.user.id}`).listen('.notifications.user', (n) => {
-                    this.qty = n.qty
-                })
+                this.startChannel(`App.User.${laravel.user.id}`);
             }
+            if (laravel.user.id && laravel.chat.pusher_key) {
+                this.startChannel(`App.Polo.${this.polo_id}`);
+            }
+            if (laravel.tenant.id && laravel.chat.pusher_key) {
+                this.startChannel(`App.Tenant.${laravel.tenant.id}`);
+            }
+        },
+        startChannel(channel) {
+            this.$echo.private(channel).listen(".notifications.user", n => {
+                this.qty = n.qty;
+            });
         },
         getNotificationQty() {
             this.$http
                 .post(`/admin/notificacoes/get-qty`)
                 .then(({ data }) => {
-                    this.qty = data.qty
+                    this.qty = data.qty;
                 })
-                .catch((er) => {
-                    console.log(er)
-                })
-        },
-    },
-}
+                .catch(er => {
+                    console.log(er);
+                });
+        }
+    }
+};
 </script>
 <style lang="scss" scoped>
 .bell-note {

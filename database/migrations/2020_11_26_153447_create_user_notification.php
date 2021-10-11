@@ -18,14 +18,22 @@ class CreateUserNotification extends Migration
 			$table->collation = 'utf8mb4_unicode_ci';
 			$table->engine = 'InnoDB';
 			$table->bigIncrements('id');
-			$table->unsignedBigInteger('user_id');
+			$table->unsignedBigInteger('polo_id')->nullable();
+			$table->foreign('polo_id')
+				->references('id')
+				->on('polos');
+			$table->unsignedBigInteger('tenant_id')->nullable();
+			$table->foreign('tenant_id')
+				->references('id')
+				->on('tenants');
+			$table->unsignedBigInteger('user_id')->nullable();
 			$table->foreign('user_id')
 				->references('id')
 				->on('users');
-			$table->boolean("new")->default(true);
 			$table->jsonb("data");
 			$table->softDeletes();
 			$table->timestamps();
+			$table->timestamp("read_at")->nullable();
 		});
 	}
 

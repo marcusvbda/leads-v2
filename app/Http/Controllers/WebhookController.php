@@ -85,14 +85,10 @@ class WebhookController extends Controller
 
 	private function sendNotProcessedRequestNotificationToAdminUsers($webhook)
 	{
-		$users = $webhook->tenant->users()->whereHas('roles', function ($q) {
-			$q->where('name', 'admin');
-		})->whereHas('polos', function ($q) {
-			$q->where('data->head', true);
-		})->get();
-		foreach ($users as $user) {
+		$polos = $webhook->tenant->polos()->where('data->head', true)->get();
+		foreach ($polos as $polo) {
 			UserNotification::create([
-				"user_id" => $user->id,
+				"polo_id" => $polo->id,
 				"data" => [
 					"message" => "Novo request sem configuração de direcionamento de lead no webhook <b>" . $webhook->name . "</b>",
 					"icon" => "el-icon-finished",

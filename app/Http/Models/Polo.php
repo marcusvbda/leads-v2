@@ -66,4 +66,14 @@ class Polo extends DefaultModel
 		$data->head = $value;
 		$this->attributes["data"] = json_encode($data);
 	}
+
+	public function poloNotifications()
+	{
+		return $this->hasMany(UserNotification::class, "polo_id");
+	}
+
+	public function getQyNewNotifications()
+	{
+		return $this->poloNotifications()->isNew()->count();
+	}
 }

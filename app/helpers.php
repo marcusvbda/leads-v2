@@ -87,7 +87,9 @@ function formatId($value, $prefix = "#")
 
 function formatDate($date, $format = "d/m/Y - H:i:s")
 {
-	if (!$date) return null;
+	if (!$date) {
+		return null;
+	}
 	return @$date->format($format);
 }
 

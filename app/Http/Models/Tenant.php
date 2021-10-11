@@ -50,4 +50,14 @@ class Tenant extends DefaultModel
 			"Convertido Anteriormente" => floatval(10)
 		];
 	}
+
+	public function tenantNotifications()
+	{
+		return $this->hasMany(UserNotification::class, "tenant_id");
+	}
+
+	public function getQyNewNotifications()
+	{
+		return $this->tenantNotifications()->isNew()->count();
+	}
 }

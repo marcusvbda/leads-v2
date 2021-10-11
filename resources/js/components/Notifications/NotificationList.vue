@@ -31,15 +31,16 @@
                 <div class="row" v-for="(note, i) in notifications" :key="i">
                     <div class="col-12">
                         <div class="card mb-1 pointer-hover" @click="goTo(note.data.url)">
-                            <div class="card-body row">
+                            <div class="card-body row d-flex">
                                 <div class="col-sm-12 col-md-1 d-flex align-items-center justify-content-center">
-                                    <b><span :class="`${note.data.icon} mr-4`" style="font-size: 30px" /></b>
+                                    <b><span :class="`${note.data.icon} mr-4`" style="font-size: 30px"/></b>
                                 </div>
-                                <div class="col-sm-12 col-md-9 d-flex align-items-center justify-content-center">
+                                <div class="col-sm-12 col-md-7 d-flex align-items-center justify-content-center">
                                     <span v-html="note.data.message" />
                                 </div>
-                                <div class="col-sm-12 col-md-2 d-flex align-items-center justify-content-end">
-                                    <small v-html="note.f_created_at" class="ml-auto" />
+                                <div class="col-sm-12 col-md-4 d-flex flex-column justify-content-start">
+                                    <div><b class="mr-1">Lindo em</b> : {{ note.f_read_at }}</div>
+                                    <div><b class="mr-1">Notificado em</b> : {{ note.f_created_at }}</div>
                                 </div>
                             </div>
                         </div>
@@ -65,7 +66,7 @@
 </template>
 <script>
 export default {
-    props: ['user'],
+    props: ["polo_id"],
     data() {
         return {
             qty: 0,
@@ -73,70 +74,79 @@ export default {
             notifications: [],
             loading: false,
             current_page: 0,
-            last_page: -1,
-        }
+            last_page: -1
+        };
     },
     computed: {
         noMore() {
-            return this.last_page == this.current_page
+            return this.last_page == this.current_page;
         },
         canShowMore() {
-            return !this.noMore
-        },
+            return !this.noMore;
+        }
     },
     created() {
-        this.getPaginatedNotifications()
-        this.getNotificationQty()
-        this.initiatPusherListenUser()
+        this.getPaginatedNotifications();
+        this.getNotificationQty();
+        this.initiatPusherListenUser();
     },
     methods: {
         goTo(route) {
-            window.location.href = route
+            window.location.href = route;
         },
         load() {
-            this.getPaginatedNotifications()
+            this.getPaginatedNotifications();
         },
         update_page() {
-            window.location.reload()
+            window.location.reload();
         },
         initiatPusherListenUser() {
             if (laravel.user.id && laravel.chat.pusher_key) {
-                this.$echo.private(`App.User.${laravel.user.id}`).listen('.notifications.user', (n) => {
-                    this.qty = n.qty
-                    this.has_new = true
-                    document.title = `(${this.qty}) - Notificações`
-                })
+                this.startChannel(`App.User.${laravel.user.id}`);
             }
+            if (laravel.user.id && laravel.chat.pusher_key) {
+                this.startChannel(`App.Polo.${this.polo_id}`);
+            }
+            if (laravel.tenant.id && laravel.chat.pusher_key) {
+                this.startChannel(`App.Tenant.${laravel.tenant.id}`);
+            }
+        },
+        startChannel(channel) {
+            this.$echo.private(channel).listen(".notifications.user", n => {
+                this.qty = n.qty;
+                this.has_new = true;
+                document.title = `(${this.qty}) - Notificações`;
+            });
         },
         getNotificationQty() {
             this.$http
                 .post(`/admin/notificacoes/get-qty`)
                 .then(({ data }) => {
-                    this.qty = data.qty
+                    this.qty = data.qty;
                 })
-                .catch((er) => {
-                    console.log(er)
-                })
+                .catch(er => {
+                    console.log(er);
+                });
         },
         getPaginatedNotifications() {
-            this.loading = true
+            this.loading = true;
             this.$http
                 .post(`/admin/notificacoes/paginated`, { page: ++this.current_page })
                 .then(({ data }) => {
-                    this.current_page = data.current_page
-                    this.last_page = data.last_page
-                    this.notifications = _.concat(this.notifications, data.data)
-                    this.loading = false
+                    this.current_page = data.current_page;
+                    this.last_page = data.last_page;
+                    this.notifications = _.concat(this.notifications, data.data);
+                    this.loading = false;
                 })
-                .catch((er) => {
-                    console.log(er)
-                    this.loading = false
-                })
-        },
-    },
-}
+                .catch(er => {
+                    console.log(er);
+                    this.loading = false;
+                });
+        }
+    }
+};
 </script>
-<style lang="scss" scoped >
+<style lang="scss" scoped>
 #notification-view {
     .new-notifications {
         margin-bottom: 20px;

@@ -13,14 +13,20 @@ class UserNotification extends Model
 	use SoftDeletes;
 	protected $table = "user_notifications";
 	public $guarded = ["created_at"];
-	public $appends = ["f_created_at"];
+	public $appends = ["f_created_at", "f_read_at"];
 
 	public static function boot()
 	{
 		parent::boot();
 		$socket_event = function ($model) {
 			broadcast(new WebSocketEvent("App.User." . $model->user_id, "notifications.user", [
-				"qty" => $model->user->getQyNewNotifications()
+				"qty" => @$model->user ? $model->user->getQyNewNotifications() : 0
+			]));
+			broadcast(new WebSocketEvent("App.Polo." . $model->polo_id, "notifications.user", [
+				"qty" =>  @$model->polo ? $model->polo->getQyNewNotifications() : 0
+			]));
+			broadcast(new WebSocketEvent("App.Tenant." . $model->tenant_id, "notifications.user", [
+				"qty" =>  @$model->tenant ? $model->tenant->getQyNewNotifications() : 0
 			]));
 		};
 		static::created(function ($model) use ($socket_event) {
@@ -37,12 +43,18 @@ class UserNotification extends Model
 	}
 
 	public $casts = [
-		"data" => "object"
+		"data" => "object",
+		"read_at" => "datetime"
 	];
 
 	public function user()
 	{
 		return $this->belongsTo(User::class);
+	}
+
+	public function tenant()
+	{
+		return $this->belongsTo(Tenant::class);
 	}
 
 	public function polo()
@@ -52,11 +64,16 @@ class UserNotification extends Model
 
 	public function scopeIsNew($query)
 	{
-		return $query->where('new', true);
+		return $query->where('read_at', null);
 	}
 
 	public function getFCreatedAtAttribute()
 	{
 		return formatDate($this->created_at);
+	}
+
+	public function getFReadAtAttribute()
+	{
+		return formatDate($this->read_at);
 	}
 }
