@@ -36,7 +36,7 @@ class Polos extends Resource
 
 	public function search()
 	{
-		return ["name", "razao_social"];
+		return ["name"];
 	}
 
 	public function table()
@@ -44,7 +44,7 @@ class Polos extends Resource
 		$columns = [];
 		$columns["name"] = ["label" => "Nome"];
 		$columns["city"] = ["label" => "Cidade"];
-		$columns["f_head"] = ["label" => "Sede"];
+		$columns["f_head"] = ["label" => "Sede", "sortable_index" => "data->head"];
 		return $columns;
 	}
 

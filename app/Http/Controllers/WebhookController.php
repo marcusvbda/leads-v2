@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Lead;
 use App\Http\Models\Status;
+use App\Http\Models\UserNotification;
 use App\Http\Models\Webhook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -14,8 +15,11 @@ class WebhookController extends Controller
 	public function handler($token, Request $request)
 	{
 		$webhook = Webhook::where('token', $token)->firstOrFail();
-		$webhook->requests()->create(['content' => $request->all()]);
-		$this->processNotApprovedRequests($webhook);
+		$createdRequest = $webhook->requests()->create(['content' => $request->all()]);
+		$processed = $this->processRequest($webhook, $webhook->settings, $createdRequest);
+		if (!$processed) {
+			$this->sendNotProcessedRequestNotificationToAdminUsers($webhook);
+		}
 		return response('OK');
 	}
 
@@ -25,6 +29,7 @@ class WebhookController extends Controller
 		$data = $request->all();
 		$setting = $webhook->settings()->firstOrNew([
 			'index' => $data['index'],
+			'value' => $data['value'],
 		]);
 		$setting->fill($data);
 		$setting->save();
@@ -49,9 +54,10 @@ class WebhookController extends Controller
 				$this->createLead($request, $webhook, $setting);
 				$request->approved = true;
 				$request->save();
-				break;
+				return true;
 			}
 		}
+		return false;
 	}
 
 	private function createLead($request, $webhook, $setting)
@@ -75,5 +81,24 @@ class WebhookController extends Controller
 			"comment" => ""
 		];
 		$lead->save();
+	}
+
+	private function sendNotProcessedRequestNotificationToAdminUsers($webhook)
+	{
+		$users = $webhook->tenant->users()->whereHas('roles', function ($q) {
+			$q->where('name', 'admin');
+		})->whereHas('polos', function ($q) {
+			$q->where('data->head', true);
+		})->get();
+		foreach ($users as $user) {
+			UserNotification::create([
+				"user_id" => $user->id,
+				"data" => [
+					"message" => "Novo request sem configuração de direcionamento de lead no webhook <b>" . $webhook->name . "</b>",
+					"icon" => "el-icon-finished",
+					"url" => "/admin/webhooks/" . $webhook->code
+				]
+			]);
+		}
 	}
 }

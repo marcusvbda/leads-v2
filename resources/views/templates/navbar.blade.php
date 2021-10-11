@@ -123,7 +123,7 @@ function getMenuClass($permission, $array_current = [])
                     <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/usuarios">Usuários</a>
                     <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/polos">Polos</a>
                     <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/departamentos">Departamentos</a>
-                    <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/webhooks">Webhooks</a>
+                    <a class="dropdown-item @if (!$is_admin_or_super_admin || !$polo->head) disabled @endif" href="/admin/webhooks">Webhooks</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/login">Sair</a>
                 </div>
