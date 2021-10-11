@@ -45,11 +45,7 @@ const state = {
 
 const getters = {
     showScheduleFilter: state => {
-        let results = state.statuses.filter(
-            x =>
-                state.filter.status_ids.includes(String(x.id)) &&
-                x.value.includes("schedule")
-        );
+        let results = state.statuses.filter(x => state.filter.status_ids.includes(String(x.id)) && x.value.includes("schedule"));
         return results.length > 0;
     },
     loading: state => state.loading,
@@ -121,11 +117,7 @@ const makeLeadsFilter = (cx, payload) => {
         },
         pending(filters) {
             filters.where.push(["responsible_id", "=", null]);
-            filters.where.push([
-                "department_id",
-                "=",
-                state.user.department_id
-            ]);
+            filters.where.push(["department_id", "=", state.user.department_id]);
             return filters;
         },
         active(filters) {
@@ -134,9 +126,9 @@ const makeLeadsFilter = (cx, payload) => {
         }
     };
     if (state.filter.text) {
-        filters.raw_where.push(
-            `lower(json_unquote(json_extract(data,'$.name'))) like '%${state.filter.text.toLowerCase()}%'`
-        );
+        let raw_where = `((lower(json_unquote(json_extract(data,'$.name'))) like '%${state.filter.text.toLowerCase()}%')`;
+        raw_where += ` or (lower(json_unquote(json_extract(data,'$.email'))) like '%${state.filter.text.toLowerCase()}%'))`;
+        filters.raw_where.push(raw_where);
     }
     if (state.filter.schedule?.length && getters.showScheduleFilter) {
         if (state.filter.schedule[0]) {
@@ -205,13 +197,9 @@ const actions = {
         if (payload.refresh) {
             new_state[payload.type].data = data.data;
         } else {
-            new_state[payload.type].data = new_state[payload.type].data.concat(
-                data.data
-            );
+            new_state[payload.type].data = new_state[payload.type].data.concat(data.data);
         }
-        new_state[payload.type].has_more =
-            new_state[payload.type].current_page !=
-            new_state[payload.type].last_page;
+        new_state[payload.type].has_more = new_state[payload.type].current_page != new_state[payload.type].last_page;
         commit("setLeads", new_state);
         return data;
     },
@@ -227,10 +215,7 @@ const actions = {
         return data;
     },
     registerContact: async ({ state }, payload) => {
-        let { data } = await api.post(
-            `/admin/atendimento/${state.lead.code}/register-contact`,
-            payload
-        );
+        let { data } = await api.post(`/admin/atendimento/${state.lead.code}/register-contact`, payload);
         return data;
     },
     loadLeads: async ({ state, commit, dispatch }, payload) => {
@@ -252,19 +237,11 @@ const actions = {
         ]);
     },
     transferLead: async ({ state }, department_id) => {
-        let {
-            data
-        } = await api.post(
-            `/admin/atendimento/${state.lead.code}/transfer-department`,
-            { department_id }
-        );
+        let { data } = await api.post(`/admin/atendimento/${state.lead.code}/transfer-department`, { department_id });
         return data;
     },
     finishLead: async ({ state }, payload) => {
-        let { data } = await api.post(
-            `/admin/atendimento/${state.lead.code}/finish`,
-            payload
-        );
+        let { data } = await api.post(`/admin/atendimento/${state.lead.code}/finish`, payload);
         return data;
     }
 };

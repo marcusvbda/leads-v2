@@ -258,11 +258,4 @@ class Leads extends Resource
 	{
 		return '<identification-row lead_id="' . $row->id . '" />';
 	}
-
-	public function crudType()
-	{
-		return [
-			"template" => request()->get("content") ? "page" : "wizard"
-		];
-	}
 }

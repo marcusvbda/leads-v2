@@ -22,6 +22,11 @@ class Webhook extends DefaultModel
 		static::addGlobalScope(new OrderByScope(with(new static)->getTable()));
 	}
 
+	public function settings()
+	{
+		return $this->hasMany(WebhookSetting::class);
+	}
+
 	public function tenant()
 	{
 		return $this->belongsTo(Tenant::class);
@@ -46,7 +51,7 @@ class Webhook extends DefaultModel
 
 	public function getUrlAttribute()
 	{
-		return config("app.url") . "/" . "webhooks" . "/" . $this->token;
+		return config("app.url") . "/api/" . "webhooks" . "/" . $this->token;
 	}
 
 	public function requests()

@@ -46,16 +46,16 @@ class A_AclSeeder extends Seeder
 		Permission::create(["group" => "Objeções", "name" => "edit-objections", "description" => "Editar Objeções"]);
 		Permission::create(["group" => "Objeções", "name" => "destroy-objections", "description" => "Excluir Objeções"]);
 
-		Permission::create(["group" => "Marketing", "name" => "viewlist-email", "description" => "Ver Listagem de Emails"]);
-		Permission::create(["group" => "Marketing", "name" => "create-email", "description" => "Cadastrar Emails"]);
-		Permission::create(["group" => "Marketing", "name" => "edit-email", "description" => "Editar Emails"]);
-		Permission::create(["group" => "Marketing", "name" => "destroy-email", "description" => "Excluir Emails"]);
+		// Permission::create(["group" => "Marketing", "name" => "viewlist-email", "description" => "Ver Listagem de Emails"]);
+		// Permission::create(["group" => "Marketing", "name" => "create-email", "description" => "Cadastrar Emails"]);
+		// Permission::create(["group" => "Marketing", "name" => "edit-email", "description" => "Editar Emails"]);
+		// Permission::create(["group" => "Marketing", "name" => "destroy-email", "description" => "Excluir Emails"]);
 
-		Permission::create(["group" => "Automações Customizadas", "name" => "viewlist-automation", "description" => "Ver Listagem de Automações Customizadas"]);
-		Permission::create(["group" => "Automações Customizadas", "name" => "create-automation", "description" => "Cadastrar Automações Customizadas"]);
-		Permission::create(["group" => "Automações Customizadas", "name" => "edit-automation", "description" => "Editar Automações Customizadas"]);
-		Permission::create(["group" => "Automações Customizadas", "name" => "destroy-automation", "description" => "Excluir Automações Customizadas"]);
-		Permission::create(["group" => "Automações Customizadas", "name" => "report-automation", "description" => "Relatório de Automações Customizadas"]);
+		// Permission::create(["group" => "Automações Customizadas", "name" => "viewlist-automation", "description" => "Ver Listagem de Automações Customizadas"]);
+		// Permission::create(["group" => "Automações Customizadas", "name" => "create-automation", "description" => "Cadastrar Automações Customizadas"]);
+		// Permission::create(["group" => "Automações Customizadas", "name" => "edit-automation", "description" => "Editar Automações Customizadas"]);
+		// Permission::create(["group" => "Automações Customizadas", "name" => "destroy-automation", "description" => "Excluir Automações Customizadas"]);
+		// Permission::create(["group" => "Automações Customizadas", "name" => "report-automation", "description" => "Relatório de Automações Customizadas"]);
 
 		Permission::create(["group" => "Rating", "name" => "config-rating-behavior", "description" => "Alterar Configuração de Regra de Rating"]);
 	}

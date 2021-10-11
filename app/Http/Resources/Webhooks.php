@@ -112,8 +112,10 @@ class Webhooks extends Resource
 
 	public function afterViewSlot()
 	{
-		$data = request("content")->requests()->orderBy("id", "desc")->paginate(10);
+		$webhook = request("content");
+		$data = $webhook->requests()->orderBy("id", "desc")->paginate(10);
 		$resource = $this;
-		return view("admin.webhooks.requests", compact("data", "resource"));
+		$tenant_id = Auth::user()->tenant_id;
+		return view("admin.webhooks.requests", compact("data", "resource", "webhook", "tenant_id"));
 	}
 }

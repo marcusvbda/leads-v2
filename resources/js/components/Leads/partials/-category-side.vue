@@ -19,7 +19,7 @@
                         placeholder="Selecione o status"
                         label="Todos os Status"
                         clearable
-                        :options="statuses.map((x) => ({ label: x.name, value: String(x.id) }))"
+                        :options="statuses.map(x => ({ label: x.name, value: String(x.id) }))"
                     />
                     <el-date-picker
                         class="w-100 mt-2"
@@ -46,7 +46,11 @@
                             <div class="row" v-else>
                                 <div class="col-12 d-flex align-items-center justify-content-center">
                                     <div class="w-100" style="overflow: auto; margin: 0">
-                                        <div class="d-flex flex-column" v-infinite-scroll="getLeads" style="overflow: auto; height: 300px">
+                                        <div
+                                            class="d-flex flex-column"
+                                            v-infinite-scroll="getLeads"
+                                            style="overflow: auto; height: 300px"
+                                        >
                                             <lead-card v-for="(lead, i) in active_leads.data" :lead="lead" :key="`active_${i}`" />
                                             <div
                                                 v-if="loading_leads.active && active_leads.has_more"
@@ -59,7 +63,12 @@
                                 </div>
                             </div>
                         </el-tab-pane>
-                        <el-tab-pane v-if="user.department_id" v-loading="!initialized" element-loading-text="Inicializando..." name="pending">
+                        <el-tab-pane
+                            v-if="user.department_id"
+                            v-loading="!initialized"
+                            element-loading-text="Inicializando..."
+                            name="pending"
+                        >
                             <span slot="label">
                                 Pendentes
                                 <template v-if="pending_leads.total"> ({{ pending_leads.total }}) </template>
@@ -72,8 +81,16 @@
                             <div class="row" v-else>
                                 <div class="col-12 d-flex align-items-center justify-content-center">
                                     <div class="w-100" style="overflow: auto; margin: 0">
-                                        <div class="d-flex flex-column" v-infinite-scroll="getLeads" style="overflow: auto; height: 300px">
-                                            <lead-card v-for="(lead, i) in pending_leads.data" :lead="lead" :key="`pending_${i}`" />
+                                        <div
+                                            class="d-flex flex-column"
+                                            v-infinite-scroll="getLeads"
+                                            style="overflow: auto; height: 300px"
+                                        >
+                                            <lead-card
+                                                v-for="(lead, i) in pending_leads.data"
+                                                :lead="lead"
+                                                :key="`pending_${i}`"
+                                            />
                                             <div
                                                 v-if="loading_leads.pending && pending_leads.has_more"
                                                 v-loading="loading_leads.pending"
@@ -98,8 +115,16 @@
                             <div class="row" v-else>
                                 <div class="col-12 d-flex align-items-center justify-content-center">
                                     <div class="w-100" style="overflow: auto; margin: 0">
-                                        <div class="d-flex flex-column" v-infinite-scroll="getLeads" style="overflow: auto; height: 300px">
-                                            <lead-card v-for="(lead, i) in potential_leads.data" :lead="lead" :key="`pending_${i}`" />
+                                        <div
+                                            class="d-flex flex-column"
+                                            v-infinite-scroll="getLeads"
+                                            style="overflow: auto; height: 300px"
+                                        >
+                                            <lead-card
+                                                v-for="(lead, i) in potential_leads.data"
+                                                :lead="lead"
+                                                :key="`pending_${i}`"
+                                            />
                                             <div
                                                 v-if="loading_leads.potential && potential_leads.has_more"
                                                 v-loading="loading_leads.potential"
@@ -118,87 +143,91 @@
     </div>
 </template>
 <script>
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
     data() {
         return {
             timeout: null,
             loading: {
-                statuses: true,
+                statuses: true
             },
-            initialized: false,
-        }
+            initialized: false
+        };
     },
     components: {
-        'lead-card': require('./-lead-card.vue').default,
+        "lead-card": require("./-lead-card.vue").default
     },
     created() {
-        this.loadStatus().then((ids) => {
-            this.getLeads(true)
-        })
+        this.loadStatus().then(() => {
+            this.getLeads(true);
+        });
     },
     watch: {
         filter: {
-            handler(val) {
+            handler() {
                 if (this.initialized) {
-                    clearTimeout(this.timeout)
+                    clearTimeout(this.timeout);
                     this.timeout = setTimeout(() => {
-                        this.initialized = false
-                        this.getLeads(true)
-                    }, 500)
+                        this.initialized = false;
+                        this.getLeads(true);
+                    }, 500);
                 }
             },
-            deep: true,
-        },
+            deep: true
+        }
     },
     computed: {
-        ...mapGetters("lead",["showScheduleFilter","statuses","user"]),
-        ...mapGetters("lead",{            
-            loading_leads : 'loading',
-            active_leads : "active",
-            pending_leads : "pending",
-            potential_leads : "potential",
+        ...mapGetters("lead", ["showScheduleFilter", "statuses", "user"]),
+        ...mapGetters("lead", {
+            loading_leads: "loading",
+            active_leads: "active",
+            pending_leads: "pending",
+            potential_leads: "potential"
         }),
         filter: {
             set(val) {
-                return this.setFilter(val)
+                return this.setFilter(val);
             },
             get() {
-                return this.$store.state.lead.filter
-            },
+                return this.$store.state.lead.filter;
+            }
         },
         tab: {
             set(val) {
-                return this.setTab(val)
+                return this.setTab(val);
             },
             get() {
-                return this.$store.state.lead.tab
-            },
+                return this.$store.state.lead.tab;
+            }
         },
         department() {
-            return this.user.department?.name || 'Sem Departamento'
-        },
+            return this.user.department?.name || "Sem Departamento";
+        }
     },
     methods: {
-        ...mapActions("lead",["getStatuses","loadLeads","reloadAllLeads"]),
-        ...mapMutations("lead",["setFilter","setTab"]),
+        ...mapActions("lead", ["getStatuses", "loadLeads", "reloadAllLeads"]),
+        ...mapMutations("lead", ["setFilter", "setTab"]),
         getLeads(refresh = false) {
             if (!this.initialized) {
                 this.reloadAllLeads().then(() => {
-                    this.initialized = true
-                })
+                    this.initialized = true;
+                });
             } else {
-                this.loadLeads({ refresh, type: this.tab })
+                this.loadLeads({ refresh, type: this.tab });
             }
         },
         async loadStatus() {
-            let rows = await this.getStatuses()
+            let rows = await this.getStatuses();
             this.filter.status_ids = rows
-                .filter((x) => ['schedule', 'waiting', 'interest', 'interest_with_objection', 'neutral', 'neutral_with_objection'].includes(x.value))
-                .map((x) => String(x.id))
-            this.loading.statuses = false
-            return this.filter.status_ids
-        },
-    },
-}
+                .filter(x =>
+                    ["schedule", "waiting", "interest", "interest_with_objection", "neutral", "neutral_with_objection"].includes(
+                        x.value
+                    )
+                )
+                .map(x => String(x.id));
+            this.loading.statuses = false;
+            return this.filter.status_ids;
+        }
+    }
+};
 </script>

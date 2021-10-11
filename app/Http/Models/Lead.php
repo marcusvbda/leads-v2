@@ -185,7 +185,7 @@ class Lead extends DefaultModel
 
 	public function getCommentAttribute()
 	{
-		return $this->data->comment;
+		return @$this->data->comment;
 	}
 
 	public function getFLastConversionAttribute()
