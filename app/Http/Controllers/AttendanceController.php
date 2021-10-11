@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\ContactType;
-use App\Http\Models\CustomAutomation;
 use App\Http\Models\Lead;
 use App\Http\Models\LeadAnswer;
 use App\Http\Models\Objection;
@@ -46,7 +45,6 @@ class AttendanceController extends Controller
 		$lead->responsible_id = $user->id;
 		$lead->save();
 		Messages::send("success", "Contato Salvo");
-		$this->sendAutomationEmail($lead, "finish");
 		return ["success" => true];
 	}
 
@@ -62,7 +60,6 @@ class AttendanceController extends Controller
 		$type = ContactType::findOrfail($request["type_id"]);
 		$objection = Objection::find($request["objection_id"]);
 		$new_status = $this->getNewStatus($answer);
-		$this->sendAutomationEmail($lead, "schedule");
 
 		$lead = $this->logConversions($lead, $now, $user, $new_status);
 		$lead = $this->logTries($lead, $now, $user, $type, @$objection->description, @$request["other_objection"], @$request['obs']);
@@ -86,7 +83,6 @@ class AttendanceController extends Controller
 		$lead->responsible_id = $user->id;
 		$lead->save();
 		Messages::send("success", "Contato Salvo");
-		$this->sendAutomationEmail($lead, "conversion");
 		return ["success" => true];
 	}
 
@@ -104,15 +100,6 @@ class AttendanceController extends Controller
 		if ($answer->need_test) return  Status::value("schedule_test");
 
 		return  Status::value("waiting");
-	}
-
-	private function sendAutomationEmail($lead, $trigger)
-	{
-		if ($lead->email) {
-			foreach (CustomAutomation::where("data->trigger", $trigger)->where("data->status_id", $lead->status->id)->get() as $automation) {
-				$automation->execute($lead);
-			}
-		}
 	}
 
 	private function logTries($lead, $now, $user, $type, $objection, $other_objection, $obs)

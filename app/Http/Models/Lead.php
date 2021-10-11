@@ -41,13 +41,6 @@ class Lead extends DefaultModel
 				$model->status_id = Status::value("waiting")->id;
 			}
 		});
-		static::created(function ($model) {
-			if ($model->data->email) {
-				foreach (CustomAutomation::where("data->trigger", "store")->where("data->status_id", $model->status_id)->get() as $automation) {
-					$automation->execute(Lead::findOrFail($model->id));
-				}
-			}
-		});
 	}
 
 
@@ -386,11 +379,6 @@ class Lead extends DefaultModel
 	public function polo()
 	{
 		return $this->belongsTo(Polo::class);
-	}
-
-	public function automation_sent_emails()
-	{
-		return $this->hasMany(AutomationSentEmail::class);
 	}
 
 	public function webhook_request()

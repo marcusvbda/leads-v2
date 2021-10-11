@@ -62,14 +62,19 @@ class WebhookController extends Controller
 
 	private function createLead($request, $webhook, $setting)
 	{
+		$status = Status::value("waiting");
 		$name = Arr::get($request->content, "name");
 		$email = Arr::get($request->content, "email");
-		$lead = new Lead;
+		$lead = Lead::where('data->name', $name)->where('data->email', $email)->where("status_id", $status->id)->first() ?? new Lead;
 		$lead->polo_id = $setting->polo_id;
 		$lead->tenant_id = $webhook->tenant_id;
 		$lead->webhook_id = $webhook->id;
 		$lead->webhook_request_id = $request->id;
-		$lead->status_id = Status::value("waiting")->id;
+		if (@$lead->id) {
+			$lead->status_id = Status::value("waiting")->id;
+		}
+		$comment = @$lead->comment ?? '';
+		$obs = @$lead->obs ?? 'via Webhook ( ' . $webhook->name . ' )';
 		$lead->data = [
 			"lead_api" => $request->content,
 			"city" => Arr::get($request->content, "city") . " " . Arr::get($request->content, "state"),
@@ -77,8 +82,8 @@ class WebhookController extends Controller
 			"name" => $name,
 			"phones" => [Arr::get($request->content, "personal_phone"), Arr::get($request->content, "mobile_phone")],
 			"city" => @$request->content->lastcidade,
-			"obs" => 'via Webhook ( ' . $webhook->name . ' )',
-			"comment" => ""
+			"obs" => $obs,
+			"comment" => $comment
 		];
 		$lead->save();
 	}
