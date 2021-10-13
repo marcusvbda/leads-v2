@@ -69,6 +69,11 @@ class Webhooks extends Resource
 		return  Auth::user()->hasRole(["super-admin", "admin"])  && $this->isHead();
 	}
 
+	public function canClone()
+	{
+		return false;
+	}
+
 	public function canImport()
 	{
 		return false;
