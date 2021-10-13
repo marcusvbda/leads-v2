@@ -23,6 +23,28 @@ class WebhookController extends Controller
 		return response('OK');
 	}
 
+	public function actions($code, $action, Request $request)
+	{
+		$webhook = Webhook::findByCode($code);
+		$methodName = lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $action))));
+		return $this->{$methodName}($webhook, $request);
+		return $actions[$action]($data);
+	}
+
+	protected function destroySettings($webhook, Request $request)
+	{
+		$webhook->settings()->findOrFail($request["id"])->delete();
+		Messages::send("success", "Configuração removida com sucesso !!");
+		return ["success" => true];
+	}
+
+	protected function destroyRequests($webhook, Request $request)
+	{
+		$webhook->requests()->findOrFail($request["id"])->delete();
+		Messages::send("success", "Request removido com sucesso !!");
+		return ["success" => true];
+	}
+
 	private function getSortedObject($obj)
 	{
 		$newObj = [];
