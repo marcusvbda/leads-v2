@@ -4,27 +4,35 @@
     &.canceled {
         color: #9b0404;
     }
+
     &.schedule {
         color: #e68e65;
     }
+
     &.finished {
         color: #097349;
     }
+
     &.neutral {
         color: #6c6c6c;
     }
+
     &.waiting {
         color: #45b194;
     }
+
     &.interest {
         color: #5852cc;
     }
+
     &.interest_with_objection {
         color: #cc52ab;
     }
+
     &.interest_with_objection {
         color: #cc52ab;
     }
+
     &.schedule_test {
         color: #5aa03c;
     }
@@ -34,18 +42,23 @@
     &.Oportunidade {
         border-top: 4px solid rgb(199, 201, 57);
     }
+
     &.Não.Qualificado {
         border-top: 4px solid #d3561b;
     }
+
     &.Aguardando {
         border-top: 4px solid #c12d7c;
     }
+
     &.Provável.Qualificação {
         border-top: 4px solid #6a0082;
     }
+
     &.Qualificado {
         border-top: 4px solid #43a228;
     }
+
     &.Convertido {
         border-top: 4px solid #233396;
     }
@@ -61,8 +74,17 @@
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
         background-color: #555;
     }
+
     &::-webkit-scrollbar {
         width: 10px;
         height: 10px;
+    }
+}
+
+.vjs-tree {
+    .vjs-tree__node {
+        &:hover {
+            background-color: inherit !important;
+        }
     }
 }

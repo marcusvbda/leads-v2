@@ -18,8 +18,7 @@ class CreateWebhookSettings extends Migration
             $table->collation = 'utf8mb4_unicode_ci';
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->string('index');
-            $table->string('value');
+            $table->longtext('indexes');
             $table->unsignedBigInteger('polo_id');
             $table->foreign('polo_id')
                 ->references('id')

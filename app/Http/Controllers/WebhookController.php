@@ -23,15 +23,36 @@ class WebhookController extends Controller
 		return response('OK');
 	}
 
+	private function getSortedObject($obj)
+	{
+		$newObj = [];
+		$value = (array) $obj;
+		$keys = array_keys($value);
+		sort($keys);
+		foreach ($keys as $key) {
+			$newObj[$key] = $value[$key];
+		}
+		return $newObj;
+	}
+
+	private function getIndexesObject($values)
+	{
+		$indexes = [];
+		foreach ($values as $key => $value) {
+			$indexes[] = $key . "=>" . $value;
+		}
+		return (implode('|', $indexes));
+	}
+
 	public function storeSettings($token, Request $request)
 	{
 		$webhook = Webhook::where('token', $token)->firstOrFail();
 		$data = $request->all();
+		$indexes = $this->getIndexesObject($this->getSortedObject($data["value"]));
 		$setting = $webhook->settings()->firstOrNew([
-			'index' => $data['index'],
-			'value' => $data['value'],
+			'indexes' => $indexes,
 		]);
-		$setting->fill($data);
+		$setting->polo_id = $data["polo_id"];
 		$setting->save();
 		$this->processNotApprovedRequests($webhook);
 		Messages::send("success", "Configuração de webhook salva com sucesso !!");
@@ -50,7 +71,16 @@ class WebhookController extends Controller
 	private function processRequest($webhook, $settings, $request)
 	{
 		foreach ($settings as $setting) {
-			if (Arr::get($request->content, $setting->index) === $setting->value) {
+			$indexes = $setting->indexes;
+			$content = $request->content;
+			$indexes = explode("|", $indexes);
+			$hasPositiveResults = count(array_filter(array_map(function ($row) use ($content) {
+				$explodedRow = explode("=>", $row);
+				$index = $explodedRow[0];
+				$value = $explodedRow[1];
+				return $value === Arr::get($content, $index);
+			}, $indexes))) == count($indexes);
+			if ($hasPositiveResults) {
 				$this->createLead($request, $webhook, $setting);
 				$request->approved = true;
 				$request->save();

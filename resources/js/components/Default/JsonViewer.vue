@@ -16,6 +16,21 @@
                         Selecione a chave que deverá ser considerada como referência de comparação de polo e em seguida o polo
                         para registros com conteúdo semelhante será enviado.
                     </div>
+                    <div v-if="hasSelectedValues" class="mb-3 d-flex flex-column">
+                        <div class="mb-2">
+                            <b>Elementos selecionados :</b>
+                        </div>
+                        <div>
+                            <el-tag v-for="(key, i) in Object.keys(clickedValue)" :key="i" closable @close="handleCloseTag(key)">
+                                <b>{{ key }}</b> : {{ clickedValue[key] }}
+                            </el-tag>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row mt-3 justify-content-end" v-if="hasSelectedValues">
+                        <div>
+                            <el-button type="success" @click="page = 'compare'">Selecionar o Polo</el-button>
+                        </div>
+                    </div>
                     <div v-bind:class="{ clickable: !approved }">
                         <VueJsonPretty :data="content" @click="handleClick" />
                     </div>
@@ -23,13 +38,17 @@
                 <div v-if="page == 'compare'" class="d-flex flex-column">
                     <div class="mb-4 mt-0 text-muted" v-if="!approved">
                         <div class="d-flex flex-row justify-content-end">
-                            <a href="#" @click.prevent="clearSelection" class="mb-4">
+                            <a href="#" @click.prevent="page = 'json'" class="mb-4">
                                 Voltar ao request
                             </a>
                         </div>
                         <div class="mb-2">
-                            Todos os requests que o registro <b v-html="clickedIndex" /> for igual ao registro
-                            <b v-html="clickedValue" /> serão enviados para o polo ...
+                            Todos os requests que conter as <b>tags abaixo </b> serão enviados para o <b>polo selecionado</b>
+                        </div>
+                        <div class="mb-2">
+                            <el-tag v-for="(key, i) in Object.keys(clickedValue)" :key="i">
+                                <b>{{ key }}</b> : {{ clickedValue[key] }}
+                            </el-tag>
                         </div>
                         <div>
                             <el-select
@@ -45,7 +64,7 @@
                         <div class="d-flex flex-row mt-3 justify-content-end">
                             <div>
                                 <el-button-group>
-                                    <el-button type="info" @click="clearSelection">Voltar</el-button>
+                                    <el-button type="info" @click="page = 'json'">Voltar</el-button>
                                     <el-button type="success" :disabled="!selectedPolo" @click="submit">Salvar</el-button>
                                 </el-button-group>
                             </div>
@@ -64,8 +83,7 @@ export default {
     data() {
         return {
             visible: false,
-            clickedIndex: null,
-            clickedValue: null,
+            clickedValue: {},
             selectedPolo: null,
             page: "json",
             polos: [],
@@ -75,7 +93,22 @@ export default {
     components: {
         VueJsonPretty
     },
+    created() {
+        if (!this.polos.length) {
+            this.getPolos();
+        }
+    },
+    computed: {
+        hasSelectedValues() {
+            return Object.keys(this.clickedValue).length;
+        }
+    },
     methods: {
+        handleCloseTag(key) {
+            let newObj = Object.assign({}, this.clickedValue);
+            delete newObj[key];
+            this.clickedValue = newObj;
+        },
         getPolos() {
             this.loading = true;
             this.$http
@@ -92,8 +125,7 @@ export default {
         },
         clearSelection() {
             this.page = "json";
-            this.clickedIndex = null;
-            this.clickedValue = null;
+            this.clickedValue = {};
         },
         closeHandler() {
             this.clearSelection();
@@ -106,22 +138,16 @@ export default {
             if (this.approved) {
                 return;
             }
-            if (!this.polos.length) {
-                this.getPolos();
+            let index = val.replace("root.", "");
+            let value = this.getRecursiveContentValue(index);
+            if (["object", "array"].includes(typeof value)) {
+                return this.$message.error("Conteúdo do registro selecionado inválido !!");
             }
-            this.clickedIndex = val.replace("root.", "");
-            this.$nextTick(() => {
-                this.clickedValue = this.getRecursiveContentValue();
-                if (["object", "array"].includes(typeof this.clickedValue)) {
-                    this.$message.error("O conteúdo do registro não pode ser um objeto ou array.");
-                    return this.clearSelection();
-                }
-                this.page = "compare";
-            });
+            this.$set(this.clickedValue, index, value);
         },
-        getRecursiveContentValue() {
+        getRecursiveContentValue(index) {
             let value = this.content;
-            let arrayIndexes = this.clickedIndex.split(".");
+            let arrayIndexes = index.split(".");
             arrayIndexes.forEach(index => {
                 value = value[index];
             });
@@ -131,7 +157,6 @@ export default {
             this.$loading({ text: "Salvando configuração ..." });
             this.$http
                 .post(`/admin/webhooks/${this.webhook.token}/store-settings`, {
-                    index: this.clickedIndex,
                     value: this.clickedValue,
                     polo_id: this.selectedPolo
                 })

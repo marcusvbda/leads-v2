@@ -119,8 +119,9 @@ class Webhooks extends Resource
 	{
 		$webhook = request("content");
 		$data = $webhook->requests()->orderBy("id", "desc")->paginate(10);
+		$settings = $webhook->settings;
 		$resource = $this;
 		$tenant_id = Auth::user()->tenant_id;
-		return view("admin.webhooks.requests", compact("data", "resource", "webhook", "tenant_id"));
+		return view("admin.webhooks.requests", compact("data", "resource", "webhook", "tenant_id", "settings"));
 	}
 }
