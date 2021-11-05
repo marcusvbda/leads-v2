@@ -42,7 +42,7 @@ class D_LeadsSeeder extends Seeder
 	{
 		DB::table("leads")->truncate();
 		DB::table("webhook_requests")->truncate();
-		$old_leads = DB::connection("old_mysql")->table("_leads")
+		$query = DB::connection("old_mysql")->table("_leads")
 			->join("_fila_contato", "_fila_contato.lead_id", "=", "_leads.id")
 			->join("_tenants", "_fila_contato.tenant_id", "=", "_tenants.id")
 			->select(
@@ -57,53 +57,58 @@ class D_LeadsSeeder extends Seeder
 				"_fila_contato.status_id",
 				"_tenants.nome as tenant_name",
 				"_fila_contato.objecao_id"
-			)->get();
-		foreach ($old_leads as $old_lead) {
-			$old_lead_data = json_decode($old_lead->data);
-			if (@$old_lead->id) {
-				$request = null;
-				if (@$old_lead_data->lead_api) {
-					$request = $this->webhook->requests()->create([
-						"content" => $old_lead_data->lead_api,
-						"approved" => true
+			)
+			->orderBy("_fila_contato.id", "asc");
+
+
+		$query->chunk(100, function ($old_leads) {
+			foreach ($old_leads as $old_lead) {
+				$old_lead_data = json_decode($old_lead->data);
+				if (@$old_lead->id) {
+					$request = null;
+					if (@$old_lead_data->lead_api) {
+						$request = $this->webhook->requests()->create([
+							"content" => $old_lead_data->lead_api,
+							"approved" => true
+						]);
+					}
+					$old_status = DB::connection("old_mysql")->table("_status")->where("id", @$old_lead->status_id)->first();
+					$objecao_id = @$old_lead->objecao_id ?  @$this->getObjection($old_lead->objecao_id) : null;
+					$status = $this->getCurrentStatus($old_status, $objecao_id);
+					$schedule = null;
+					if ($old_status->value == "A") {
+						$schedule = (@$old_lead->schedule_data && @$old_lead->schedule_hora ? (Carbon::create($old_lead->schedule_data . " " . $old_lead->schedule_hora)) : Carbon::now())->format("Y-m-d H:i:s");
+					}
+					Lead::create([
+						"polo_id" => $this->polos[$old_lead->tenant_name],
+						"tenant_id" => 1,
+						"data" => [
+							"lead_api" => @$old_lead_data->lead_api ? $old_lead_data->lead_api : (object)[],
+							"name" => @$old_lead->nome,
+							"email" => @$old_lead->email,
+							"phones" => $this->getPhones($old_lead),
+							"schedule" => $schedule,
+							"city" => @$old_lead->cidade,
+							"interest" => @$old_lead->curso,
+							"api_ref_token" => @$old_lead->ref_token,
+							"obs" => @$old_lead->lead_obs == 'via RD Station' ? 'via RD Station ( ref_token :' . $old_lead->ref_token . ' )' : @$old_lead->lead_obs,
+							"comment" => @$old_lead->fila_obs,
+							"lead_api" => @$old_lead_data->lead_api,
+							"objection" => $objecao_id,
+							"other_objection" => @$old_lead_data->outra_objecao,
+							"log" => $this->getLogs(@$old_lead->log ? json_decode($old_lead->log) : []),
+							"tries" => $this->getTries(@$old_lead_data->tentativa ? $old_lead_data->tentativa : []),
+						],
+						"webhook_id" => $request ? $this->webhook->id : null,
+						"webhook_request_id" => @$request->id,
+						"user_id" => @!$request ? 1 : null,
+						"status_id" => $status,
+						"created_at" => @$old_lead->created_at,
+						"updated_at" => @$old_lead->updated_at,
 					]);
 				}
-				$old_status = DB::connection("old_mysql")->table("_status")->where("id", @$old_lead->status_id)->first();
-				$objecao_id = @$old_lead->objecao_id ?  @$this->getObjection($old_lead->objecao_id) : null;
-				$status = $this->getCurrentStatus($old_status, $objecao_id);
-				$schedule = null;
-				if ($old_status->value == "A") {
-					$schedule = (@$old_lead->schedule_data && @$old_lead->schedule_hora ? (Carbon::create($old_lead->schedule_data . " " . $old_lead->schedule_hora)) : Carbon::now())->format("Y-m-d H:i:s");
-				}
-				Lead::create([
-					"polo_id" => $this->polos[$old_lead->tenant_name],
-					"tenant_id" => 1,
-					"data" => [
-						"lead_api" => @$old_lead_data->lead_api ? $old_lead_data->lead_api : (object)[],
-						"name" => @$old_lead->nome,
-						"email" => @$old_lead->email,
-						"phones" => $this->getPhones($old_lead),
-						"schedule" => $schedule,
-						"city" => @$old_lead->cidade,
-						"interest" => @$old_lead->curso,
-						"api_ref_token" => @$old_lead->ref_token,
-						"obs" => @$old_lead->lead_obs == 'via RD Station' ? 'via RD Station ( ref_token :' . $old_lead->ref_token . ' )' : @$old_lead->lead_obs,
-						"comment" => @$old_lead->fila_obs,
-						"lead_api" => @$old_lead_data->lead_api,
-						"objection" => $objecao_id,
-						"other_objection" => @$old_lead_data->outra_objecao,
-						"log" => $this->getLogs(@$old_lead->log ? json_decode($old_lead->log) : []),
-						"tries" => $this->getTries(@$old_lead_data->tentativa ? $old_lead_data->tentativa : []),
-					],
-					"webhook_id" => $request ? $this->webhook->id : null,
-					"webhook_request_id" => @$request->id,
-					"user_id" => @!$request ? 1 : null,
-					"status_id" => $status,
-					"created_at" => @$old_lead->created_at,
-					"updated_at" => @$old_lead->updated_at,
-				]);
 			}
-		}
+		});
 	}
 
 	private function getLogs($logs)
