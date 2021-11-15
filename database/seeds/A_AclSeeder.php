@@ -55,10 +55,9 @@ class A_AclSeeder extends Seeder
 		DB::table("model_has_roles")->truncate();
 		DB::table("role_has_permissions")->truncate();
 		Cache::flush('spatie.role.cache');
-		$role = Role::create(["name" => "super-admin", "description" => "Super Administrador"]);
+		$role = Role::create(["name" => "super-admin", "description" => "Super Administrador", "tenant_id" => 1]);
 		$role = Role::create(["name" => "admin", "Description" => "Administrador", "tenant_id" => 1]);
-		// $role = Role::create(["name" => "acl_teste", "Description" => "acl_teste", "tenant_id" => 1]);
-		// $role->givePermissionTo(Permission::all());
+		$role->givePermissionTo(Permission::all());
 		$role = Role::create(["name" => "operador", "Description" => "Operador", "tenant_id" => 1]);
 		$role->givePermissionTo(Permission::where(function ($q) {
 			$q->where("name", "like", "%operar%")->orWhere("name", "like", "%viewlist%");

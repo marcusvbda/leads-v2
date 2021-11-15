@@ -1,4 +1,4 @@
-<?php
+@php
 $user = Auth::user();
 function currentClass($routes)
 {
@@ -34,7 +34,7 @@ function getMenuClass($permission, $array_current = [])
     }
     return $class;
 }
-?>
+@endphp
 <nav class="navbar navbar-expand-lg navbar-light bg-light py-0">
     <a class="navbar-brand py-0" href="/admin">
         <text-logo size="30" app_name="{{ config('app.name') }}" />
