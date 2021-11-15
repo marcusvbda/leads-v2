@@ -19,7 +19,7 @@ class B_UsersSeeder extends Seeder
 		$this->createPolos();
 		$this->createDepartments();
 		$this->createUsers();
-		$this->createUsersTest();
+		// $this->createUsersTest();
 		DB::statement('SET AUTOCOMMIT=1;');
 		DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 		DB::statement('COMMIT;');
