@@ -210,6 +210,7 @@ class Usuarios extends Resource
 	{
 		return (!$is_super_admin ?  DB::table("roles")->where("tenant_id", $tenant_id) : DB::table("roles"))
 			->select("id as id", "description as value")
+			->where("tenant_id", $tenant_id)
 			->get();
 	}
 

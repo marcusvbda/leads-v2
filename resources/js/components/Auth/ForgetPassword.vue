@@ -24,33 +24,36 @@
         </div>
     </div>
 </template>
-<<script>
+<script>
 export default {
-	data() {
-		return {
-			loading : false,
-			form : {
-				email : "",
-			},
-		}
-	},
-	methods : {
-		submit() {
+    data() {
+        return {
+            loading: false,
+            form: {
+                email: ""
+            }
+        };
+    },
+    methods: {
+        submit() {
             this.loading = true;
-            this.$http.post(`/esqueci-a-senha`, this.form).then(({data}) => {   
-                if(!data.success) {
-					this.$message(data.message)
-					return this.loading = false
-				}
-				window.location.href = data.route
-            }).catch(er => {
-				this.loading = false
-                this.errors = er.response.data.errors
-                this.$validationErrorMessage(er)
-			})
-		}
-	}
-}
+            this.$http
+                .post(`/esqueci-a-senha`, this.form)
+                .then(({ data }) => {
+                    if (!data.success) {
+                        this.$message(data.message);
+                        return (this.loading = false);
+                    }
+                    window.location.href = data.route;
+                })
+                .catch(er => {
+                    this.loading = false;
+                    this.errors = er.response.data.errors;
+                    this.$validationErrorMessage(er);
+                });
+        }
+    }
+};
 </script>
 <style lang="scss" scoped>
 #auth {

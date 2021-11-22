@@ -1,5 +1,5 @@
 <template>
-    <div class="row" id="auth"  data-aos="fade-down">
+    <div class="row" id="auth" data-aos="fade-down">
         <div class="col-6 d-none d-md-block left-side">
             <div class="d-flex container flex-column d-flex align-items-center justify-content-center">
                 <img src="/assets/images/auth/forgot_password.png" class="w-100" />
@@ -28,35 +28,38 @@
         </div>
     </div>
 </template>
-<<script>
+<script>
 export default {
-	props : ["token"],
-	data() {
-		return {
-			loading : false,
-			form : {
-				password : "",
-				password_confirmation : "",
-			},
-		}
-	},
-	methods : {
-		submit() {
+    props: ["token"],
+    data() {
+        return {
+            loading: false,
+            form: {
+                password: "",
+                password_confirmation: ""
+            }
+        };
+    },
+    methods: {
+        submit() {
             this.loading = true;
-            this.$http.post(`/esqueci-a-senha/${this.token}`, this.form).then(({data}) => {   
-                if(!data.success) {
-					this.$message(data.message)
-					return this.loading = false
-				}
-				window.location.href = data.route
-            }).catch(er => {
-				this.loading = false
-                this.errors = er.response.data.errors
-                this.$validationErrorMessage(er)
-			})
-		}
-	}
-}
+            this.$http
+                .post(`/esqueci-a-senha/${this.token}`, this.form)
+                .then(({ data }) => {
+                    if (!data.success) {
+                        this.$message(data.message);
+                        return (this.loading = false);
+                    }
+                    window.location.href = data.route;
+                })
+                .catch(er => {
+                    this.loading = false;
+                    this.errors = er.response.data.errors;
+                    this.$validationErrorMessage(er);
+                });
+        }
+    }
+};
 </script>
 <style lang="scss" scoped>
 #auth {
@@ -65,7 +68,7 @@ export default {
         .left-side {
             height: 100%;
             .container {
-                padding: 0 100px;
+                max-width: 500px;
                 height: 100%;
             }
             border-right: 1px solid #efefef;
