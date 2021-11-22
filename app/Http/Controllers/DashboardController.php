@@ -61,34 +61,39 @@ class DashboardController extends Controller
 	private function makeParameters(Request $request)
 	{
 		$filter_date = $this->getDateRange($request["selected_range"]);
+		$polos_ids = implode(",", @$request["polo_ids"]);
 		return [
 			"tenant_id" => Auth::user()->tenant_id,
 			"start_date" => $filter_date[0],
 			"end_date" => $filter_date[1],
-			"polo_ids" => implode(",", @$request["polo_ids"] ?? []),
+			"polo_ids" => @$polos_ids ? $polos_ids : "-1"
 		];
 	}
 
 	protected function getLeadsData(Request $request)
 	{
 		$parameters = $this->makeParameters($request);
+		$polos_ids = $parameters["polo_ids"];
+		unset($parameters["polo_ids"]);
 		$data = DB::select(
 			"select count(*) as qty from leads where deleted_at is null and tenant_id = :tenant_id and 
 			( DATE(created_at) >= DATE(:start_date) and DATE(created_at) <= DATE(:end_date))
-			and polo_id in (:polo_ids)",
+			and polo_id in ($polos_ids)",
 			$parameters
 		);
-		return response()->json($data[0]->qty);
+		return response()->json(@$data[0]->qty ?? 0);
 	}
 
 	protected function getLeadFinishedData(Request $request)
 	{
 		$finished = Status::value("finished")->id;
 		$parameters = array_merge($this->makeParameters($request), ["finished_status_id" => $finished]);
+		$polos_ids = $parameters["polo_ids"];
+		unset($parameters["polo_ids"]);
 		$data = DB::select(
 			"select count(*) as qty from leads where deleted_at is null and tenant_id = :tenant_id and 
 			( DATE(finished_at) >= DATE(:start_date) and DATE(finished_at) <= DATE(:end_date))
-			and polo_id in (:polo_ids)
+			and polo_id in ($polos_ids)
 			and status_id = :finished_status_id",
 			$parameters
 		);
@@ -99,11 +104,13 @@ class DashboardController extends Controller
 	{
 		$finished = Status::value("finished")->id;
 		$parameters = array_merge($this->makeParameters($request), ["finished_status_id" => $finished]);
+		$polos_ids = $parameters["polo_ids"];
+		unset($parameters["polo_ids"]);
 		$data = DB::select(
 			"select ifnull(departments.name,'Sem departamento') as department,count(*) as qty FROM 
 			leads left join departments on departments.id=leads.department_id where leads.tenant_id = :tenant_id
 			and ( DATE(leads.finished_at) >= DATE(:start_date) and DATE(leads.finished_at) <= DATE(:end_date))
-			and leads.polo_id in (:polo_ids)
+			and leads.polo_id in ($polos_ids)
 			and leads.status_id = :finished_status_id
 			and leads.deleted_at is null
 			group by leads.department_id order by qty desc
@@ -117,11 +124,13 @@ class DashboardController extends Controller
 	{
 		$finished = Status::value("finished")->id;
 		$parameters = array_merge($this->makeParameters($request), ["finished_status_id" => $finished]);
+		$polos_ids = $parameters["polo_ids"];
+		unset($parameters["polo_ids"]);
 		$data = DB::select(
 			"select ifnull(users.name,'Sem Responsável') as user,count(*) as qty FROM 
 			leads left join users on users.id=leads.responsible_id where leads.tenant_id = :tenant_id
 			and ( DATE(leads.finished_at) >= DATE(:start_date) and DATE(leads.finished_at) <= DATE(:end_date))
-			and leads.polo_id in (:polo_ids)
+			and leads.polo_id in ($polos_ids)
 			and leads.status_id = :finished_status_id
 			and leads.deleted_at is null			
 			group by leads.responsible_id order by qty desc
@@ -134,12 +143,14 @@ class DashboardController extends Controller
 	protected function getCanceledTax(Request $request)
 	{
 		$parameters = $this->makeParameters($request);
+		$polos_ids = $parameters["polo_ids"];
+		unset($parameters["polo_ids"]);
 		$data = DB::select(
 			"select if(statuses.value = 'canceled','canceled','other') as status, count(*) as qty 
 			from  statuses left join leads  on leads.status_id = statuses.id  
 			where leads.tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
-			and leads.polo_id in (:polo_ids)
+			and leads.polo_id in ($polos_ids)
 			and leads.deleted_at is null
 			group by status
 			ORDER BY qty DESC",
@@ -151,12 +162,14 @@ class DashboardController extends Controller
 	protected function getFinishedTax(Request $request)
 	{
 		$parameters = $this->makeParameters($request);
+		$polos_ids = $parameters["polo_ids"];
+		unset($parameters["polo_ids"]);
 		$data = DB::select(
 			"select if(statuses.value = 'finished','finished','other') as status, count(*) as qty 
 			from statuses left join leads on leads.status_id = statuses.id  
 			where leads.tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
-			and leads.polo_id in (:polo_ids)
+			and leads.polo_id in ($polos_ids)
 			and leads.deleted_at is null
 			group by status
 			ORDER BY qty DESC",
@@ -168,12 +181,14 @@ class DashboardController extends Controller
 	protected function getLeadsPerStatus(Request $request)
 	{
 		$parameters = $this->makeParameters($request);
+		$polos_ids = $parameters["polo_ids"];
+		unset($parameters["polo_ids"]);
 		$data = DB::select(
 			"select statuses.name as status, count(*) as qty 
 			from statuses left join leads on leads.status_id = statuses.id  
 			where leads.tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
-			and leads.polo_id in (:polo_ids)
+			and leads.polo_id in ($polos_ids)
 			and leads.deleted_at is null
 			group by status",
 			$parameters
@@ -184,12 +199,14 @@ class DashboardController extends Controller
 	protected function getLeadPerObjection(Request $request)
 	{
 		$parameters = $this->makeParameters($request);
+		$polos_ids = $parameters["polo_ids"];
+		unset($parameters["polo_ids"]);
 		$data = DB::select(
 			"select JSON_UNQUOTE(JSON_EXTRACT(data,'$.objection.name')) as objection, count(*) as qty
 			FROM leads where JSON_UNQUOTE(JSON_EXTRACT(data,'$.objection.name')) is not null 
 			and tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
-			and leads.polo_id in (:polo_ids) 
+			and leads.polo_id in ($polos_ids) 
 			and leads.deleted_at is null
 			group by objection",
 			$parameters
