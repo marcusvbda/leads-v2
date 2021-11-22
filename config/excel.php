@@ -4,9 +4,9 @@ use Maatwebsite\Excel\Excel;
 
 return [
 
-    'exports' => [
+	'exports' => [
 
-        /*
+		/*
         |--------------------------------------------------------------------------
         | Chunk size
         |--------------------------------------------------------------------------
@@ -15,16 +15,16 @@ return [
         | Here you can specify how big the chunk should be.
         |
         */
-        'chunk_size' => 5000,
+		'chunk_size' => 5000,
 
-        /*
+		/*
         |--------------------------------------------------------------------------
         | Pre-calculate formulas during export
         |--------------------------------------------------------------------------
         */
-        'pre_calculate_formulas' => false,
+		'pre_calculate_formulas' => false,
 
-        /*
+		/*
         |--------------------------------------------------------------------------
         | CSV Settings
         |--------------------------------------------------------------------------
@@ -32,23 +32,23 @@ return [
         | Configure e.g. delimiter, enclosure and line ending for CSV exports.
         |
         */
-        'csv'                    => [
-            'delimiter'              => ',',
-            'enclosure'              => '"',
-            'line_ending'            => PHP_EOL,
-            'use_bom'                => false,
-            'include_separator_line' => false,
-            'excel_compatibility'    => false,
-        ],
-    ],
+		'csv'                    => [
+			'delimiter'              => ',',
+			'enclosure'              => '"',
+			'line_ending'            => PHP_EOL,
+			'use_bom'                => false,
+			'include_separator_line' => false,
+			'excel_compatibility'    => false,
+		],
+	],
 
-    'imports'            => [
+	'imports'            => [
 
-        'read_only' => true,
+		'read_only' => true,
 
-        'heading_row' => [
+		'heading_row' => [
 
-            /*
+			/*
             |--------------------------------------------------------------------------
             | Heading Row Formatter
             |--------------------------------------------------------------------------
@@ -57,10 +57,10 @@ return [
             | Available options: none|slug|custom
             |
             */
-            'formatter' => 'slug',
-        ],
+			'formatter' => 'slug',
+		],
 
-        /*
+		/*
         |--------------------------------------------------------------------------
         | CSV Settings
         |--------------------------------------------------------------------------
@@ -68,16 +68,16 @@ return [
         | Configure e.g. delimiter, enclosure and line ending for CSV imports.
         |
         */
-        'csv'         => [
-            'delimiter'              => ',',
-            'enclosure'              => '"',
-            'escape_character'       => '\\',
-            'contiguous'             => false,
-            'input_encoding'         => 'UTF-8',
-        ],
-    ],
+		'csv'         => [
+			'delimiter'              => ',',
+			'enclosure'              => '"',
+			'escape_character'       => '\\',
+			'contiguous'             => false,
+			'input_encoding'         => 'UTF-8',
+		],
+	],
 
-    /*
+	/*
     |--------------------------------------------------------------------------
     | Extension detector
     |--------------------------------------------------------------------------
@@ -87,24 +87,24 @@ return [
     | based on the extension alone.
     |
     */
-    'extension_detector' => [
-        'xlsx'     => Excel::XLSX,
-        'xlsm'     => Excel::XLSX,
-        'xltx'     => Excel::XLSX,
-        'xltm'     => Excel::XLSX,
-        'xls'      => Excel::XLS,
-        'xlt'      => Excel::XLS,
-        'ods'      => Excel::ODS,
-        'ots'      => Excel::ODS,
-        'slk'      => Excel::SLK,
-        'xml'      => Excel::XML,
-        'gnumeric' => Excel::GNUMERIC,
-        'htm'      => Excel::HTML,
-        'html'     => Excel::HTML,
-        'csv'      => Excel::CSV,
-        'tsv'      => Excel::TSV,
+	'extension_detector' => [
+		'xlsx'     => Excel::XLSX,
+		'xlsm'     => Excel::XLSX,
+		'xltx'     => Excel::XLSX,
+		'xltm'     => Excel::XLSX,
+		'xls'      => Excel::XLS,
+		'xlt'      => Excel::XLS,
+		'ods'      => Excel::ODS,
+		'ots'      => Excel::ODS,
+		'slk'      => Excel::SLK,
+		'xml'      => Excel::XML,
+		'gnumeric' => Excel::GNUMERIC,
+		'htm'      => Excel::HTML,
+		'html'     => Excel::HTML,
+		'csv'      => Excel::CSV,
+		'tsv'      => Excel::TSV,
 
-        /*
+		/*
         |--------------------------------------------------------------------------
         | PDF Extension
         |--------------------------------------------------------------------------
@@ -113,12 +113,12 @@ return [
         | Available options: Excel::MPDF | Excel::TCPDF | Excel::DOMPDF
         |
         */
-        'pdf'      => Excel::DOMPDF,
-    ],
+		'pdf'      => Excel::DOMPDF,
+	],
 
-    'value_binder' => [
+	'value_binder' => [
 
-        /*
+		/*
         |--------------------------------------------------------------------------
         | Default Value Binder
         |--------------------------------------------------------------------------
@@ -129,12 +129,12 @@ return [
         | you can implement your own default value binder.
         |
         */
-        'default' => Maatwebsite\Excel\DefaultValueBinder::class,
-    ],
+		'default' => Maatwebsite\Excel\DefaultValueBinder::class,
+	],
 
-    'transactions' => [
+	'transactions' => [
 
-        /*
+		/*
         |--------------------------------------------------------------------------
         | Transaction Handler
         |--------------------------------------------------------------------------
@@ -149,12 +149,12 @@ return [
         | Supported handlers: null|db
         |
         */
-        'handler' => 'db',
-    ],
+		'handler' => 'db',
+	],
 
-    'temporary_files' => [
+	'temporary_files' => [
 
-        /*
+		/*
         |--------------------------------------------------------------------------
         | Local Temporary Path
         |--------------------------------------------------------------------------
@@ -163,9 +163,9 @@ return [
         | storing reading or downloading. Here you can customize that path.
         |
         */
-        'local_path'  => "/temp",
+		'local_path'  => storage_path('app/public/vstack/temp'),
 
-        /*
+		/*
         |--------------------------------------------------------------------------
         | Remote Temporary Disk
         |--------------------------------------------------------------------------
@@ -179,10 +179,10 @@ return [
         | in conjunction with queued imports and exports.
         |
         */
-        'remote_disk'   => null,
-        'remote_prefix' => null,
+		'remote_disk'   => null,
+		'remote_prefix' => null,
 
-        /*
+		/*
         |--------------------------------------------------------------------------
         | Force Resync
         |--------------------------------------------------------------------------
@@ -197,6 +197,6 @@ return [
         | processed it.
         |
         */
-        'force_resync_remote' => null,
-    ],
+		'force_resync_remote' => null,
+	],
 ];
