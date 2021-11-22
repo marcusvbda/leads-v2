@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
 		$schedule
 			->command('queue:work --queue=resource-import,resource-export,alert-broadcasts,event-broadcasts')
 			->everyMinute()
-			->withoutOverlapping();
+			->withoutOverlapping(5);
 	}
 
 	protected function commands()
