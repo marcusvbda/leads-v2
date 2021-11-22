@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="row">
+        <div class="row" v-if="is_head">
             <qty-leads-today class="mb-3" />
             <qty-polos class="mb-3" />
             <qty-users class="mb-3" />

@@ -26,29 +26,36 @@ class DashboardController extends Controller
 
 	protected function polosQty()
 	{
-		$data = DB::select("select count(*) as qty from polos where tenant_id = :tenant_id", ["tenant_id" => Auth::user()->tenant_id]);
+		$user = Auth::user();
+		$data = DB::select("select count(*) as qty from polos where deleted_at is null and tenant_id = :tenant_id", [
+			"tenant_id" => $user->tenant_id,
+		]);
 		return response()->json($data[0]->qty);
 	}
 
 	protected function departmentesQty()
 	{
-		$data = DB::select("select count(*) as qty from departments where tenant_id = :tenant_id", ["tenant_id" => Auth::user()->tenant_id]);
+		$user = Auth::user();
+		$data = DB::select("select count(*) as qty from departments where deleted_at is null and tenant_id = :tenant_id", [
+			"tenant_id" => $user->tenant_id
+		]);
 		return response()->json($data[0]->qty);
 	}
 
 	protected function usersQty()
 	{
-		$data = DB::select("select count(*) as qty from users where tenant_id = :tenant_id", ["tenant_id" => Auth::user()->tenant_id]);
+		$data = DB::select("select count(*) as qty from users where deleted_at is null and tenant_id = :tenant_id", ["tenant_id" => Auth::user()->tenant_id]);
 		return response()->json($data[0]->qty);
 	}
 
 	protected function newLeadsQty(Request $request)
 	{
-		$data = DB::select("select count(*) as qty from leads where tenant_id = :tenant_id and DATE(created_at) = DATE(:created_at)", [
-			"tenant_id" => Auth::user()->tenant_id,
+		$user = Auth::user();
+		$data = DB::select("select * from leads where deleted_at is null and tenant_id = :tenant_id and DATE(created_at) = DATE(:created_at)", [
+			"tenant_id" => $user->tenant_id,
 			"created_at" => $request["today"]
 		]);
-		return response()->json($data[0]->qty);
+		return response()->json(@$data[0]->qty ?? 0);
 	}
 
 	private function makeParameters(Request $request)
@@ -58,7 +65,7 @@ class DashboardController extends Controller
 			"tenant_id" => Auth::user()->tenant_id,
 			"start_date" => $filter_date[0],
 			"end_date" => $filter_date[1],
-			"polo_ids" => implode(",", $request["polo_ids"]),
+			"polo_ids" => implode(",", @$request["polo_ids"] ?? []),
 		];
 	}
 
@@ -66,10 +73,9 @@ class DashboardController extends Controller
 	{
 		$parameters = $this->makeParameters($request);
 		$data = DB::select(
-			"select count(*) as qty from leads where tenant_id = :tenant_id and 
+			"select count(*) as qty from leads where deleted_at is null and tenant_id = :tenant_id and 
 			( DATE(created_at) >= DATE(:start_date) and DATE(created_at) <= DATE(:end_date))
-			and polo_id in (:polo_ids)
-			",
+			and polo_id in (:polo_ids)",
 			$parameters
 		);
 		return response()->json($data[0]->qty);
@@ -80,7 +86,7 @@ class DashboardController extends Controller
 		$finished = Status::value("finished")->id;
 		$parameters = array_merge($this->makeParameters($request), ["finished_status_id" => $finished]);
 		$data = DB::select(
-			"select count(*) as qty from leads where tenant_id = :tenant_id and 
+			"select count(*) as qty from leads where deleted_at is null and tenant_id = :tenant_id and 
 			( DATE(finished_at) >= DATE(:start_date) and DATE(finished_at) <= DATE(:end_date))
 			and polo_id in (:polo_ids)
 			and status_id = :finished_status_id",
@@ -99,6 +105,7 @@ class DashboardController extends Controller
 			and ( DATE(leads.finished_at) >= DATE(:start_date) and DATE(leads.finished_at) <= DATE(:end_date))
 			and leads.polo_id in (:polo_ids)
 			and leads.status_id = :finished_status_id
+			and leads.deleted_at is null
 			group by leads.department_id order by qty desc
 			limit 10",
 			$parameters
@@ -116,6 +123,7 @@ class DashboardController extends Controller
 			and ( DATE(leads.finished_at) >= DATE(:start_date) and DATE(leads.finished_at) <= DATE(:end_date))
 			and leads.polo_id in (:polo_ids)
 			and leads.status_id = :finished_status_id
+			and leads.deleted_at is null			
 			group by leads.responsible_id order by qty desc
 			limit 10",
 			$parameters
@@ -132,6 +140,7 @@ class DashboardController extends Controller
 			where leads.tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
 			and leads.polo_id in (:polo_ids)
+			and leads.deleted_at is null
 			group by status
 			ORDER BY qty DESC",
 			$parameters
@@ -148,6 +157,7 @@ class DashboardController extends Controller
 			where leads.tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
 			and leads.polo_id in (:polo_ids)
+			and leads.deleted_at is null
 			group by status
 			ORDER BY qty DESC",
 			$parameters
@@ -164,6 +174,7 @@ class DashboardController extends Controller
 			where leads.tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
 			and leads.polo_id in (:polo_ids)
+			and leads.deleted_at is null
 			group by status",
 			$parameters
 		);
@@ -179,6 +190,7 @@ class DashboardController extends Controller
 			and tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
 			and leads.polo_id in (:polo_ids) 
+			and leads.deleted_at is null
 			group by objection",
 			$parameters
 		);
