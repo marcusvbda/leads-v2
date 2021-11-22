@@ -21,7 +21,7 @@ class ForgotPasswordController extends Controller
 	{
 		Auth::logout();
 		$user->recovery_token = md5($user->created_at . "_" . $user->id);
-		$link = "/esqueci-a-senha/" . $user->recovery_token;
+		$link = config("app.url") . "/esqueci-a-senha/" . $user->recovery_token;
 		$appName = config("app.name");
 		$user->save();
 		$html = view("mail.forget_password", compact("user", "link", "appName"))->render();
