@@ -9,8 +9,6 @@ use Auth;
 
 class DashboardController extends Controller
 {
-	private $divisor = 5;
-
 	public function index()
 	{
 		return view('admin.index');
