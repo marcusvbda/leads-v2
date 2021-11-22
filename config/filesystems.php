@@ -42,17 +42,6 @@ return [
     */
 
     'disks' => [
-        'cdn' => [
-            'permPublic' => 0755,
-            'driver' => 'sftp',
-            'host' => '149.56.167.156',
-            'username' => 'root',
-            'password' => 'N4NH5zZ9J4',
-            'root' => '/images/',
-            'visibility' => 'public',
-            'api_url' => env("CDN_API_URL", "https://cdn.payt.com.br:82"),
-            'api_namespace' => env("CDN_API_NAMESPACE", "payt")
-        ],
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
@@ -67,7 +56,6 @@ return [
             'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
         ],
-
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
