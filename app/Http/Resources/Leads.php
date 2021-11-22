@@ -3,15 +3,14 @@
 namespace App\Http\Resources;
 
 use marcusvbda\vstack\Resource;
-use App\Http\Models\{Lead};
-use App\Http\Filters\Leads\{
-	LeadsByName,
-	LeadsByStatus,
-};
-use App\Http\Filters\{FilterByPresetData, FilterByTags, FilterByText};
+use App\Http\Models\Lead;
 use App\Http\Actions\Leads\{
 	LeadTransfer,
 };
+use App\Http\Filters\FilterByPresetData;
+use App\Http\Filters\FilterByTags;
+use App\Http\Filters\FilterByText;
+use App\Http\Filters\Leads\LeadsByStatus;
 use marcusvbda\vstack\Fields\{
 	Card,
 	Text,
@@ -22,27 +21,7 @@ class Leads extends Resource
 {
 
 	public $model = Lead::class;
-	public $_filters = [];
 
-	public function __construct()
-	{
-		$this->_filters = [
-			new FilterByPresetData("Data de Criação"),
-			new FilterByText([
-				"column" => "data->name",
-				"label" => "Nome",
-				"index" => "name"
-			]),
-			new FilterByText([
-				"column" => "data->email",
-				"label" => "Email",
-				"index" => "email"
-			]),
-			new LeadsByStatus(),
-			new FilterByTags(Lead::class)
-		];
-		parent::__construct();
-	}
 
 	public function label()
 	{
@@ -52,6 +31,11 @@ class Leads extends Resource
 	public function resultsPerPage()
 	{
 		return [20, 50, 100, 200, 500];
+	}
+
+	public function maxRowsExportSync()
+	{
+		return 1000;
 	}
 
 	public function canClone()
@@ -156,7 +140,21 @@ class Leads extends Resource
 
 	public function filters()
 	{
-		return $this->_filters;
+		$filters = [];
+		$filters[] = new FilterByPresetData("Data de Criação");
+		$filters[] = new FilterByText([
+			"column" => "data->name",
+			"label" => "Nome",
+			"index" => "name"
+		]);
+		$filters[] = new FilterByText([
+			"column" => "data->email",
+			"label" => "Email",
+			"index" => "email"
+		]);
+		$filters[] = new LeadsByStatus();
+		$filters[] = new FilterByTags(Lead::class);
+		return $filters;
 	}
 
 	public function fields()

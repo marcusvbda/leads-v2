@@ -2,6 +2,10 @@
 
 namespace App\Http\Models;
 
+use App\Http\Filters\FilterByPresetData;
+use App\Http\Filters\FilterByTags;
+use App\Http\Filters\FilterByText;
+use App\Http\Filters\Leads\LeadsByStatus;
 use marcusvbda\vstack\Models\DefaultModel;
 use App\User;
 use App\Http\Models\Scopes\{OrderByScope, PoloScope};
@@ -25,6 +29,7 @@ class Lead extends DefaultModel
 		"f_birthdate", "age", "f_last_conversion_date", "api_ref_token", "other_objection", "conversions",
 		"tries", "lead_api", "f_rating", "f_schedule", "f_updated_at"
 	];
+
 
 	public static function boot()
 	{
