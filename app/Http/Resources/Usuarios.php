@@ -214,11 +214,12 @@ class Usuarios extends Resource
 			->get();
 	}
 
-	private function editFields()
+	private function editFields($content)
 	{
 		$user = Auth::user();
 		$is_super_admin = $user->hasRole(["super-admin"]);
 		$cards = [];
+
 		$fields = [
 			new Text([
 				"label" => "Email",
@@ -238,7 +239,7 @@ class Usuarios extends Resource
 				"multiple" => true,
 				"default" => array_map(function ($row) {
 					return strval($row);
-				}, $user->polos()->pluck("id")->toArray()),
+				}, $content ? $content->polos()->pluck("id")->toArray() : []),
 				"options" => $user->tenant->polos()->select("id as id", "name as value")->get(),
 				"all_options_label" => "Todos os Polos"
 			]),
@@ -267,7 +268,7 @@ class Usuarios extends Resource
 		if (!request("content") && !request("id")) {
 			return $this->inviteFields();
 		}
-		return $this->editFields();
+		return $this->editFields(request("content"));
 	}
 
 	public function storeMethod($id, $data)
