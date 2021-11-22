@@ -288,9 +288,7 @@ class Usuarios extends Resource
 		if (@$data["data"]["role_id"]) {
 			$user->syncRoles([Role::findOrFail($data["data"]["role_id"])]);
 		}
-		if (@$data["data"]["polo_ids"]) {
-			$user->polos()->sync($data["data"]["polo_ids"]);
-		}
+		$user->polos()->sync(@$data["data"]["polo_ids"] ? $data["data"]["polo_ids"] : []);
 		if (request("clicked_btn") == "save") {
 			$route = route('resource.edit', ["resource" => $this->id, "code" => $user->code]);
 		} else {
