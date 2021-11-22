@@ -6,7 +6,7 @@ namespace App\Http\Resources;
 use App\Http\Controllers\Auth\UsersController;
 use marcusvbda\vstack\Resource;
 use Auth;
-use App\Http\Filters\User\UserByTenant;
+use App\Http\Filters\Users\UsersByTenant;
 use App\Http\Models\Department;
 use App\Http\Models\Role;
 use App\Http\Models\UserInvite;
@@ -16,7 +16,6 @@ use marcusvbda\vstack\Fields\Text;
 use ResourcesHelpers;
 use App\User;
 use DB;
-use marcusvbda\vstack\Fields\CustomComponent;
 
 class Usuarios extends Resource
 {
@@ -115,7 +114,7 @@ class Usuarios extends Resource
 	{
 		$user = Auth::user();
 		$filters = [];
-		if ($user->hasRole(["super-admin"])) $filters[] = new UserByTenant();
+		if ($user->hasRole(["super-admin"])) $filters[] = new UsersByTenant();
 		return $filters;
 	}
 
