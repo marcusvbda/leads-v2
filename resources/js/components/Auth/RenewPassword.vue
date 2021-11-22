@@ -68,7 +68,6 @@ export default {
         .left-side {
             height: 100%;
             .container {
-                max-width: 500px;
                 height: 100%;
             }
             border-right: 1px solid #efefef;
@@ -78,7 +77,8 @@ export default {
             background-color: white;
             .container {
                 height: 100%;
-                padding: 0 180px;
+                max-width: 500px;
+
                 .title {
                     color: #001737;
                     font-weight: 500;
