@@ -66,6 +66,11 @@ class Leads extends Resource
 		return ["data->name", "data->email"];
 	}
 
+	// public function maxRowsExportSync()
+	// {
+	// 	return 19;
+	// }
+
 	public function table()
 	{
 		$columns = [];

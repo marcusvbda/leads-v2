@@ -13,7 +13,10 @@ class Kernel extends ConsoleKernel
 
 	protected function schedule(Schedule $schedule)
 	{
-		// $schedule->command('command:run-custom-automations')->everyMinute();
+		$schedule
+			->command('queue:work --queue=resource-import,resource-export,alert-broadcasts,event-broadcasts')
+			->everyMinute()
+			->withoutOverlapping();
 	}
 
 	protected function commands()
