@@ -45,6 +45,12 @@ class User extends Authenticatable
 		}
 	}
 
+
+	public function getQtyPolosAttribute()
+	{
+		return $this->polos()->count();
+	}
+
 	public function getCodeAttribute()
 	{
 		return \Hashids::encode($this->id);

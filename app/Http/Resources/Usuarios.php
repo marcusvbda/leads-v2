@@ -54,12 +54,11 @@ class Usuarios extends Resource
 
 	public function table()
 	{
-		$user = Auth::user();
 		$columns = [];
 		$columns["code"] = ["label" => "Código", "sortable_index" => "id"];
 		$columns["name"] = ["label" => "Nome"];
 		$columns["email"] = ["label" => "E-mail"];
-		if ($user->hasRole(["super-admin"])) $columns["tenant->name"] = ["label" => "Tenant", "sortable_index" => "tenant_id"];
+		$columns["qty_polos"] = ["label" => "Polos Vinculados", "sortable" => false];
 		$columns["role_name"] = ["label" => "Grupo de Acesso", "sortable" => false];
 		$columns["department->name"] = ["label" => "Departamento", "sortable" => false];
 		return $columns;
