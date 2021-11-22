@@ -58,7 +58,9 @@ class Usuarios extends Resource
 		$columns["code"] = ["label" => "Código", "sortable_index" => "id"];
 		$columns["name"] = ["label" => "Nome"];
 		$columns["email"] = ["label" => "E-mail"];
-		$columns["qty_polos"] = ["label" => "Polos Vinculados", "sortable" => false];
+		$columns["qty_polos"] = ["label" => "Polos Vinculados", "sortable" => false, "handler" => function ($row) {
+			return $row->polos()->count();
+		}];
 		$columns["role_name"] = ["label" => "Grupo de Acesso", "sortable" => false];
 		$columns["department->name"] = ["label" => "Departamento", "sortable" => false];
 		return $columns;

@@ -2,10 +2,6 @@
 
 namespace App\Http\Models;
 
-use App\Http\Filters\FilterByPresetData;
-use App\Http\Filters\FilterByTags;
-use App\Http\Filters\FilterByText;
-use App\Http\Filters\Leads\LeadsByStatus;
 use marcusvbda\vstack\Models\DefaultModel;
 use App\User;
 use App\Http\Models\Scopes\{OrderByScope, PoloScope};
@@ -39,8 +35,12 @@ class Lead extends DefaultModel
 		static::creating(function ($model) {
 			if (Auth::check()) {
 				$user = Auth::user();
-				if (!@$model->user_id) $model->user_id = $user->id;
-				if (!@$model->polo_id && $user->polo_id) $model->polo_id = $user->polo_id;
+				if (!@$model->user_id) {
+					$model->user_id = $user->id;
+				}
+				if (!@$model->polo_id && $user->polo_id) {
+					$model->polo_id = $user->polo_id;
+				}
 			}
 			if (!@$model->status_id) {
 				$model->status_id = Status::value("waiting")->id;

@@ -5,13 +5,16 @@ namespace App\Http\Resources;
 use marcusvbda\vstack\Resource;
 use App\Http\Models\Lead;
 use App\Http\Actions\Leads\{
+	LeadStatusChange,
 	LeadTransfer,
 };
 use App\Http\Filters\FilterByPresetData;
 use App\Http\Filters\FilterByTags;
 use App\Http\Filters\FilterByText;
 use App\Http\Filters\Leads\LeadsByStatus;
+use App\Http\Models\Status;
 use marcusvbda\vstack\Fields\{
+	BelongsTo,
 	Card,
 	Text,
 	TextArea,
@@ -73,7 +76,8 @@ class Leads extends Resource
 	public function actions()
 	{
 		return [
-			new LeadTransfer()
+			new LeadStatusChange(),
+			new LeadTransfer(),
 		];
 	}
 
@@ -159,99 +163,104 @@ class Leads extends Resource
 
 	public function fields()
 	{
-		$fields = [
-			"Identificação" => [
-				new Text([
-					"label" => "Nome Completo",
-					// "description" => "lorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum",
-					"field" => "name",
-					"rules" => ["required", "max:255"]
-				]),
-				new Text([
-					"type" => "date",
-					"label" => "Data de Nascimento",
-					"field" => "birthdate",
-					"rules" => ["max:255"]
-				]),
-				new Text([
-					"label" => "Profissão",
-					"field" => "profession",
-					"rules" => ["max:255"]
-				]),
-				new TextArea([
-					"label" => "Interesse",
-					"field" => "interest",
-					"rows" => 10,
-					"rules" => ["max:255"]
-				]),
-			],
-			"Contato" => [
-				new Text([
-					"label" => "Email",
-					"field" => "email",
-					"rules" => ["nullable", "max:255", "email"]
-				]),
-				new Text([
-					"label" => "Telefone",
-					"field" => "phone_number",
-					"mask" => ["(##) ####-####", "(##) #####-####"],
-					"rules" => ["max:255"]
-				]),
-				new Text([
-					"label" => "Celular",
-					"field" => "cellphone_number",
-					"mask" => ["(##) ####-####", "(##) #####-####"],
-					"rules" => ["max:255"]
-				]),
-			],
-			"Localidade" => [
-				new Text([
-					"label" => "Cep",
-					"field" => "zipcode",
-					"mask" => ["#####-###"],
-					"rules" => ["max:255"]
-				]),
-				new Text([
-					"label" => "Cidade",
-					"field" => "city",
-					"rules" => ["max:255"]
-				]),
-				new Text([
-					"label" => "Bairro",
-					"field" => "district",
-					"rules" => ["max:255"]
-				]),
-				new Text([
-					"label" => "Número",
-					"field" => "address_number",
-					"rules" => ["max:255"]
-				]),
-				new Text([
-					"label" => "Complemento",
-					"field" => "complementary",
-					"rules" => ["max:255"]
-				]),
-			],
-			"Extras" => [
-				new TextArea([
-					"label" => "Comentários",
-					"field" => "comment",
-					"rows" => 10,
-					"rules" => ["max:255"]
-				]),
-				new TextArea([
-					"label" => "Observações",
-					"field" => "obs",
-					"rows" => 10,
-					"rules" => ["max:255"]
-				]),
-			],
-		];
-
 		$cards = [];
-		foreach ($fields as $key => $value) {
-			$cards[] = new Card($key, $value);
+		$fields = [];
+		if (request("page_type") == "edit") {
+			$fields[] = new BelongsTo([
+				"label" => "Status",
+				"required" => true,
+				"field" => "status_id",
+				"options" => Status::select("id as id", "name as value")->get()
+			]);
 		}
+		$fields[] = new Text([
+			"label" => "Nome Completo",
+			"field" => "name",
+			"rules" => ["required", "max:255"]
+		]);
+		$fields[] = 	new Text([
+			"type" => "date",
+			"label" => "Data de Nascimento",
+			"field" => "birthdate",
+			"rules" => ["max:255"]
+		]);
+		$fields[] = new Text([
+			"label" => "Profissão",
+			"field" => "profession",
+			"rules" => ["max:255"]
+		]);
+		$fields[] = new TextArea([
+			"label" => "Interesse",
+			"field" => "interest",
+			"rows" => 10,
+			"rules" => ["max:255"]
+		]);
+		$cards[] = new Card("Informações Básicas", $fields);
+
+		$cards[] = new Card("Contato", [
+			new Text([
+				"label" => "Email",
+				"field" => "email",
+				"rules" => ["nullable", "max:255", "email"]
+			]),
+			new Text([
+				"label" => "Telefone",
+				"field" => "phone_number",
+				"mask" => ["(##) ####-####", "(##) #####-####"],
+				"rules" => ["max:255"]
+			]),
+			new Text([
+				"label" => "Celular",
+				"field" => "cellphone_number",
+				"mask" => ["(##) ####-####", "(##) #####-####"],
+				"rules" => ["max:255"]
+			]),
+		]);
+
+		$cards[] = new Card("Localidade", [
+			new Text([
+				"label" => "Cep",
+				"field" => "zipcode",
+				"mask" => ["#####-###"],
+				"rules" => ["max:255"]
+			]),
+			new Text([
+				"label" => "Cidade",
+				"field" => "city",
+				"rules" => ["max:255"]
+			]),
+			new Text([
+				"label" => "Bairro",
+				"field" => "district",
+				"rules" => ["max:255"]
+			]),
+			new Text([
+				"label" => "Número",
+				"field" => "address_number",
+				"rules" => ["max:255"]
+			]),
+			new Text([
+				"label" => "Complemento",
+				"field" => "complementary",
+				"rules" => ["max:255"]
+			]),
+		]);
+
+		$cards[] = new Card("Extras", [
+			new TextArea([
+				"label" => "Comentários",
+				"field" => "comment",
+				"rows" => 10,
+				"rules" => ["max:255"]
+			]),
+			new TextArea([
+				"label" => "Observações",
+				"field" => "obs",
+				"rows" => 10,
+				"rules" => ["max:255"]
+			]),
+		]);
+
 		return $cards;
 	}
 

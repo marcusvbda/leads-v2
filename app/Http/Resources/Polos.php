@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Models\Pivots\UserPolo;
 use marcusvbda\vstack\Resource;
 use Auth;
 use marcusvbda\vstack\Fields\{
@@ -44,6 +45,13 @@ class Polos extends Resource
 		$columns = [];
 		$columns["name"] = ["label" => "Nome"];
 		$columns["city"] = ["label" => "Cidade"];
+		$columns["qty_users"] = [
+			"label" => "Usuários com acesso",
+			"handler" => function ($row) {
+				return UserPolo::where("polo_id", $row->id)->count();
+			},
+			"sortable" => false
+		];
 		$columns["f_head"] = ["label" => "Sede", "sortable_index" => "data->head"];
 		return $columns;
 	}

@@ -11,8 +11,8 @@ use marcusvbda\vstack\Services\Messages;
 class LeadTransfer extends Action
 {
 	public $id = "lead-transfer";
-	public $run_btn = "Executar";
-	public $title = "Transferência de Leads";
+	public $run_btn = "Transferir";
+	public $title = "Transferência entre polos";
 	public $polo = null;
 	public function __construct()
 	{
