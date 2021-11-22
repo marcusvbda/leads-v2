@@ -8,6 +8,7 @@ use App\Http\Models\UserNotification;
 use App\Http\Models\Webhook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use marcusvbda\vstack\Services\Messages;
 
 class WebhookController extends Controller
@@ -153,5 +154,14 @@ class WebhookController extends Controller
 				]
 			]);
 		}
+	}
+
+	public function eventsHandler(Request $request)
+	{
+		$this->validate($request, [
+			"integration_key" => "required|string",
+			"event" => "required|string"
+		]);
+		return response('OK');
 	}
 }
