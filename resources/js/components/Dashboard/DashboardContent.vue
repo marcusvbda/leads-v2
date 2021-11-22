@@ -44,21 +44,21 @@
 </template>
 <script>
 export default {
-    props: ['title', 'selected_polo_ids', 'user_id', 'is_head'],
+    props: ["title", "selected_polo_ids", "user_id", "is_head"],
     components: {
-        'dash-filters': require('./-dash-filters.vue').default,
-        'qty-polos': require('./-qty-polos.vue').default,
-        'qty-users': require('./-qty-users.vue').default,
-        'qty-departments': require('./-qty-departments.vue').default,
-        'qty-leads-today': require('./-qty-leads-today.vue').default,
-        'qty-leads': require('./-qty-leads.vue').default,
-        'qty-leads-finished': require('./-qty-leads-finished.vue').default,
-        'top-departments': require('./-top-departments.vue').default,
-        'top-users': require('./-top-users.vue').default,
-        'qty-canceled-tax': require('./-qty-canceled-tax.vue').default,
-        'qty-finished-tax': require('./-qty-finished-tax.vue').default,
-        'chart-status': require('./-chart-status.vue').default,
-        'chart-objection': require('./-chart-objection.vue').default,
-    },
-}
+        "dash-filters": require("./-dash-filters.vue").default,
+        "qty-polos": require("./-qty-polos.vue").default,
+        "qty-users": require("./-qty-users.vue").default,
+        "qty-departments": require("./-qty-departments.vue").default,
+        "qty-leads-today": require("./-qty-leads-today.vue").default,
+        "qty-leads": require("./-qty-leads.vue").default,
+        "qty-leads-finished": require("./-qty-leads-finished.vue").default,
+        "top-departments": require("./-top-departments.vue").default,
+        "top-users": require("./-top-users.vue").default,
+        "qty-canceled-tax": require("./-qty-canceled-tax.vue").default,
+        "qty-finished-tax": require("./-qty-finished-tax.vue").default,
+        "chart-status": require("./-chart-status.vue").default,
+        "chart-objection": require("./-chart-objection.vue").default
+    }
+};
 </script>

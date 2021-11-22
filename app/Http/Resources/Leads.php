@@ -6,10 +6,9 @@ use marcusvbda\vstack\Resource;
 use App\Http\Models\{Lead};
 use App\Http\Filters\Leads\{
 	LeadsByName,
-	LeadsByCreatedDate,
 	LeadsByStatus,
 };
-use App\Http\Filters\{FilterByTags};
+use App\Http\Filters\{FilterByPresetData, FilterByTags, FilterByText};
 use App\Http\Actions\Leads\{
 	LeadTransfer,
 };
@@ -28,8 +27,17 @@ class Leads extends Resource
 	public function __construct()
 	{
 		$this->_filters = [
-			new LeadsByCreatedDate(),
-			new LeadsByName(),
+			new FilterByPresetData("Data de Criação"),
+			new FilterByText([
+				"column" => "data->name",
+				"label" => "Nome",
+				"index" => "name"
+			]),
+			new FilterByText([
+				"column" => "data->email",
+				"label" => "Email",
+				"index" => "email"
+			]),
 			new LeadsByStatus(),
 			new FilterByTags(Lead::class)
 		];
@@ -65,11 +73,6 @@ class Leads extends Resource
 	{
 		return ["data->name", "data->email"];
 	}
-
-	// public function maxRowsExportSync()
-	// {
-	// 	return 19;
-	// }
 
 	public function table()
 	{

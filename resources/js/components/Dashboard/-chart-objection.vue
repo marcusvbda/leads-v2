@@ -4,7 +4,7 @@
             <div class="card shadow h-100">
                 <div class="container py-3">
                     <div class="d-flex flex-column">
-                        <b class="mb-1">Classificação de Leads Objeção </b>
+                        <b class="mb-1">Classificação de Leads por Objeção </b>
                         <small class="text-muted mb-3">Distribuição dos leads criados no periodo do filtro em status</small>
                         <pie-chart :data="chart" v-if="chart.length" legend="right" />
                         <div class="py-5 d-flex flex-row align-items-center justify-content-center" v-else>
@@ -17,43 +17,43 @@
     </div>
 </template>
 <script>
-import { mapActions,mapGetters } from 'vuex'
+import { mapActions, mapGetters } from "vuex";
 export default {
     data() {
         return {
             loading: true,
             timeout: null,
-            chart: {},
-        }
+            chart: {}
+        };
     },
     computed: {
-         ...mapGetters("dashboard",["filter"]),
+        ...mapGetters("dashboard", ["filter"])
     },
     watch: {
         filter: {
-            handler(val) {
-                clearTimeout(this.timeout)
+            handler() {
+                clearTimeout(this.timeout);
                 this.timeout = setTimeout(() => {
-                    this.loading = true
-                    this.getData()
-                })
+                    this.loading = true;
+                    this.getData();
+                });
             },
-            deep: true,
-        },
+            deep: true
+        }
     },
     created() {
-        this.getData()
+        this.getData();
     },
     methods: {
-        ...mapActions("dashboard",["getDashboardContent"]),
+        ...mapActions("dashboard", ["getDashboardContent"]),
         getData() {
-            this.getDashboardContent({ action: 'getLeadPerObjection' }).then((data) => {
-                this.chart = data.map((x) => [x.objection, x.qty])
-                this.loading = false
-            })
-        },
-    },
-}
+            this.getDashboardContent({ action: "getLeadPerObjection" }).then(data => {
+                this.chart = data.map(x => [x.objection, x.qty]);
+                this.loading = false;
+            });
+        }
+    }
+};
 </script>
 <style lang="scss" scoped>
 .dash-card {
