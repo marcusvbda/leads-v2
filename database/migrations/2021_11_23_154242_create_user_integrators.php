@@ -23,7 +23,7 @@ class CreateUserIntegrators extends Migration
             $table->string('key');
             $table->string('env')->default("homologation");
             $table->boolean('enabled');
-            $table->jsonb('data');
+            $table->jsonb('data')->nullable();
             $table->unsignedBigInteger('tenant_id');
             $table->foreign('tenant_id')
                 ->references('id')
