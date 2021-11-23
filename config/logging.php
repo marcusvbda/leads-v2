@@ -109,7 +109,17 @@ return [
 				'filename' => storage_path('logs/sent-{date}.log'),
 				'maxFiles' => 14
 			],
-		]
+		],
+
+		'api_production' => [
+			'driver' => 'single',
+			'path' => storage_path('logs/api_production.log'),
+		],
+
+		'api_homologation' => [
+			'driver' => 'single',
+			'path' => storage_path('logs/api_homologation.log'),
+		],
 	],
 
 ];

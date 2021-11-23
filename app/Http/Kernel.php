@@ -67,7 +67,8 @@ class Kernel extends HttpKernel
 		'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 		'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 		'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
-		'cors' => \App\Http\Middleware\Cors::class
+		'cors' => \App\Http\Middleware\Cors::class,
+		'api.basic_auth' => \App\Http\Middleware\BasicAuthIntegrators::class,
 	];
 
 	/**
