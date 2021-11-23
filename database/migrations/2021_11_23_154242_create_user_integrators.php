@@ -24,6 +24,11 @@ class CreateUserIntegrators extends Migration
             $table->string('env')->default("homologation");
             $table->boolean('enabled');
             $table->jsonb('data');
+            $table->unsignedBigInteger('tenant_id');
+            $table->foreign('tenant_id')
+                ->references('id')
+                ->on('tenants');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
