@@ -97,11 +97,13 @@ class WebhookController extends Controller
 			$indexes = $setting->indexes;
 			$content = $request->content;
 			$indexes = explode("|", $indexes);
-			$hasPositiveResults = count(array_filter(array_map(function ($row) use ($content) {
+			$hasPositiveResults = count(array_filter(array_map(function ($row) use ($content) { //content está sendo usado em eval, não remover
 				$explodedRow = explode("=>", $row);
 				$index = $explodedRow[0];
 				$value = $explodedRow[1];
-				return $value === Arr::get($content, $index);
+				$complete_index = '@$content' . $index;
+				eval('$content_value = ' . $complete_index . ' ? ' . $complete_index . ' : null;');
+				return $value === $content_value;
 			}, $indexes))) == count($indexes);
 			if ($hasPositiveResults) {
 				$this->createLead($request, $webhook, $setting);

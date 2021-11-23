@@ -144,21 +144,29 @@ export default {
             if (this.approved) {
                 return;
             }
-            let index = val.replace("root.", "");
-            let value = this.getRecursiveContentValue(index);
+
+            let index = this.processFieldIndex(val);
+
+            let value = eval(`this.content${index}`);
             if (["object", "array"].includes(typeof value)) {
                 return this.$message.error("Conteúdo do registro selecionado inválido !!");
             }
             this.$message.info("Regra adicionada !!!");
             this.$set(this.clickedValue, index, value);
         },
-        getRecursiveContentValue(index) {
-            let value = this.content;
-            let arrayIndexes = index.split(".");
-            arrayIndexes.forEach(index => {
-                value = value[index];
-            });
-            return value;
+        processFieldIndex(val) {
+            let index = val
+                .replace("root.", "")
+                .split(".")
+                .map(x => {
+                    if (x.indexOf("[") == -1) {
+                        return `['${x}']`;
+                    }
+                    let splited = x.split("[");
+                    return `['${splited[0]}'][${splited[1]}`;
+                })
+                .join("");
+            return index;
         },
         submit() {
             this.$loading({ text: "Salvando configuração ..." });

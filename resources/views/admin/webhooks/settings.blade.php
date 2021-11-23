@@ -26,8 +26,8 @@
                                 @foreach ($data as $row)
                                     <tr>
                                         <td>
-                                            <json-template :content='@json($row->json_indexes)'>
-                                            </json-template>
+                                            <Json-template :content='@json($row->json_indexes)'>
+                                            </Json-template>
                                         </td>
                                         <td class="align-center">{{ $row->polo->name }}</td>
                                         <td>
