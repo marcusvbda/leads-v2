@@ -114,11 +114,15 @@ return [
 		'api_production' => [
 			'driver' => 'single',
 			'path' => storage_path('logs/api_production.log'),
+			'channels' => ['daily'],
+			'ignore_exceptions' => false,
 		],
 
 		'api_homologation' => [
 			'driver' => 'single',
 			'path' => storage_path('logs/api_homologation.log'),
+			'channels' => ['daily'],
+			'ignore_exceptions' => false,
 		],
 	],
 
