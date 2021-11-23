@@ -4,7 +4,7 @@
         <ElDialog
             title="Conteúdo do Request"
             :visible.sync="visible"
-            width="60%"
+            width="75%"
             top="10"
             @closed="closeHandler"
             :close-on-click-modal="false"
@@ -189,5 +189,8 @@ export default {
     .vjs-tree__node {
         cursor: pointer;
     }
+}
+.el-dialog__body {
+    overflow-x: auto !important;
 }
 </style>
