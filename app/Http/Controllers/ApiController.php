@@ -2,27 +2,58 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Models\UserIntegrator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ApiController extends Controller
 {
-    public function generateToken(Request $request)
+    private $events = [
+        "aluno-matriculado" => []
+    ];
+
+    public function testAuth(Request $request)
     {
-        $this->validateRequestAuth($request);
-        $user = UserIntegrator::where("key", $request->key)
-            ->where("enabled", true)
-            ->where("secret", $request->secret)
-            ->firstOrFail();
-        $token = $user->generateTokenJWT();
-        return response()->json(["token" => $token]);
+        return response()->json($request->user);
     }
 
-    private function validateRequestAuth(Request $request)
+    public function eventHandler(Request $request)
     {
         $this->validate($request, [
-            'secret' => 'required',
-            'key' => 'required'
+            'action' => ['required', function ($att, $val, $fail) {
+                if (!in_array($val, ['lead-update'])) {
+                    return $fail('Action inválida');
+                }
+            }],
         ]);
+        Log::channel("api_{$request->user->env}")->info("Api Event Handler", $request->all());
+        return $this->{snakeCaseToCamelCase($request->action)}($request);
+    }
+
+    protected function leadUpdate(Request $request)
+    {
+        $this->validate($request, [
+            'params' => 'required',
+            'params.integration_key' => 'required',
+            'params.event' => [
+                'required',
+                function ($att, $val, $fail) {
+                    if (!is_array(@$this->events[$val])) {
+                        return $fail('Evento inválida');
+                    }
+                }
+            ]
+        ]);
+        $this->validate($request, $this->getEventValidator($request->params["event"]));
+        return response("Ok");
+    }
+
+    private function getEventValidator($event)
+    {
+        return @$this->events[$event];
+    }
+
+    public function getEvents()
+    {
+        return response()->json(array_keys($this->events));
     }
 }

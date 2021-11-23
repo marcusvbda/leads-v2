@@ -18,6 +18,10 @@ class UserIntegrator extends DefaultModel
         "enabled" => "boolean"
     ];
 
+    public $hidden = [
+        "secret"
+    ];
+
     const _ENV_OPTIONS_ = [
         ["value" => "homologation", "label" => "Homologação"],
         ["value" => "production", "label" => "Produção"],
@@ -57,10 +61,5 @@ class UserIntegrator extends DefaultModel
     public function getFEnvAttribute()
     {
         return $this->getValueFromConst($this->env, static::_ENV_OPTIONS_);
-    }
-
-    public function generateTokenJWT()
-    {
-        return "token aqui 123";
     }
 }
