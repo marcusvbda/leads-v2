@@ -64,7 +64,9 @@ class AttendanceController extends Controller
 		$lead = $this->logConversions($lead, $now, $user, $new_status);
 		$lead = $this->logTries($lead, $now, $user, $type, @$objection->description, @$request["other_objection"], @$request['obs']);
 
-		$lead->status_id = $new_status->id;
+		if ($new_status) {
+			$lead->status_id = $new_status->id;
+		}
 
 		if ($answer->need_objection) {
 			$lead->objection = $objection->description;
@@ -97,6 +99,10 @@ class AttendanceController extends Controller
 		if ($answer->need_objection && $answer->is_negative) return  Status::value("canceled");
 		if ($answer->need_schedule && $answer->is_negative) return  Status::value("schedule");
 
+		if ($answer->change_to_waiting && $answer->is_neutral) return  Status::value("waiting");
+
+		if ($answer->do_nothing && $answer->is_neutral) return false;
+
 		if ($answer->need_test) return  Status::value("schedule_test");
 
 		return  Status::value("waiting");
@@ -122,10 +128,15 @@ class AttendanceController extends Controller
 	private function logConversions($lead, $now, $user, $new_status)
 	{
 		$conversions = $lead->conversions;
+		if (!$new_status || ($lead->status_id == @$new_status->id)) {
+			$desc = "Converteu no funil de produção de sem alteração de status";
+		} else {
+			$desc = "Converteu no funil de produção de <b>" . $lead->status->name . "</b> para <b>" . $new_status->name . "</b>";
+		}
 		array_unshift($conversions, [
 			"obs" => @$request["obs"],
 			"date" =>  $now->format("d/m/Y"),
-			"desc" => "Converteu no funil de produção de <b>" . $lead->status->name . "</b> para <b>" . $new_status->name . "</b>",
+			"desc" => $desc,
 			"user" => $user->name,
 			"timestamp" => $now->format("H:i:s")
 		]);

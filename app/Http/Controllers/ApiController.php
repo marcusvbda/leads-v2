@@ -8,8 +8,51 @@ use Illuminate\Support\Facades\Log;
 class ApiController extends Controller
 {
     private $events = [
-        "aluno-matriculado" => []
+        "registration-store-or-update" => [
+            "description" => "Atualizará ou criará um novo cadastro no sistema ( caso a integration_key não exista na base ), sem influenciar em status",
+            "rules" => [
+                "params.data" => ["required"]
+            ]
+        ],
+        "registred-student" => [
+            "description" => "Informará ao CRM que o aluno se cadastrou no sistema acadêmico, mudará o status para aluno cadastrado",
+            "rules" => [
+                "params.data" => ["required"]
+            ]
+        ],
+        "waiting-exame" => [
+            "description" => "Informará ao CRM que o aluno está pronto para prestar o vestibular, mudará o status para aguardando vestibular",
+            "rules" => [
+                "params.subscription_key" => ["required"],
+            ]
+        ],
+        "passed-the-test" => [
+            "description" => "Informará ao CRM que o aluno foi aprovado no vestibular, mudará o status para aprovado no vestibular",
+            "rules" => [
+                "params.subscription_key" => ["required"],
+            ]
+        ],
+        "failed-the-test" => [
+            "description" => "Informará ao CRM que o aluno foi aprovado no vestibular, mudará o status para reprovado no vestibular",
+            "rules" => [
+                "params.subscription_key" => ["required"],
+            ]
+        ],
+        "pre-subscripted" =>  [
+            "description" => "Informará ao CRM que o aluno foi aprovado no vestibular, mudará o status para aprovado no pré-matriculado",
+            "rules" => [
+                "params.subscription_key" => ["required"],
+            ]
+        ],
+        "subscripted" =>  [
+            "description" => "Informará ao CRM que o aluno foi aprovado no vestibular, mudará o status para aprovado no matriculado",
+            "rules" => [
+                "params.subscription_key" => ["required"],
+            ]
+        ]
     ];
+
+    private $actions = ['lead-update'];
 
     public function testAuth(Request $request)
     {
@@ -20,7 +63,7 @@ class ApiController extends Controller
     {
         $this->validate($request, [
             'action' => ['required', function ($att, $val, $fail) {
-                if (!in_array($val, ['lead-update'])) {
+                if (!in_array($val, $this->actions)) {
                     return $fail('Action inválida');
                 }
             }],
@@ -49,11 +92,16 @@ class ApiController extends Controller
 
     private function getEventValidator($event)
     {
-        return @$this->events[$event];
+        return @$this->events[$event]["rules"] ?? [];
     }
 
     public function getEvents()
     {
-        return response()->json(array_keys($this->events));
+        return response()->json($this->events);
+    }
+
+    public function getActions()
+    {
+        return response()->json($this->actions);
     }
 }
