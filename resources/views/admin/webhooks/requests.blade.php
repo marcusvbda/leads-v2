@@ -10,6 +10,7 @@
         </div>
     </td>
     <td>
+        <request-webhooks-filter></request-webhooks-filter>
         <div class="row">
             <div class="col-12">
                 <div class="table-responsive-sm">
@@ -41,7 +42,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $data->links() }}
+                        {{ $data->appends(request()->only(["request_status","requests_page"]))->links() }}
 
                     @else
                         <small class="text-muted my-5">Sem Requests Recebidos</small>

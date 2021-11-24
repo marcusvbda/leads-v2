@@ -20,7 +20,8 @@ export default {
     },
     watch: {
         "filter.status"(val) {
-            window.location.href = window.location.pathname + "?status=" + val;
+            this.$loading({ text: "Aguarde ..." });
+            window.location.href = window.location.pathname + "?request_status=" + val;
         }
     }
 };

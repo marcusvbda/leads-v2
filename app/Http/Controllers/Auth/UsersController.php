@@ -45,7 +45,7 @@ class UsersController extends Controller
 	public function userCreate($tenant_id, $invite_md5, Request $request)
 	{
 		Auth::logout();
-		$invite = UserInvite::where("md5", $invite_md5)->where("tenant_id", $tenant_id)->where("email", $request["email"])->firstOrFail();
+		$invite = UserInvite::where("md5", $invite_md5)->where("tenant_id", $tenant_id)->firstOrFail();
 		return view("admin.users.accept_invite", compact("invite"));
 	}
 
@@ -53,6 +53,7 @@ class UsersController extends Controller
 	{
 		Auth::logout();
 		$invite = UserInvite::where("md5", $invite_md5)->where("tenant_id", $tenant_id)->where("email", $request["email"])->firstOrFail();
+
 		$this->validate($request, [
 			'name' => 'required',
 			'email'    =>  ['required', 'email', Rule::unique('users')->whereNull('deleted_at')],
@@ -65,7 +66,7 @@ class UsersController extends Controller
 		$user->email = $request["email"];
 		$user->name = $request["name"];
 		$user->department_id = @$invite->data->department_id;
-		$user->password = bcrypt($data['password']);
+		$user->password = $data['password'];
 		$user->save();
 		if (@$invite->data->polo_ids) {
 			$user->polos()->sync($invite->data->polo_ids);

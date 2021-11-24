@@ -17,7 +17,7 @@ class UserInvite extends SuperAdminAccessModel
 		});
 	}
 
-	public $appends = ["route", "f_route", "f_time", "resend_route", "cancel_invite"];
+	public $appends = ["code", "route", "f_route", "f_time", "resend_route", "cancel_invite"];
 
 	public $casts = [
 		"data" => "object"
@@ -32,8 +32,7 @@ class UserInvite extends SuperAdminAccessModel
 	{
 		return  route("user.create", [
 			"tenant_id" => $this->tenant->code,
-			"invite_md5" => $this->md5,
-			"email" => $this->email
+			"invite_md5" => $this->md5
 		]);
 	}
 

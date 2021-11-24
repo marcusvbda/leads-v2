@@ -137,8 +137,8 @@ class Webhooks extends Resource
 	{
 		$webhook = request("content");
 		$query = $webhook->requests()->orderBy("id", "desc");
-		if (request("status")) {
-			$query = $query->where("approved", request("status") == "waiting" ? false : true);
+		if (request("request_status")) {
+			$query = $query->where("approved", request("request_status") == "waiting" ? false : true);
 		}
 		$data = $query->paginate(5, ["*"], 'requests_page', request("requests_page") ?? 1);
 		$tenant_id = Auth::user()->tenant_id;
