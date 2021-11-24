@@ -87,8 +87,17 @@ function getMenuClass($permission, $array_current = [])
                         data-label="Regra de Rating de Lead">Regra de Classificação</a>
                 </div>
             </li>
-        </ul>
+        </ul>        
         <select-polo polo_name="{{ $polo->name }}" user_id="{{ $user->id }}" :logged_id='@json($polo->id)'></select-polo>
+        <ul class="navbar-nav ml-3">
+            <li class="nav-item bell-note mx-0">
+                <el-tooltip class="item" effect="dark" content="Clique aqui caso precise de ajuda" placement="bottom">
+                    <a class="nav-link text-center bell-notification" href="https://github.com/marcusvbda/leads-v2/wiki/Conhe%C3%A7a-o-Ezcore-Leads">
+                        <span class="el-icon-s-opportunity" style="font-size: 20px"></span>
+                    </a>
+                </el-tooltip>
+            </li>
+        </ul>
         <notification-bell polo_id="{{ $polo->id }}" :active='@json(currentClass([' /admin/notificacoes/*']))'></notification-bell>
         <ul class="navbar-nav">
             <li class="nav-item dropdown hover-color ml-0">

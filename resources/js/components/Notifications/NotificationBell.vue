@@ -1,12 +1,14 @@
 <template>
     <ul class="navbar-nav">
         <li :class="`nav-item dropdown bell-note mx-0 ${active ? 'active' : ''}`">
-            <a class="nav-link dropdown-toggle text-center bell-notification" href="/admin/notificacoes">
-                <div class="bell-container">
-                    <span class="el-icon-message-solid" style="font-size: 20px"></span>
-                    <span class="qty_badge" v-if="qty > 0">{{ qty }}</span>
-                </div>
-            </a>
+            <el-tooltip class="item" effect="dark" content="Notificações" placement="bottom">
+                <a class="nav-link dropdown-toggle text-center bell-notification" href="/admin/notificacoes">
+                    <div class="bell-container">
+                        <span class="el-icon-message-solid" style="font-size: 20px"></span>
+                        <span class="qty_badge" v-if="qty > 0">{{ qty }}</span>
+                    </div>
+                </a>
+            </el-tooltip>
         </li>
     </ul>
 </template>
