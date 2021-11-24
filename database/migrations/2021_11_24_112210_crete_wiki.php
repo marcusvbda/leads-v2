@@ -17,8 +17,8 @@ class CreteWiki extends Migration
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
             $table->engine = 'InnoDB';
-            // $table->bigIncrements('id');
-            // $table->string('name');
+            $table->bigIncrements('id');
+            $table->string('name');
             // $table->string('secret');
             // $table->string('key');
             // $table->string('env')->default("homologation");
