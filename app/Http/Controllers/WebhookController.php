@@ -8,7 +8,6 @@ use App\Http\Models\UserNotification;
 use App\Http\Models\Webhook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use marcusvbda\vstack\Services\Messages;
 
 class WebhookController extends Controller
@@ -95,7 +94,7 @@ class WebhookController extends Controller
 	{
 		foreach ($settings as $setting) {
 			$indexes = $setting->indexes;
-			$content = $request->content;
+			$content = $request->content; //content está sendo usado em eval, não remover
 			$indexes = explode("|", $indexes);
 			$hasPositiveResults = count(array_filter(array_map(function ($row) use ($content) { //content está sendo usado em eval, não remover
 				$explodedRow = explode("=>", $row);

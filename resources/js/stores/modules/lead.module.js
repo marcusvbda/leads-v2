@@ -1,5 +1,4 @@
 import api from "~/config/libs/axios";
-
 const state = {
     tab: "active",
     departments: [],
@@ -39,8 +38,9 @@ const state = {
     filter: {
         text: "",
         status_ids: [],
-        schedule: []
-    }
+        schedule: [],
+    },
+    preset_dates : null
 };
 
 const getters = {
@@ -99,7 +99,7 @@ const mutations = {
     },
     setFilter: (state, payload) => {
         state.filter = payload;
-    }
+    },
 };
 
 const makeLeadsFilter = (cx, payload) => {
@@ -133,12 +133,12 @@ const makeLeadsFilter = (cx, payload) => {
     if (state.filter.schedule?.length && getters.showScheduleFilter) {
         if (state.filter.schedule[0]) {
             filters.raw_where.push(
-                `TIMESTAMP(json_unquote(json_extract(data,'$.schedule'))) >= TIMESTAMP('${state.filter.schedule[0]}')`
+                `DATE(created_at) >= DATE('${state.filter.schedule[0]}')`
             );
         }
         if (state.filter.schedule[1]) {
             filters.raw_where.push(
-                `TIMESTAMP(json_unquote(json_extract(data,'$.schedule'))) <= TIMESTAMP('${state.filter.schedule[1]}')`
+                `DATE(created_at) <= TIMESTAMP('${state.filter.schedule[1]}')`
             );
         }
     }

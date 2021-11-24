@@ -19,15 +19,8 @@ class CreteWiki extends Migration
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->string('name');
-            // $table->string('secret');
-            // $table->string('key');
-            // $table->string('env')->default("homologation");
-            // $table->boolean('enabled');
-            // $table->jsonb('data')->nullable();
-            // $table->unsignedBigInteger('tenant_id');
-            // $table->foreign('tenant_id')
-            //     ->references('id')
-            //     ->on('tenants');
+            $table->string('slug');
+            $table->jsonb('data')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
