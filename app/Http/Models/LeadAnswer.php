@@ -17,6 +17,8 @@ class LeadAnswer extends DefaultModel
 	];
 
 	const _BEHAVIORS_ = [
+		["value" => "do_nothing", "label" => "Não Alterar Nada"],
+		["value" => "change_to_waiting", "label" => "Alterar para Aguardando Resposta"],
 		["value" => "need_objection", "label" => "Solicitar Objeção"],
 		["value" => "need_schedule", "label" => "Reagendar Contato"],
 		["value" => "need_schedule_test", "label" => "Agendar Vestibular"]
@@ -30,6 +32,16 @@ class LeadAnswer extends DefaultModel
 	public function getNeedScheduleAttribute()
 	{
 		return in_array($this->behavior, ['need_schedule', 'need_schedule_test']);
+	}
+
+	public function getChangeToWaitingAttribute()
+	{
+		return $this->behavior === 'change_to_waiting';
+	}
+
+	public function getDoNothingAttribute()
+	{
+		return $this->behavior === 'do_nothing';
 	}
 
 	public function getNeedObjectionAttribute()
