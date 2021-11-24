@@ -278,7 +278,7 @@ class Usuarios extends Resource
 			$invite = UserInvite::create([
 				"email" => request("email"),
 				"data" => request()->except(["email", "clicked_btn"]),
-				"tenant_id" => request("tenant_id")
+				"tenant_id" => Auth::user()->tenant_id,
 			]);
 			(new UsersController)->inviteEmail($invite);
 			$route = route('resource.index', ["resource" => $this->id]);
