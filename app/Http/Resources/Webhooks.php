@@ -136,7 +136,11 @@ class Webhooks extends Resource
 	private function requestsViews()
 	{
 		$webhook = request("content");
-		$data = $webhook->requests()->orderBy("id", "desc")->paginate(5, ["*"], 'requests_page', request("requests_page") ?? 1);
+		$query = $webhook->requests()->orderBy("id", "desc");
+		if (request("status")) {
+			$query = $query->where("approved", request("status") == "waiting" ? false : true);
+		}
+		$data = $query->paginate(5, ["*"], 'requests_page', request("requests_page") ?? 1);
 		$tenant_id = Auth::user()->tenant_id;
 		return view("admin.webhooks.requests", compact("data", "webhook", "tenant_id"));
 	}

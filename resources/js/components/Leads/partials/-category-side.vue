@@ -21,17 +21,24 @@
                         clearable
                         :options="statuses.map(x => ({ label: x.name, value: String(x.id) }))"
                     />
-                    <el-date-picker
-                        class="w-100 mt-2"
-                        v-if="showScheduleFilter"
-                        v-model="filter.schedule"
-                        type="datetimerange"
-                        range-separator=" - "
-                        start-placeholder=""
-                        end-placeholder=""
-                        format="dd/MM/yyyy HH:mm:ss"
-                        value-format="yyyy-MM-dd HH:mm:ss"
-                    />
+                    <template>
+                        <el-select v-model="date_type" class="w-100 mt-2">
+                            <el-option label="data customizada" value="custom" />
+                            <el-option label="todas as datas" value="all" />
+                            <el-option v-for="(key, i) in Object.keys(preset_date)" :label="key" :value="i" :key="i" />
+                        </el-select>
+                        <el-date-picker
+                            class="w-100 mt-2"
+                            v-if="showScheduleFilter && date_type == 'custom'"
+                            v-model="filter.schedule"
+                            type="datetimerange"
+                            range-separator=" - "
+                            start-placeholder=""
+                            end-placeholder=""
+                            format="dd/MM/yyyy"
+                            value-format="yyyy-MM-dd"
+                        />
+                    </template>
                     <el-tabs class="mt-3" v-model="tab">
                         <el-tab-pane v-loading="!initialized" element-loading-text="Inicializando..." name="active">
                             <span slot="label">
@@ -145,13 +152,15 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
+    props: ["preset_date"],
     data() {
         return {
             timeout: null,
             loading: {
                 statuses: true
             },
-            initialized: false
+            initialized: false,
+            date_type: "all"
         };
     },
     components: {
@@ -174,6 +183,16 @@ export default {
                 }
             },
             deep: true
+        },
+        date_type(val) {
+            if (["custom"].includes(val)) {
+                return;
+            }
+            if (["all"].includes(val)) {
+                return (this.filter.schedule = []);
+            }
+            let presetKeys = Object.keys(this.preset_date);
+            this.filter.schedule = this.preset_date[presetKeys[val]];
         }
     },
     computed: {

@@ -12,14 +12,14 @@ class FilterByPresetData extends Filter
     public $index = "created_at";
     public $action = null;
 
-    protected  $_options = [
+    public  $_options = [
         "hoje" => "getToday",
         "ontem" => "getYesterday",
         "ultimos 7 dias" => "getLastSevenDays",
         "ultimos 14 dias" => "getLastFourteenDays",
         "ultimos 30 dias" => "getLastThirthDays",
         "esta semana" => "getThisWeek",
-        "este mes" => "getThisMonth",
+        "este mês" => "getThisMonth",
         "este ano" => "getThisYear",
     ];
 
@@ -52,47 +52,49 @@ class FilterByPresetData extends Filter
         return  $action($query, $value);
     }
 
-    protected function getDates($value)
+    public function getDates($value)
     {
         $values = explode(",", $value);
-        if (in_array($values[0], array_keys($this->_options))) return $this->{$this->_options[$value]}();
+        if (in_array($values[0], array_keys($this->_options))) {
+            return $this->{$this->_options[$value]}();
+        }
         return $values;
     }
 
-    protected function getLastThirthDays()
+    public function getLastThirthDays()
     {
         $starts = $this->format(Carbon::now()->subDays(30));
         $ends = $this->format(Carbon::now());
         return [$starts, $ends];
     }
 
-    protected function getLastFourteenDays()
+    public function getLastFourteenDays()
     {
         $starts = $this->format(Carbon::now()->subDays(14));
         $ends = $this->format(Carbon::now());
         return [$starts, $ends];
     }
 
-    protected function getLastSevenDays()
+    public function getLastSevenDays()
     {
         $starts = $this->format(Carbon::now()->subDays(7));
         $ends = $this->format(Carbon::now());
         return [$starts, $ends];
     }
 
-    protected function getYesterday()
+    public function getYesterday()
     {
         $yesterday = $this->format(Carbon::now()->subDays(1));
         return [$yesterday, $yesterday];
     }
 
-    protected function getToday()
+    public function getToday()
     {
         $today = $this->format(Carbon::now());
         return [$today, $today];
     }
 
-    protected function getThisWeek()
+    public function getThisWeek()
     {
         return [
             $this->format(Carbon::now()->startOfWeek()->subDays(1)),
@@ -100,7 +102,7 @@ class FilterByPresetData extends Filter
         ];
     }
 
-    protected function getThisYear()
+    public function getThisYear()
     {
         $year = Carbon::now()->format("Y");
         return [
@@ -109,7 +111,7 @@ class FilterByPresetData extends Filter
         ];
     }
 
-    protected function getThisMonth()
+    public function getThisMonth()
     {
         return [
             $this->format(Carbon::now()->startOfMonth()),
@@ -120,5 +122,15 @@ class FilterByPresetData extends Filter
     private function format($date)
     {
         return $date->format("Y-m-d");
+    }
+
+    public static function getAllDates()
+    {
+        $filter = new FilterByPresetData;
+        $options_dates = [];
+        foreach ($filter->_options as $key => $value) {
+            $options_dates[$key] = $filter->{$value}();
+        }
+        return $options_dates;
     }
 }
