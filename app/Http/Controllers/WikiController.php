@@ -6,7 +6,6 @@ class WikiController extends Controller
 {
     public function index()
     {
-        abort(404);
         return view('admin.wiki');
     }
 }
