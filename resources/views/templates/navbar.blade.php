@@ -92,7 +92,7 @@ function getMenuClass($permission, $array_current = [])
         <ul class="navbar-nav ml-3">
             <li class="nav-item bell-note mx-0">
                 <el-tooltip class="item" effect="dark" content="Clique aqui caso precise de ajuda" placement="bottom">
-                    <a class="nav-link text-center bell-notification" href="https://github.com/marcusvbda/leads-v2/wiki/Conhe%C3%A7a-o-Ezcore-Leads">
+                    <a class="nav-link text-center bell-notification" href="/admin/wiki">
                         <span class="el-icon-s-opportunity" style="font-size: 20px"></span>
                     </a>
                 </el-tooltip>
