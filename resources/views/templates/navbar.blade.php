@@ -34,6 +34,12 @@ function getMenuClass($permission, $array_current = [])
     }
     return $class;
 }
+
+$wiki_url = '/admin/wiki';
+if(!$is_super_admin) {
+    $wiki_url = '/admin/wiki/?order_by=id&order_type=asc';
+}
+
 @endphp
 <nav class="navbar navbar-expand-lg navbar-light bg-light py-0">
     <a class="navbar-brand py-0" href="/admin">
@@ -92,7 +98,7 @@ function getMenuClass($permission, $array_current = [])
         <ul class="navbar-nav ml-3">
             <li class="nav-item bell-note mx-0">
                 <el-tooltip class="item" effect="dark" content="Clique aqui caso precise de ajuda" placement="bottom">
-                    <a class="nav-link text-center bell-notification" href="/admin/wiki">
+                    <a class="nav-link text-center bell-notification" href="{{ $wiki_url }}">
                         <span class="el-icon-s-opportunity" style="font-size: 20px"></span>
                     </a>
                 </el-tooltip>

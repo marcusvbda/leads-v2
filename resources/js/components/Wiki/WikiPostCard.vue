@@ -1,7 +1,7 @@
 <template>
     <div class="col-md-4 col-sm-12 wiki-post-card">
         <loading-shimmer :loading="loading" :h="150" class="h-100">
-            <div class="card" @click="goTo(page.url)">
+            <div class="card h-100" @click="goTo(page.url)">
                 <div class="card-body">
                     <h4 class="text-center m-0">{{ page.title }}</h4>
                     <div class="my-3 text-center" v-html="page.description" />
