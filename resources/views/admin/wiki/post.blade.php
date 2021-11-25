@@ -2,6 +2,12 @@
 @section('title', $page->title)
 
 @section('breadcrumb')
+@php
+$wiki_url = '/admin/wiki';
+if(!$is_super_admin) {
+    $wiki_url = '/admin/wiki/?order_by=id&order_type=asc';
+}
+@endphp
 <div class="row">
 	<div class="col-12">
 		<nav aria-label="breadcrumb">
@@ -11,7 +17,7 @@
 						<a href="/admin" class="link">Dashboard</a>
 					</li>
                     <li class="breadcrumb-item">
-						<a href="/admin/wiki" class="link">Wiki</a>
+						<a href="{{ $wiki_url }}" class="link">Wiki</a>
 					</li>		
 		 			<li class="breadcrumb-item active" aria-current="page">{{ $page->title }}</li>					
 				</ol>
