@@ -22,8 +22,9 @@
 @endsection
 @section('content')
 <div class="py-3">
+	<h1>{!!  $page->title !!}</h1>
 	<div class="card">
-		<div class="card-body">
+		<div class="card-body">			
 			{!!  $page->body !!}
 		</div>
 	</div>
