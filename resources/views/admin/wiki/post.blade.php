@@ -22,6 +22,10 @@
 @endsection
 @section('content')
 <div class="py-3">
-    {!!  $page->body !!}
+	<div class="card">
+		<div class="card-body">
+			{!!  $page->body !!}
+		</div>
+	</div>
 </div>
 @endsection
