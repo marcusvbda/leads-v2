@@ -3,6 +3,8 @@
 
 @section('breadcrumb')
 @php
+$user = Auth::user();
+$is_super_admin = $user->isSuperAdmin();
 $wiki_url = '/admin/wiki';
 if(!$is_super_admin) {
     $wiki_url = '/admin/wiki/?order_by=id&order_type=asc';
