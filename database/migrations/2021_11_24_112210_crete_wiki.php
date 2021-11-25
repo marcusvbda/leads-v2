@@ -18,8 +18,11 @@ class CreteWiki extends Migration
             $table->collation = 'utf8mb4_unicode_ci';
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->string('name');
+            $table->string('title');
+            $table->longtext('description');
             $table->string('slug');
+            $table->string('path');
+            $table->longtext('body')->nullable();
             $table->jsonb('data')->nullable();
             $table->softDeletes();
             $table->timestamps();
