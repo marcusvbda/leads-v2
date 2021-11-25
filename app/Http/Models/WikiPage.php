@@ -10,13 +10,12 @@ class WikiPage extends DefaultModel
 {
 	protected $table = "wiki_pages";
 	// public $cascadeDeletes = [];
-	public $restrictDeletes = ["users"];
+	// public $restrictDeletes = [];
 
-	public $appends = ["code"];
+	public $appends = ["code", "url"];
 
 	public $casts = [
 		"data" => "object",
-		"cover" => "boolean"
 	];
 
 	public static function boot()
@@ -31,13 +30,6 @@ class WikiPage extends DefaultModel
 				$slug = $slug . "-" . $count;
 			}
 			$model->attributes["path"] = $slug;
-			if ($model->cover) {
-				static::where("cover", true)->update(["cover" => false]);
-			} else {
-				if (static::where("cover", true)->count() == 0) {
-					$model->attributes["cover"] = true;
-				}
-			}
 		});
 	}
 
@@ -48,12 +40,11 @@ class WikiPage extends DefaultModel
 
 	public function getUrlAttribute()
 	{
-		$path = "/admin/wiki/" . $this->path;
-		return "<a href='{$path}'>{$path}</a>";
+		return "/admin/wiki-page/" . $this->path;
 	}
 
-	public function getFCoverAttribute()
+	public function getFUrlAttribute()
 	{
-		return getEnabledIcon($this->cover);
+		return "<a href='{$this->url}'>{$this->url}</a>";
 	}
 }

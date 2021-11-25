@@ -5,10 +5,8 @@ namespace App\Http\Resources;
 use marcusvbda\vstack\Resource;
 use marcusvbda\vstack\Fields\{
 	Card,
-	Check,
-	CustomComponent,
 	HtmlEditor,
-	Text,
+	Text
 };
 use Auth;
 use App\Http\Models\WikiPage;
@@ -44,15 +42,14 @@ class Wiki extends Resource
 
 	public function search()
 	{
-		return ["name"];
+		return ["title", "body"];
 	}
 
 	public function table()
 	{
 		$columns = [];
 		$columns["title"] = ["label" => "Título"];
-		$columns["f_cover"] = ["label" => "Capa", "sortable_index" => "cover"];
-		$columns["url"] = ["label" => "Url", "sortable_index" => "path"];
+		$columns["f_url"] = ["label" => "Url", "sortable_index" => "path"];
 		$columns["f_created_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
 		return $columns;
 	}
@@ -99,17 +96,18 @@ class Wiki extends Resource
 
 	public function fields()
 	{
-		$fields[] = new Check([
-			"label" => "Capa",
-			"field" => "cover",
-			"rules" => ["required", "max:255"],
-			"description" => "Primeiro post da wiki a aparecer para o usuário, caso nenhuma capa for selecionada, o registro mais antigo será considerado"
-		]);
 		$fields[] = new Text([
 			"label" => "Título",
 			"field" => "title",
 			"rules" => ["required", "max:255"],
 			"description" => "Título da Postagem"
+		]);
+
+		$fields[] = new HtmlEditor([
+			"label" => "Descrição",
+			"field" => "description",
+			"rules" => ["required", "max:255"],
+			"description" => "Descrição da Postagem"
 		]);
 		$cards[] = new Card("Identificação", $fields);
 
@@ -122,5 +120,21 @@ class Wiki extends Resource
 		$cards[] = new Card("Conteúdo", $fields);
 
 		return $cards;
+	}
+
+	public function viewListBlade()
+	{
+		if (Auth::user()->hasRole(["super-admin"])) {
+			return parent::viewListBlade();
+		}
+		return "admin.wiki.index";
+	}
+
+	public function nothingStoredText()
+	{
+		if (Auth::user()->hasRole(["super-admin"])) {
+			return parent::nothingStoredText();
+		}
+		return "<h4>Aguarde, em breve nossa wiki estará completa ...<h4>";
 	}
 }
