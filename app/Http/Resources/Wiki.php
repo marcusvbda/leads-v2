@@ -7,6 +7,7 @@ use marcusvbda\vstack\Fields\{
 	Card,
 	Check,
 	CustomComponent,
+	HtmlEditor,
 	Text,
 };
 use Auth;
@@ -98,14 +99,11 @@ class Wiki extends Resource
 
 	public function fields()
 	{
-		$firstStore = WikiPage::count() === (request("page_type") === "edit" ? 1 : 0);
 		$fields[] = new Check([
 			"label" => "Capa",
 			"field" => "cover",
 			"rules" => ["required", "max:255"],
-			"default" => $firstStore,
-			"disabled" => $firstStore,
-			"description" => "Primeiro post da wiki a aparecer para o usuário"
+			"description" => "Primeiro post da wiki a aparecer para o usuário, caso nenhuma capa for selecionada, o registro mais antigo será considerado"
 		]);
 		$fields[] = new Text([
 			"label" => "Título",
@@ -116,6 +114,11 @@ class Wiki extends Resource
 		$cards[] = new Card("Identificação", $fields);
 
 		$fields = [];
+		$fields[] = new HtmlEditor([
+			"label" => "Conteúdo da Página",
+			"rules" => ["required"],
+			"field" => "body",
+		]);
 		$cards[] = new Card("Conteúdo", $fields);
 
 		return $cards;

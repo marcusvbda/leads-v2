@@ -22,6 +22,7 @@ class CreteWiki extends Migration
             $table->string('title');
             $table->string('slug');
             $table->string('path');
+            $table->longtext('body')->nullable();
             $table->jsonb('data')->nullable();
             $table->softDeletes();
             $table->timestamps();
