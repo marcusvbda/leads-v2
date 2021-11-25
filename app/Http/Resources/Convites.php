@@ -14,7 +14,17 @@ class Convites extends Resource
 		return false;
 	}
 
+	public function resultsPerPage()
+	{
+		return 999999;
+	}
+
 	public function canCreate()
+	{
+		return false;
+	}
+
+	public function canClone()
 	{
 		return false;
 	}

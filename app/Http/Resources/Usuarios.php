@@ -124,12 +124,16 @@ class Usuarios extends Resource
 		$resource = ResourcesHelpers::find("convites");
 		$data = $resource->model;
 		if (Auth::user()->hasRole(["super-admin"])) {
-			if (@$_GET["tenant_id"])
+			if (@$_GET["tenant_id"]) {
 				$data = $data->whereTenantId($_GET["tenant_id"]);
+			}
 		}
 		$data = $data->paginate($this->getPerPage($resource));
-		if ($data->count() <= 0) return;
-		else $view =  view("vStack::resources.partials._table", compact("resource", "data"))->render();
+		if ($data->count() <= 0) {
+			return;
+		} else {
+			$view =  view("vStack::resources.partials._table", compact("resource", "data"))->render();
+		}
 		return "
         <div class='my-5'>
             <h4 class='mb-4'><span class='el-icon-s-promotion mr-2 mr-2'></span> Convites Pendentes</h4>
