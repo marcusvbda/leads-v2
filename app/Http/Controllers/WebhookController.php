@@ -12,11 +12,21 @@ use marcusvbda\vstack\Services\Messages;
 
 class WebhookController extends Controller
 {
-	public function handler($token, Request $request)
+
+	const INDEXES = [
+		"name" => ["name", "nome", "first_name"],
+		"email" => ["email"],
+		"city" => ["city", "cidade", "Cidade Aberto"],
+		"state" => ["state", "estado", "Estado Aberto"],
+		"phone" => ["personal_phone", "Telefone Pessoal", "Telefone"],
+		"mobile_phone" => ["mobile_phone", "Telefone Movel", "Celular"],
+	];
+
+	public function handler($token, Request $request, $lead_id = null)
 	{
 		$webhook = Webhook::where('token', $token)->firstOrFail();
 		$createdRequest = $webhook->requests()->create(['content' => $request->all()]);
-		$processed = $this->processRequest($webhook, $webhook->settings, $createdRequest);
+		$processed = $this->processRequest($webhook, $webhook->settings, $createdRequest, $lead_id);
 		if (!$processed) {
 			$this->sendNotProcessedRequestNotificationToAdminUsers($webhook);
 		}
@@ -90,7 +100,7 @@ class WebhookController extends Controller
 		}
 	}
 
-	private function processRequest($webhook, $settings, $request)
+	private function processRequest($webhook, $settings, $request, $lead_id = null)
 	{
 		foreach ($settings as $setting) {
 			$indexes = $setting->indexes;
@@ -105,7 +115,7 @@ class WebhookController extends Controller
 				return $value === $content_value;
 			}, $indexes))) == count($indexes);
 			if ($hasPositiveResults) {
-				$this->createLead($request, $webhook, $setting);
+				$this->createLead($request, $webhook, $setting, $lead_id);
 				$request->approved = true;
 				$request->save();
 				return true;
@@ -114,12 +124,34 @@ class WebhookController extends Controller
 		return false;
 	}
 
-	private function createLead($request, $webhook, $setting)
+	private function getLeadInfo($content, $indexes = [])
+	{
+		foreach ($indexes as $index) {
+			$value = Arr::get((@$content ? $content : []), $index);
+			if ($value) {
+				return $value;
+			} else {
+				$value = Arr::get((@$content["lead_api"]["leads"][0] ? $content["lead_api"]["leads"][0] : []), $index);
+				if ($value) {
+					return $value;
+				}
+			}
+		}
+		return null;
+	}
+
+	private function createLead($request, $webhook, $setting, $lead_id = null)
 	{
 		$status = Status::value("waiting");
-		$name = Arr::get($request->content, "name");
-		$email = Arr::get($request->content, "email");
-		$lead = Lead::where('data->name', $name)->where('data->email', $email)->where("status_id", $status->id)->first() ?? new Lead;
+		$name = $this->getLeadInfo($request->content, static::INDEXES["name"]);
+		$email = $this->getLeadInfo($request->content, static::INDEXES["email"]);
+
+		if (!$lead_id) {
+			$lead = Lead::where('data->name', $name)->where('data->email', $email)->where("status_id", $status->id)->first() ?? new Lead;
+		} else {
+			$lead = Lead::findOrFail($lead_id);
+		}
+
 		$lead->polo_id = $setting->polo_id;
 		$lead->tenant_id = $webhook->tenant_id;
 		$lead->webhook_id = $webhook->id;
@@ -131,10 +163,10 @@ class WebhookController extends Controller
 		$obs = @$lead->obs ?? 'via Webhook ( ' . $webhook->name . ' )';
 		$lead->data = [
 			"lead_api" => $request->content,
-			"city" => Arr::get($request->content, "city") . " " . Arr::get($request->content, "state"),
+			"city" => $this->getLeadInfo($request->content, static::INDEXES["city"]) . " " . $this->getLeadInfo($request->content, static::INDEXES["state"]),
 			"email" => $email,
 			"name" => $name,
-			"phones" => [Arr::get($request->content, "personal_phone"), Arr::get($request->content, "mobile_phone")],
+			"phones" => [$this->getLeadInfo($request->content, static::INDEXES["phone"]), $this->getLeadInfo($request->content, static::INDEXES["mobile_phone"])],
 			"city" => @$request->content->lastcidade,
 			"obs" => $obs,
 			"comment" => $comment
