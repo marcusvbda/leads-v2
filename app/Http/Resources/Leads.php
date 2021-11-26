@@ -182,7 +182,7 @@ class Leads extends Resource
 			"type" => "date",
 			"label" => "Data de Nascimento",
 			"field" => "birthdate",
-			"rules" => ["max:255"]
+			"rules" => ["max:255"],
 		]);
 		$fields[] = new Text([
 			"label" => "Profissão",
