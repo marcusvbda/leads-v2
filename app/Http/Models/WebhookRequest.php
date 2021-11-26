@@ -12,6 +12,7 @@ class WebhookRequest extends DefaultModel
 	// public $restrictDeletes = [""];
 
 	public $casts = [
+		"hide" => "boolean",
 		"approved" => "boolean",
 		"content" => "json",
 	];

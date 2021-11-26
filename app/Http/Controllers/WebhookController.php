@@ -6,6 +6,7 @@ use App\Http\Models\Lead;
 use App\Http\Models\Status;
 use App\Http\Models\UserNotification;
 use App\Http\Models\Webhook;
+use App\Http\Models\WebhookRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use marcusvbda\vstack\Services\Messages;
@@ -38,7 +39,14 @@ class WebhookController extends Controller
 		$webhook = Webhook::findByCode($code);
 		$methodName = lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $action))));
 		return $this->{$methodName}($webhook, $request);
-		return $actions[$action]($data);
+	}
+
+	public function setHideValue($webhook, Request $request)
+	{
+		$request = WebhookRequest::findOrFail($request->row_id);
+		$request->hide = $request->hide == 'hide' ? false : true;
+		$request->save();
+		return ["success" => true];
 	}
 
 	protected function destroySettings($webhook, Request $request)
@@ -117,6 +125,7 @@ class WebhookController extends Controller
 			if ($hasPositiveResults) {
 				$this->createLead($request, $webhook, $setting, $lead_id);
 				$request->approved = true;
+				$request->hide = false;
 				$request->save();
 				return true;
 			}

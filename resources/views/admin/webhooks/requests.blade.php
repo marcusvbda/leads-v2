@@ -18,6 +18,7 @@
                         <table class="table table-sm table-striped hovered resource-table table-hover mb-0">
                             <thead>
                                 <tr>
+                                    <td></td>
                                     <td><b>Status</b></td>
                                     <td><b>Request</b></td>
                                     <td><b>Data</b></td>
@@ -27,6 +28,10 @@
                             <tbody>
                                 @foreach ($data as $row)
                                     <tr>
+                                        <td>
+                                            <request-hide-action token="{{ $webhook->code }}" :row='@json($row)' >
+                                            </request-hide-action>
+                                        </td>
                                         <td class="f-12">{!! $row->f_approved !!}</td>
                                         <td class="f-12">
                                             <json-viewer :content='@json($row->content)' :webhook='@json($webhook)' :approved='@json($row->approved)'
