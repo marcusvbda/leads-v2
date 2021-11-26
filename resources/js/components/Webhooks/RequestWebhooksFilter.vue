@@ -14,7 +14,7 @@ export default {
     data() {
         return {
             filter: {
-                status: this.$getUrlParams().status || "all"
+                status: this.$getUrlParams().request_status || "all"
             }
         };
     },
