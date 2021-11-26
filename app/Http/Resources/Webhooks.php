@@ -138,7 +138,9 @@ class Webhooks extends Resource
 		$webhook = request("content");
 		$query = $webhook->requests()->orderBy("id", "desc");
 		if (request("request_status")) {
-			$query = $query->where("approved", request("request_status") == "waiting" ? false : true);
+			if (request("request_status") != "all") {
+				$query = $query->where("approved", request("request_status") == "waiting" ? false : true);
+			}
 		}
 
 		$query = $query->where("hide", request("visibility") == 'hidden' ? true : false);
