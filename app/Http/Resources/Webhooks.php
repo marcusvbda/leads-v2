@@ -140,9 +140,8 @@ class Webhooks extends Resource
 		if (request("request_status")) {
 			$query = $query->where("approved", request("request_status") == "waiting" ? false : true);
 		}
-		if (request("visibility")) {
-			$query = $query->where("hide", request("visibility") == 'hidden' ? true : false);
-		}
+
+		$query = $query->where("hide", request("visibility") == 'hidden' ? true : false);
 		$data = $query->paginate(5, ["*"], 'requests_page', request("requests_page") ?? 1);
 		$tenant_id = Auth::user()->tenant_id;
 		return view("admin.webhooks.requests", compact("data", "webhook", "tenant_id"));
