@@ -19,6 +19,7 @@
         "maatwebsite/excel": "^3.1",
         "marcusvbda/validador-cpf-cnpj": "dev-master",
         "marcusvbda/vstack": "dev-master",
+        "mpociot/laravel-apidoc-generator": "^4.8",
         "pusher/pusher-php-server": "^4.1",
         "s-ichikawa/laravel-sendgrid-driver": "2.1",
         "sendgrid/sendgrid": "^7.11",

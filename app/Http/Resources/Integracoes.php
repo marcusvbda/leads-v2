@@ -141,7 +141,25 @@ class Integracoes extends Resource
 			"disabled" => true,
 			"rules" => ["required", "max:255"]
 		]);
+
+		if (request("page_type") == "edit") {
+			$content = request("content");
+			$fields[] = new Text([
+				"label" => "Auth Token",
+				"field" => "token",
+				"description" => "Use o login e senha como basic auth ou passe este token para o header Authorization",
+				"type" => "password",
+				"disabled" => true,
+				"required" => true
+			]);
+		}
 		$cards[] = new Card("Autenticação", $fields);
 		return $cards;
+	}
+
+	public function storeMethod($id, $data)
+	{
+		unset($data["data"]["token"]);
+		return parent::storeMethod($id, $data);
 	}
 }

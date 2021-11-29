@@ -1,0 +1,145 @@
+{
+    "variables": [],
+    "info": {
+        "name": "Leads API",
+        "_postman_id": "13f41638-1ddc-402a-85a4-0772185245e0",
+        "description": "",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.0.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "general",
+            "description": "",
+            "item": [
+                {
+                    "name": "Testar a Autentica\u00e7\u00e3o",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "local.ezcore.leads-v2",
+                            "path": "api\/v1\/test-auth",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Basic {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Listar todos os eventos dispon\u00edveis",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "local.ezcore.leads-v2",
+                            "path": "api\/v1\/get-events",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Basic {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Listar todos as actions dispon\u00edveis",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "local.ezcore.leads-v2",
+                            "path": "api\/v1\/get-actions",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Basic {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Disparar eventos para a action selecionada",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "local.ezcore.leads-v2",
+                            "path": "api\/v1\/event-handler",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Basic {token}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"action\": \"quod\",\n    \"params\": {\n        \"integration_key\": \"ad\",\n        \"event\": \"quia\",\n        \"data\": \"sed\",\n        \"subscription_key\": \"accusamus\"\n    }\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -62,4 +62,9 @@ class UserIntegrator extends DefaultModel
     {
         return $this->getValueFromConst($this->env, static::_ENV_OPTIONS_);
     }
+
+    public function getTokenAttribute()
+    {
+        return "Basic " . base64_encode($this->key . ":" . $this->secret);
+    }
 }
