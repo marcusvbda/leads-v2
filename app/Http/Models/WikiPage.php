@@ -20,6 +20,7 @@ class WikiPage extends DefaultModel
 
 	public static function boot()
 	{
+		// 
 		parent::boot();
 		static::addGlobalScope(new OrderByScope(with(new static)->getTable()));
 		static::saving(function ($model) {
