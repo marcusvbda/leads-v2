@@ -13,7 +13,7 @@ class LeadReprocess extends Action
     public $id = "lead-reprocess";
     public $run_btn = "Reprocessar";
     public $title = "Reprocessar Requests dos Leads";
-    public $message = "Essa ação irá resetar este lead baseado nas configurações de webhooks";
+    public $message = "Essa ação irá reprocessar este lead baseado nas configurações de webhooks";
 
 
     public function handler(Request $request)
@@ -24,8 +24,7 @@ class LeadReprocess extends Action
             $webhook = $lead->webhook;
             $webhook_request = $lead->webhook_request;
             $request = new Request($webhook_request->content);
-            $controllerWebhook->handler($webhook->token, $request);
-            $lead->delete();
+            $controllerWebhook->handler($webhook->token, $request, $lead->id);
         }
         Messages::send("success", "Os leads foram excluidos");
         return ['success' => true];

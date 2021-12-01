@@ -140,12 +140,13 @@ class WebhookController extends Controller
 			$value = Arr::get((@$content ? $content : []), $index);
 			if ($value) {
 				return $value;
-			} else {
-				$value = Arr::get((@$content["lead_api"]["leads"][0] ? $content["lead_api"]["leads"][0] : []), $index);
-				if ($value) {
-					return $value;
-				}
 			}
+			$value = Arr::get((@$content["lead_api"]["leads"][0] ? $content["lead_api"]["leads"][0] : []), $index);
+			if ($value) {
+				return $value;
+			}
+			$value = Arr::get((@$content["leads"][0] ? $content["leads"][0] : []), $index);
+			return $value;
 		}
 		return null;
 	}
