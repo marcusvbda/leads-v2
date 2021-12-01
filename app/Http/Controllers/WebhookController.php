@@ -51,7 +51,8 @@ class WebhookController extends Controller
 
 	protected function destroySettings($webhook, Request $request)
 	{
-		$webhook->settings()->findOrFail($request["id"])->delete();
+		$setting = $webhook->settings()->findOrFail($request["id"]);
+		$setting->delete();
 		Messages::send("success", "Configuração removida com sucesso !!");
 		return ["success" => true];
 	}

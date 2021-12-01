@@ -6,6 +6,8 @@ use marcusvbda\vstack\Resource;
 use App\Http\Models\Lead;
 use App\Http\Actions\Leads\{
 	LeadStatusChange,
+	LeadDelete,
+	LeadReprocess,
 	LeadTransfer,
 };
 use App\Http\Filters\FilterByPresetData;
@@ -78,6 +80,8 @@ class Leads extends Resource
 		return [
 			new LeadStatusChange(),
 			new LeadTransfer(),
+			new LeadDelete(),
+			new LeadReprocess()
 		];
 	}
 
