@@ -1,5 +1,5 @@
 <template>
-    <div v-if="lead.id">
+    <div v-if="lead">
         <div class="row">
             <div class="col-12 d-flex flex-row justify-content-between align-items-center">
                 <div class="d-flex flex-column header">
@@ -36,7 +36,9 @@
                                 <td>
                                     <div class="d-flex flex-column">
                                         <b class="f-12 text-muted">Idade</b>
-                                        <span class="f-12">{{ lead.age ? `${lead.age} Ano${lead.age > 1 ? 's' : ''}` : undefined_text }}</span>
+                                        <span class="f-12">{{
+                                            lead.age ? `${lead.age} Ano${lead.age > 1 ? "s" : ""}` : undefined_text
+                                        }}</span>
                                     </div>
                                 </td>
                                 <td>
@@ -51,7 +53,12 @@
                                 <td>
                                     <div class="d-flex flex-column">
                                         <b class="f-12 text-muted">WhatsApp</b>
-                                        <email-url type="wpp" class="f-12" v-if="lead.cellphone_number" :value="lead.cellphone_number">
+                                        <email-url
+                                            type="wpp"
+                                            class="f-12"
+                                            v-if="lead.cellphone_number"
+                                            :value="lead.cellphone_number"
+                                        >
                                             {{ lead.cellphone_number }}
                                         </email-url>
                                         <span class="f-12" v-else>{{ undefined_text }}o</span>
@@ -98,6 +105,7 @@
                 </div>
             </div>
         </div>
+
         <div class="row" v-if="lead.obs || lead.comment">
             <div class="col-12">
                 <div class="bg-light p-3">
@@ -112,6 +120,28 @@
                 </div>
             </div>
         </div>
+
+        <div class="row" v-if="lead.data.lead_api">
+            <div class="col-12">
+                <div class="bg-light p-3">
+                    <div class="d-flex flex-row mb-3 f-12">
+                        <b class="mr-1">Webhook Request :</b>
+                        <span>
+                            <a href="#" @click.prevent="showing_request = !showing_request">
+                                <template v-if="!showing_request">
+                                    Ver Mais
+                                </template>
+                                <template v-else>
+                                    Ver Menos
+                                </template>
+                            </a>
+                            <VueJsonPretty v-if="showing_request" :data="lead.data.lead_api" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row mb-4" v-if="lead.status.value == 'canceled'">
             <div class="col-12">
                 <div class="alert alert-danger" role="alert">
@@ -126,36 +156,39 @@
     </div>
 </template>
 <script>
-import VRuntimeTemplate from 'v-runtime-template'
-
+import VRuntimeTemplate from "v-runtime-template";
+import VueJsonPretty from "vue-json-pretty";
+import "vue-json-pretty/lib/styles.css";
 export default {
-    props: ['lead_id', 'original_lead'],
+    props: ["lead_id", "original_lead"],
     data() {
         return {
-            undefined_text: 'Não Informado',
+            undefined_text: "Não Informado",
             lead: this.original_lead ?? null,
-        }
+            showing_request: false
+        };
     },
     components: {
-        'v-runtime-template': VRuntimeTemplate,
+        "v-runtime-template": VRuntimeTemplate,
+        VueJsonPretty
     },
     created() {
         if (!this.lead) {
-            this.init()
+            this.init();
         }
     },
     methods: {
         async init() {
-            let { data } = await this.$http.post('/vstack/json-api', {
-                model: '\\App\\Http\\Models\\Lead',
+            let { data } = await this.$http.post("/vstack/json-api", {
+                model: "\\App\\Http\\Models\\Lead",
                 filters: {
-                    where: [['id', '=', this.lead_id]],
-                },
-            })
-            this.lead = data[0]
-        },
-    },
-}
+                    where: [["id", "=", this.lead_id]]
+                }
+            });
+            this.lead = data[0];
+        }
+    }
+};
 </script>
 <style lang="scss" scoped>
 .table-id {
