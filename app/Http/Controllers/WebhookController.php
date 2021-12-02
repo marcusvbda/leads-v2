@@ -166,6 +166,7 @@ class WebhookController extends Controller
 
 	private function createLead($request, $webhook, $setting, $lead_id = null)
 	{
+		$status = Status::value("waiting");
 		$name = $this->getLeadInfo($request->content, static::INDEXES["name"]);
 		$email = $this->getLeadInfo($request->content, static::INDEXES["email"]);
 
