@@ -146,19 +146,32 @@ class WebhookController extends Controller
 				return $value;
 			}
 			$value = Arr::get((@$content["leads"][0] ? $content["leads"][0] : []), $index);
-			return $value;
+			if ($value) {
+				return $value;
+			}
+			$value = Arr::get((@$content["lead_api"] ? $content["lead_api"] : []), $index);
+			if ($value) {
+				return $value;
+			}
+			$value = Arr::get((@$content["lead_api"]["last_conversion"]["content"] ? $content["lead_api"]["last_conversion"]["content"] : []), $index);
+			if ($value) {
+				return $value;
+			}
+			$value = Arr::get((@$content["lead_api"]["first_conversion"]["content"] ? $content["lead_api"]["first_conversion"]["content"] : []), $index);
+			if ($value) {
+				return $value;
+			}
 		}
 		return null;
 	}
 
 	private function createLead($request, $webhook, $setting, $lead_id = null)
 	{
-		$status = Status::value("waiting");
 		$name = $this->getLeadInfo($request->content, static::INDEXES["name"]);
 		$email = $this->getLeadInfo($request->content, static::INDEXES["email"]);
 
 		if (!$lead_id) {
-			$lead = Lead::where('data->name', $name)->where('data->email', $email)->where("status_id", $status->id)->first() ?? new Lead;
+			$lead = Lead::where('data->name', $name)->where('data->email', $email)->first() ?? new Lead;
 		} else {
 			$lead = Lead::findOrFail($lead_id);
 		}
@@ -168,7 +181,7 @@ class WebhookController extends Controller
 		$lead->webhook_id = $webhook->id;
 		$lead->webhook_request_id = $request->id;
 		if (@$lead->id) {
-			$lead->status_id = Status::value("waiting")->id;
+			$lead->status_id = $status->id;
 		}
 		$comment = @$lead->comment ?? '';
 		$obs = @$lead->obs ?? 'via Webhook ( ' . $webhook->name . ' )';
