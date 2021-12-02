@@ -10,6 +10,7 @@ use App\Http\Models\WebhookRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use marcusvbda\vstack\Services\Messages;
+use Carbon\Carbon;
 
 class WebhookController extends Controller
 {
@@ -166,6 +167,7 @@ class WebhookController extends Controller
 
 	private function createLead($request, $webhook, $setting, $lead_id = null)
 	{
+		$now = Carbon::now();
 		$status = Status::value("waiting");
 		$name = $this->getLeadInfo($request->content, static::INDEXES["name"]);
 		$email = $this->getLeadInfo($request->content, static::INDEXES["email"]);
@@ -180,11 +182,14 @@ class WebhookController extends Controller
 		$lead->tenant_id = $webhook->tenant_id;
 		$lead->webhook_id = $webhook->id;
 		$lead->webhook_request_id = $request->id;
+		$conversions = [];
 		if (@$lead->id) {
 			$lead->status_id = $status->id;
+			$conversions = Lead::logConversions($lead, $now, $webhook, null, "Converteu automáticamente sem alteração de status", true);
 		}
 		$comment = @$lead->comment ?? '';
 		$obs = @$lead->obs ?? 'via Webhook ( ' . $webhook->name . ' )';
+
 		$lead->data = [
 			"lead_api" => $request->content,
 			"city" => $this->getLeadInfo($request->content, static::INDEXES["city"]) . " " . $this->getLeadInfo($request->content, static::INDEXES["state"]),
@@ -193,8 +198,9 @@ class WebhookController extends Controller
 			"phones" => [$this->getLeadInfo($request->content, static::INDEXES["phone"]), $this->getLeadInfo($request->content, static::INDEXES["mobile_phone"])],
 			"city" => @$request->content->lastcidade,
 			"obs" => $obs,
-			"comment" => $comment
+			"comment" => $comment,
 		];
+		$lead->conversions = $conversions;
 		$lead->save();
 	}
 

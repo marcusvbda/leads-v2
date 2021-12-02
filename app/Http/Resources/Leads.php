@@ -7,6 +7,7 @@ use App\Http\Models\Lead;
 use App\Http\Actions\Leads\{
 	LeadStatusChange,
 	LeadDelete,
+	LeadRemoveDuplicates,
 	LeadReprocess,
 	LeadTransfer,
 };
@@ -21,6 +22,7 @@ use marcusvbda\vstack\Fields\{
 	Text,
 	TextArea,
 };
+use Auth;
 
 class Leads extends Resource
 {
@@ -77,12 +79,21 @@ class Leads extends Resource
 
 	public function actions()
 	{
-		return [
-			new LeadStatusChange(),
-			new LeadTransfer(),
-			new LeadDelete(),
-			new LeadReprocess()
-		];
+		$user = Auth::user();
+		$is_super_admin_or_admin = $user->hasRole(["super-admin", "admin"]);
+		$actions = [];
+		if (hasPermissionTo("edit-leads")) {
+			$actions[] = new LeadStatusChange();
+			$actions[] = new LeadTransfer();
+		}
+		if (hasPermissionTo("destroy-leads")) {
+			$actions[] = new LeadDelete();
+		}
+		if ($is_super_admin_or_admin) {
+			$actions[] = new LeadReprocess();
+			$actions[] = new LeadRemoveDuplicates();
+		}
+		return $actions;
 	}
 
 

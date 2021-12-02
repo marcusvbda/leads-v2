@@ -52,7 +52,9 @@ class AttendanceController extends Controller
 	public function registerContact($code, Request $request)
 	{
 		$resource = ResourcesHelpers::find("leads");
-		if (!$resource->canUpdate()) abort(403);
+		if (!$resource->canUpdate()) {
+			abort(403);
+		}
 		$lead = Lead::findByCodeOrFail($code);
 		$now =  Carbon::now();
 		$user = Auth::user();
@@ -61,7 +63,7 @@ class AttendanceController extends Controller
 		$objection = Objection::find($request["objection_id"]);
 		$new_status = $this->getNewStatus($answer);
 
-		$lead = $this->logConversions($lead, $now, $user, $new_status);
+		$lead = Lead::logConversions($lead, $now, $user, $new_status);
 		$lead = $this->logTries($lead, $now, $user, $type, @$objection->description, @$request["other_objection"], @$request['obs']);
 
 		if ($new_status) {
@@ -122,25 +124,6 @@ class AttendanceController extends Controller
 			"comment" => null
 		]);
 		$lead->tries = $tries;
-		return $lead;
-	}
-
-	private function logConversions($lead, $now, $user, $new_status)
-	{
-		$conversions = $lead->conversions;
-		if (!$new_status || ($lead->status_id == @$new_status->id)) {
-			$desc = "Converteu no funil de produção de sem alteração de status";
-		} else {
-			$desc = "Converteu no funil de produção de <b>" . $lead->status->name . "</b> para <b>" . $new_status->name . "</b>";
-		}
-		array_unshift($conversions, [
-			"obs" => @$request["obs"],
-			"date" =>  $now->format("d/m/Y"),
-			"desc" => $desc,
-			"user" => $user->name,
-			"timestamp" => $now->format("H:i:s")
-		]);
-		$lead->conversions = $conversions;
 		return $lead;
 	}
 }

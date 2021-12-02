@@ -391,4 +391,31 @@ class Lead extends DefaultModel
 		return $this->belongsTo(WebhookRequest::class);
 	}
 	// relations
+
+
+	public static function logConversions($lead, $now, $user, $new_status = null, $history = null, $just_return = false)
+	{
+		$conversions = $lead->conversions;
+		if ($history) {
+			$desc = $history;
+		} else {
+			if (!$new_status || ($lead->status_id == @$new_status->id)) {
+				$desc = "Converteu no funil de produção de sem alteração de status";
+			} else {
+				$desc = "Converteu no funil de produção de <b>" . $lead->status->name . "</b> para <b>" . $new_status->name . "</b>";
+			}
+		}
+		array_unshift($conversions, [
+			"obs" => @$request["obs"],
+			"date" =>  $now->format("d/m/Y"),
+			"desc" => $desc,
+			"user" => $user->name,
+			"timestamp" => $now->format("H:i:s")
+		]);
+		if ($just_return) {
+			return $conversions;
+		}
+		$lead->conversions = $conversions;
+		return $lead;
+	}
 }
