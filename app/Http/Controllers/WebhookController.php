@@ -138,29 +138,28 @@ class WebhookController extends Controller
 	{
 		foreach ($indexes as $index) {
 			$value = Arr::get((@$content ? $content : []), $index);
-			if ($value) {
-				return $value;
-			}
-			$value = Arr::get((@$content["lead_api"]["leads"][0] ? $content["lead_api"]["leads"][0] : []), $index);
-			if ($value) {
-				return $value;
-			}
+			if ($value) return $value;
+
 			$value = Arr::get((@$content["leads"][0] ? $content["leads"][0] : []), $index);
-			if ($value) {
-				return $value;
-			}
+			if ($value) return $value;
+
+			$value = Arr::get((@$content["leads"][0]["last_conversion"]["content"] ? $content["leads"][0]["last_conversion"]["content"] : []), $index);
+			if ($value) return $value;
+
+			$value = Arr::get((@$content["leads"][0]["first_conversion"]["content"] ? $content["leads"][0]["first_conversion"]["content"] : []), $index);
+			if ($value) return $value;
+
+			$value = Arr::get((@$content["lead_api"]["leads"][0] ? $content["lead_api"]["leads"][0] : []), $index);
+			if ($value) return $value;
+
 			$value = Arr::get((@$content["lead_api"] ? $content["lead_api"] : []), $index);
-			if ($value) {
-				return $value;
-			}
+			if ($value) return $value;
+
 			$value = Arr::get((@$content["lead_api"]["last_conversion"]["content"] ? $content["lead_api"]["last_conversion"]["content"] : []), $index);
-			if ($value) {
-				return $value;
-			}
+			if ($value) return $value;
+
 			$value = Arr::get((@$content["lead_api"]["first_conversion"]["content"] ? $content["lead_api"]["first_conversion"]["content"] : []), $index);
-			if ($value) {
-				return $value;
-			}
+			if ($value) return $value;
 		}
 		return null;
 	}
