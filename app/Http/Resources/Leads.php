@@ -14,6 +14,7 @@ use App\Http\Actions\Leads\{
 use App\Http\Filters\FilterByPresetData;
 use App\Http\Filters\FilterByTags;
 use App\Http\Filters\FilterByText;
+use App\Http\Filters\Leads\LeadsByPhone;
 use App\Http\Filters\Leads\LeadsByStatus;
 use App\Http\Models\Status;
 use marcusvbda\vstack\Fields\{
@@ -75,6 +76,11 @@ class Leads extends Resource
 		$columns["f_rating"] = ["label" => "Classificação", "sortable" => false];
 		$columns["f_updated_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
 		return $columns;
+	}
+
+	public function loadListItemByItem()
+	{
+		return false;
 	}
 
 	public function actions()
@@ -171,6 +177,7 @@ class Leads extends Resource
 			"label" => "Email",
 			"index" => "email"
 		]);
+		$filters[] = new LeadsByPhone();
 		$filters[] = new LeadsByStatus();
 		$filters[] = new FilterByTags(Lead::class);
 		return $filters;
