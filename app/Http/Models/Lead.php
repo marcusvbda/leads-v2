@@ -7,6 +7,7 @@ use App\User;
 use App\Http\Models\Scopes\{OrderByScope, PoloScope};
 use Auth;
 use Carbon\Carbon;
+use marcusvbda\vstack\Vstack;
 
 class Lead extends DefaultModel
 {
@@ -123,6 +124,11 @@ class Lead extends DefaultModel
 	public function getEmailUrlAttribute()
 	{
 		return "<email-url type='email' value='{$this->email}'>{$this->email}</email-url>";
+	}
+
+	public function getContactAttribute()
+	{
+		return Vstack::makeLinesHtmlAppend($this->email_url,$this->cellphone_number,$this->phone_number);
 	}
 
 	public function getPhonesUrlAttribute()

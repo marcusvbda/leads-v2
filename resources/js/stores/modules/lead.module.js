@@ -126,8 +126,11 @@ const makeLeadsFilter = (cx, payload) => {
         }
     };
     if (state.filter.text) {
+        // let only_numbers = state.filter.text.replace(/[^0-9]/g, '');
         let raw_where = `((lower(json_unquote(json_extract(data,'$.name'))) like '%${state.filter.text.toLowerCase()}%')`;
         raw_where += ` or (lower(json_unquote(json_extract(data,'$.email'))) like '%${state.filter.text.toLowerCase()}%'))`;
+        // raw_where += ` or (lower(json_unquote(json_extract(data,'$.phones'))) like '%${only_numbers}%')`;
+        // raw_where += ` or (lower(json_unquote(json_extract(data,'$.phones'))) like '%${state.filter.text.toLowerCase()}%'))`;
         filters.raw_where.push(raw_where);
     }
     if (state.filter.schedule?.length && getters.showScheduleFilter) {
