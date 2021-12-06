@@ -173,7 +173,8 @@ class WebhookController extends Controller
 		$email = $this->getLeadInfo($request->content, static::INDEXES["email"]);
 
 		if (!$lead_id) {
-			$lead = Lead::where('data->name', $name)->where('data->email', $email)->first() ?? new Lead;
+			$foundedLead = Lead::where('data->name', $name)->where('data->email', $email)->where("status_id",$status->id)->first();
+			$lead = $foundedLead ? $foundedLead : new Lead;
 		} else {
 			$lead = Lead::findOrFail($lead_id);
 		}

@@ -204,6 +204,7 @@ import "vue-json-pretty/lib/styles.css";
 import VueJsonPretty from "vue-json-pretty";
 
 export default {
+    props:["after_row"],
     components: {
         VueJsonPretty
     },
@@ -249,6 +250,9 @@ export default {
             let loading = this.$loading({ text: "Finalizando contato ..." });
             this.registerContact(this.form_new_contact)
                 .then(() => {
+                    if(this.after_row != undefined) {
+                        return window.location.reload();    
+                    }
                     this.reloadAllLeads().then(() => {
                         this.form_new_contact = false;
                         this.setLead({});

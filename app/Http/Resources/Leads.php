@@ -293,6 +293,7 @@ class Leads extends Resource
 
 	public function tableAfterRow($row)
 	{
-		return '<identification-row lead_id="' . $row->id . '" />';
+		return view("admin.leads.after_row",compact("row"))->render();
+		// return '<identification-row lead_id="' . $row->id . '" />';
 	}
 }

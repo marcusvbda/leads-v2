@@ -24,7 +24,7 @@ export default {
     },
     watch : {
         lead : {
-            handler : function(newVal,oldVal){
+            handler : function(){ // nao usar arrow function ser assim para o this funcionar
                 this.visible = false
                 this.$nextTick(() => {
                     this.visible = true
@@ -32,9 +32,6 @@ export default {
             },
             deep : true
         }
-    },
-    components: {
-        'convert-lead': require('./-convert-lead.vue').default,
     },
 }
 </script>

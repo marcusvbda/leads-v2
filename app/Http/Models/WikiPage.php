@@ -25,7 +25,7 @@ class WikiPage extends DefaultModel
 		static::saving(function ($model) {
 			$slug = Str::slug($model->title);
 			$model->attributes["slug"] = $slug;
-			$count = static::where("slug", $slug)->count();
+			$count = static::where("slug", $slug)->where('id', '!=', @$model->id)->count();
 			if ($count > 0) {
 				$slug = $slug . "-" . $count;
 			}

@@ -23,7 +23,7 @@
             <div class="col-12">
                 <div class="card no-radius">
                     <div class="card-body">
-                        <info-obs-row />
+                        <info-obs-row :after_row="after_row" />
                     </div>
                 </div>
             </div>
@@ -33,14 +33,18 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
-    props: ['use_tags', 'resource_id', 'answers', 'objections'],
+    props: ['use_tags', 'resource_id', 'answers', 'objections', 'original_lead','after_row'],
     components: {
         'info-obs-row': require('./-info-obs-row').default,
+        'identification-row': require('./-identification-row').default,
     },
     computed: {
         ...mapGetters("lead",["lead"])
     },
     created() {
+        if(this.original_lead) {
+            this.setLead(this.original_lead)
+        }
         this.setUseTags(true)
         this.setResourceId('leads')
         this.getTypes()

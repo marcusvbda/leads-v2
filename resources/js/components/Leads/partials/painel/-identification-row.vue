@@ -121,27 +121,6 @@
             </div>
         </div>
 
-        <div class="row" v-if="lead.data.lead_api">
-            <div class="col-12">
-                <div class="bg-light p-3">
-                    <div class="d-flex flex-row mb-3 f-12">
-                        <b class="mr-1">Webhook Request :</b>
-                        <span>
-                            <a href="#" @click.prevent="showing_request = !showing_request">
-                                <template v-if="!showing_request">
-                                    Ver Mais
-                                </template>
-                                <template v-else>
-                                    Ver Menos
-                                </template>
-                            </a>
-                            <VueJsonPretty v-if="showing_request" :data="lead.data.lead_api" />
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="row mb-4" v-if="lead.status.value == 'canceled'">
             <div class="col-12">
                 <div class="alert alert-danger" role="alert">
@@ -157,8 +136,6 @@
 </template>
 <script>
 import VRuntimeTemplate from "v-runtime-template";
-import VueJsonPretty from "vue-json-pretty";
-import "vue-json-pretty/lib/styles.css";
 export default {
     props: ["lead_id", "original_lead"],
     data() {
@@ -169,8 +146,7 @@ export default {
         };
     },
     components: {
-        "v-runtime-template": VRuntimeTemplate,
-        VueJsonPretty
+        "v-runtime-template": VRuntimeTemplate
     },
     created() {
         if (!this.lead) {
