@@ -128,7 +128,7 @@ class Lead extends DefaultModel
 
 	public function getContactAttribute()
 	{
-		return Vstack::makeLinesHtmlAppend($this->email_url,$this->cellphone_number,$this->phone_number);
+		return Vstack::makeLinesHtmlAppend($this->email_url, $this->cellphone_number, $this->phone_number);
 	}
 
 	public function getPhonesUrlAttribute()
@@ -201,12 +201,12 @@ class Lead extends DefaultModel
 
 	public function getCellphoneNumberAttribute()
 	{
-		return @$this->data->phones[0];
+		return formatPhoneNumber(@$this->data->phones[0]);
 	}
 
 	public function getPhoneNumberAttribute()
 	{
-		return @$this->data->phones[1];
+		return formatPhoneNumber(@$this->data->phones[1]);
 	}
 
 	public function getObsAttribute()

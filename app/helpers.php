@@ -35,7 +35,8 @@ if (!function_exists('formatCnpjCpf')) {
 if (!function_exists('formatPhoneNumber')) {
 	function formatPhoneNumber($TEL)
 	{
-		$TEL = str_replace("+55", "", $TEL);
+
+		$TEL = preg_replace('/[^0-9]/', '', str_replace("+55", "", $TEL));
 		$tam = strlen(preg_replace("/[^0-9]/", "", $TEL));
 		if ($tam == 11) {
 			return "(" . substr($TEL, 0, 2) . ") " . substr($TEL, 2, 5) . "-" . substr($TEL, 7, 11);

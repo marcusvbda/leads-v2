@@ -9,6 +9,7 @@
                         <small class="ml-auto text-muted">{{ department }}</small>
                     </b>
                     <el-input placeholder="Pesquisar..." suffix-icon="el-icon-search" v-model="filter.text" clearable />
+                    <small class="text-muted f-12 mb-2">Filtro por nome, email ou telefone</small>
                     <el-select-all
                         v-if="!loading.statuses"
                         v-model="filter.status_ids"
@@ -39,6 +40,11 @@
                             value-format="yyyy-MM-dd"
                         />
                     </template>
+                    <el-select v-model="filter.date_index" class="w-100 mt-2" v-if="date_type != 'all'">
+                        <el-option label="Data de Criação" value="DATE(created_at)" />
+                        <el-option label="Data de Agendamento" value="DATE(json_unquote(json_extract(data,'$.schedule')))" />
+                    </el-select>
+
                     <el-tabs class="mt-3" v-model="tab">
                         <el-tab-pane v-loading="!initialized" element-loading-text="Inicializando..." name="active">
                             <span slot="label">
