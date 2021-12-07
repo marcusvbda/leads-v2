@@ -49,6 +49,10 @@ class Lead extends DefaultModel
 		});
 	}
 
+	public function getLabelAttribute()
+	{
+		return Vstack::makeLinesHtmlAppend($this->name, "<resource-tags-input class='f-12 mt-1' :default_tags='row.content.tags' only_view />");
+	}
 
 	// getters
 	public function getFRatingAttribute()

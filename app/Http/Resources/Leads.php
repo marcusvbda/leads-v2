@@ -70,7 +70,7 @@ class Leads extends Resource
 	{
 		$columns = [];
 		$columns["code"] = ["label" => "Código", "sortable_index" => "id", "size" => "100px"];
-		$columns["name"] = ["label" => "Nome", "sortable_index" => "data->name"];
+		$columns["label"] = ["label" => "Nome", "sortable_index" => "data->name"];
 		$columns["contact"] = ["label" => "Email", "sortable_index" => "data->email"];
 		$columns["f_status_badge"] = ["label" => "Status", "sortable_index" => "status_id"];
 		$columns["f_rating"] = ["label" => "Classificação", "sortable" => false];
@@ -293,7 +293,6 @@ class Leads extends Resource
 
 	public function tableAfterRow($row)
 	{
-		return view("admin.leads.after_row",compact("row"))->render();
-		// return '<identification-row lead_id="' . $row->id . '" />';
+		return view("admin.leads.after_row", compact("row"))->render();
 	}
 }
