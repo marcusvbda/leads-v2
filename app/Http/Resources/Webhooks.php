@@ -40,11 +40,6 @@ class Webhooks extends Resource
 		return ["name"];
 	}
 
-	private function isHead()
-	{
-		return @Auth::user()->polo->head ?? false;
-	}
-
 	public function table()
 	{
 		$columns = [];
@@ -56,17 +51,17 @@ class Webhooks extends Resource
 
 	public function canCreate()
 	{
-		return  Auth::user()->hasRole(["super-admin", "admin"]) && $this->isHead();
+		return  Auth::user()->hasRole(["super-admin", "admin"]);
 	}
 
 	public function canUpdate()
 	{
-		return  Auth::user()->hasRole(["super-admin", "admin"])  && $this->isHead();
+		return  Auth::user()->hasRole(["super-admin", "admin"]);
 	}
 
 	public function canDelete()
 	{
-		return  Auth::user()->hasRole(["super-admin", "admin"])  && $this->isHead();
+		return  Auth::user()->hasRole(["super-admin", "admin"]);
 	}
 
 	public function canClone()
@@ -86,12 +81,12 @@ class Webhooks extends Resource
 
 	public function canViewList()
 	{
-		return  Auth::user()->hasRole(["super-admin", "admin"])  && $this->isHead();
+		return  Auth::user()->hasRole(["super-admin", "admin"]);
 	}
 
 	public function canView()
 	{
-		return  Auth::user()->hasRole(["super-admin", "admin"])  && $this->isHead();
+		return  Auth::user()->hasRole(["super-admin", "admin"]);
 	}
 
 	public function fields()

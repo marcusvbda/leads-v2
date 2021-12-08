@@ -29,7 +29,8 @@ $polo = $user->polo;
 function getMenuClass($permission, $array_current = [])
 {
     $class = 'dropdown-item ' . currentClass($array_current);
-    if (!hasPermissionTo($permission)) {
+    $permission_value = is_bool($permission) ? $permission : hasPermissionTo($permission);
+    if (!$permission_value) {
         $class .= ' disabled ';
     }
     return $class;
@@ -80,7 +81,7 @@ if(!$is_super_admin) {
                 class="nav-item dropdown {{ currentClass(['/admin/resposta-contatos/*', '/admin/tipos-contato/*', '/admin/respostas-contato/*', '/admin/regra-classificacao/*', '/admin/objecoes/*']) }}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
-                    <i class="el-icon-bangzhu mr-2"></i>Extras
+                    <i class="el-icon-bangzhu mr-2"></i>Tabelas Auxiliares
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="{{ getMenuClass('viewlist-objections', ['/admin/objecoes/*']) }}" href="/admin/objecoes"
@@ -91,6 +92,27 @@ if(!$is_super_admin) {
                         data-label="Contatos com Lead">Respostas de Contato</a>
                     <a class="{{ getMenuClass('config-rating-behavior', ['/admin/regra-classificacao/*']) }}" href="/admin/regra-classificacao"
                         data-label="Regra de Rating de Lead">Regra de Classificação</a>
+                </div>
+            </li>
+            <li
+                class="nav-item dropdown {{ currentClass(['/admin/webhooks/*','/admin/integracoes/*','/admin/landing-pages/*']) }}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <i class="el-icon-s-claim mr-2"></i>Captação
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item {{  getMenuClass($is_admin_or_super_admin, ['/admin/webhooks/*']) }}" href="/admin/webhooks"
+                        data-label="Rotas de Entrada de Lead">
+                        Webhook
+                    </a>
+                    <a class="dropdown-item {{ getMenuClass($is_admin_or_super_admin, ['/admin/integracoes/*']) }}" href="/admin/integradores"
+                        data-label="Usuários de Acesso a API">
+                        Integradores
+                    </a>
+                    <a class="dropdown-item {{ getMenuClass('viewlist-landing-pages', ['/admin/webhooks/*']) }}" href="/admin/landing-pages"
+                        data-label="Para Captação de Leads">
+                        Landing Pages
+                    </a>
                 </div>
             </li>
         </ul>        
@@ -128,9 +150,6 @@ if(!$is_super_admin) {
                     <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/usuarios">Usuários</a>
                     <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/polos">Polos</a>
                     <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/departamentos">Departamentos</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item @if (!$is_admin_or_super_admin || !$polo->head) disabled @endif" href="/admin/webhooks">Webhooks</a>
-                    <a class="dropdown-item @if (!$is_admin_or_super_admin || !$polo->head) disabled @endif" href="/admin/integracoes">Integrações</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/login">Sair</a>
                 </div>
