@@ -1,6 +1,8 @@
 <template>
     <el-tabs v-model="tab" class="h-100">
-        <el-tab-pane name="editor" label="Editor">Editor aqui</el-tab-pane>
+        <el-tab-pane name="editor" label="Editor">
+            <page-editor />
+        </el-tab-pane>
         <el-tab-pane name="settings" label="Configurações">
             <slot name="resource-crud" />
         </el-tab-pane>
@@ -15,8 +17,8 @@ export default {
             tab: this.$getUrlParams().tab || "editor"
         };
     },
-    created() {
-        console.log(this.data);
+    components: {
+        "page-editor": require("./-page_editor.vue").default
     }
 };
 </script>
