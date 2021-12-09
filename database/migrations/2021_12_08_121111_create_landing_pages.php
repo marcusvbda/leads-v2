@@ -17,8 +17,11 @@ class CreateLandingPages extends Migration
             $table->bigIncrements('id');
             $table->boolean('published')->default(false);
             $table->string('name');
+            $table->string('title')->nullable();
+            $table->longText('description')->nullable();
             $table->string('slug');
             $table->string('path');
+            $table->string('action')->default("none");
             $table->unsignedBigInteger('tenant_id');
             $table->foreign('tenant_id')
                 ->references('id')
