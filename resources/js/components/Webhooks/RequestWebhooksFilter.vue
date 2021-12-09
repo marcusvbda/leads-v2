@@ -11,6 +11,10 @@
                 <el-radio-button label="approved">Aprovado</el-radio-button>
             </el-radio-group>
         </div>
+        <div class="col-12 my-3">
+            <el-input placeholder="Filtro de conteúdo" suffix-icon="el-input__icon el-icon-search" v-model="filter.filter">
+            </el-input>
+        </div>
     </div>
 </template>
 <script>
@@ -19,7 +23,9 @@ export default {
         return {
             filter: {
                 status: this.$getUrlParams().request_status || "all",
-                visibility: this.$getUrlParams().visibility || "visible"
+                visibility: this.$getUrlParams().visibility || "visible",
+                filter: this.$getUrlParams().request_filter || "",
+                timeout: null
             }
         };
     },
@@ -27,10 +33,23 @@ export default {
         filter: {
             deep: true,
             handler() {
-                this.$loading({ text: "Aguarde ..." });
-                window.location.href =
-                    window.location.pathname + "?request_status=" + this.filter.status + `&visibility=${this.filter.visibility}`;
+                clearInterval(this.timeout);
+                this.timeout = setInterval(() => {
+                    this.makeFilter();
+                    clearInterval(this.timeout);
+                }, 500);
             }
+        }
+    },
+    computed: {
+        route() {
+            return `${window.location.pathname}?request_status=${this.filter.status}&visibility=${this.filter.visibility}&request_filter=${this.filter.filter}`;
+        }
+    },
+    methods: {
+        makeFilter() {
+            this.$loading({ text: "Aguarde ..." });
+            window.location.href = this.route;
         }
     }
 };

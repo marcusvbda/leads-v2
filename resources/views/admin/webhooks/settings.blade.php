@@ -10,6 +10,7 @@
         </div>
     </td>
     <td>
+        <request-settings-filter :polos='@json(\App\Http\Models\Polo::get())'></request-settings-filter>
         <div class="row">
             <div class="col-12">
                 <div class="table-responsive-sm">

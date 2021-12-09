@@ -123,7 +123,14 @@ class Webhooks extends Resource
 	private function settingsViews()
 	{
 		$webhook = request("content");
-		$data = $webhook->settings()->orderBy("id", "desc")->paginate(5, ["*"], 'settings_page', request("settings_page") ?? 1);
+
+		$query = $webhook->settings();
+
+		if (request("polo_id")) {
+			$query = $query->where("polo_id", request("polo_id"));
+		}
+
+		$data = $query->orderBy("id", "desc")->paginate(15, ["*"], 'settings_page', request("settings_page") ?? 1);
 		$tenant_id = Auth::user()->tenant_id;
 		return view("admin.webhooks.settings", compact("data", "webhook", "tenant_id"));
 	}
@@ -137,9 +144,12 @@ class Webhooks extends Resource
 				$query = $query->where("approved", request("request_status") == "waiting" ? false : true);
 			}
 		}
+		if (request("request_filter")) {
+			$query = $query->where("content", "like", "%" . request("request_filter") . "%");
+		}
 
 		$query = $query->where("hide", request("visibility") == 'hidden' ? true : false);
-		$data = $query->paginate(5, ["*"], 'requests_page', request("requests_page") ?? 1);
+		$data = $query->paginate(15, ["*"], 'requests_page', request("requests_page") ?? 1);
 		$tenant_id = Auth::user()->tenant_id;
 		return view("admin.webhooks.requests", compact("data", "webhook", "tenant_id"));
 	}
