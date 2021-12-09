@@ -24,11 +24,8 @@ export default {
         };
     },
     watch: {
-        filter: {
-            deep: true,
-            handler() {
-                this.makeFilter();
-            }
+        polo_id() {
+            this.makeFilter();
         }
     },
     computed: {
