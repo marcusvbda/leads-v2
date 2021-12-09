@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\WebhookController;
 use Illuminate\Database\Seeder;
 use App\Http\Models\{
 	Lead,
@@ -19,9 +20,10 @@ class G_ProcessAllLeads extends Seeder
 
 	private function handleProcess()
 	{
-		$leads = Lead::get();
+		$leads = Lead::orderBy("id", "desc")->get();
+		$controller = new WebhookController();
 		foreach ($leads as $lead) {
-			dd($lead);
+			dd($controller->getSources($lead->data->lead_api));
 		}
 	}
 }

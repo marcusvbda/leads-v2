@@ -49,9 +49,21 @@ class Lead extends DefaultModel
 		});
 	}
 
+	public function getOriginSourcesBadge()
+	{
+		$sources = $this->data->source ?? [];
+		$html = "";
+		foreach ($sources as $source) {
+			$html .= "<span class='badge badge-primary'>{$source}</span> ";
+		}
+		return $html;
+	}
+
 	public function getLabelAttribute()
 	{
-		return Vstack::makeLinesHtmlAppend($this->name, "<resource-tags-input class='f-12 mt-1' :default_tags='row.content.tags' only_view />");
+		$vstack_tags = "<resource-tags-input class='f-12 mt-1' :default_tags='row.content.tags' only_view />";
+		$tags_origin = $this->getOriginSourcesBadge();
+		return Vstack::makeLinesHtmlAppend($this->name, $tags_origin, $vstack_tags);
 	}
 
 	// getters
