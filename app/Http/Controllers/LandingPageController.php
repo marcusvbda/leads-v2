@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 class LandingPageController extends Controller
 {
-    public function index()
+    public function editor($code)
     {
-        return view('landing_page_editor.editor');
+        // dd($code);
+        return view('admin.landing-pages.editor_frame');
     }
 }

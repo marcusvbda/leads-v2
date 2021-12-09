@@ -1,7 +1,7 @@
 <template>
     <el-tabs v-model="tab" class="h-100">
         <el-tab-pane name="editor" label="Editor">
-            <page-editor />
+            <page-editor :code="content.code" />
         </el-tab-pane>
         <el-tab-pane name="settings" label="Configurações">
             <slot name="resource-crud" />
@@ -11,14 +11,14 @@
 </template>
 <script>
 export default {
-    props: ["data"],
+    props: ["data", "content"],
     data() {
         return {
-            tab: this.$getUrlParams().tab || "editor"
+            tab: this.$getUrlParams().tab || "editor",
         };
     },
     components: {
-        "page-editor": require("./-page_editor.vue").default
-    }
+        "page-editor": require("./-page_editor.vue").default,
+    },
 };
 </script>

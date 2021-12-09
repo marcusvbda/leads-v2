@@ -1,5 +1,6 @@
 <landing-page-editor  
 :data='@json($data)'
+:content='@json($content)'
 >
 <template slot="resource-crud">
     <resource-crud 

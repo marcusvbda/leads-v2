@@ -21,7 +21,6 @@ class CreateLandingPages extends Migration
             $table->longText('description')->nullable();
             $table->string('slug');
             $table->string('path');
-            $table->string('action')->default("none");
             $table->unsignedBigInteger('tenant_id');
             $table->foreign('tenant_id')
                 ->references('id')

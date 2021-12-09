@@ -67,24 +67,4 @@ class LandingPage extends DefaultModel
 		$published = json_encode($this->published);
 		return "<publish-or-stats code='$code' :published='$published'></publish-or-stats>";
 	}
-
-	public function setActionUrlAttribute($value)
-	{
-		setModelDataValue($this, "action_url", $value);
-	}
-
-	public function getActionUrlAttribute()
-	{
-		return $this->data->action_url ?? null;
-	}
-
-	public function setDownloadUrlAttribute($value)
-	{
-		setModelDataValue($this, "download_url", $value);
-	}
-
-	public function getDownloadUrlAttribute()
-	{
-		return $this->data->download_url ?? null;
-	}
 }

@@ -5,7 +5,6 @@ namespace App\Http\Resources;
 use marcusvbda\vstack\Resource;
 use marcusvbda\vstack\Fields\{
 	Card,
-	Radio,
 	Text,
 	TextArea,
 };
@@ -115,71 +114,10 @@ class LandingPages extends Resource
 		return "admin.landing-pages.editor";
 	}
 
-	private function actionHTMLOption($index)
-	{
-		$types = [
-			"redirect" => [
-				"label" => "Redirecionamento da página",
-				"icon" => "el-icon-document-checked"
-			],
-			"download" => [
-				"label" => "Download de arquivo",
-				"icon" => "el-icon-download"
-			],
-			"none" => [
-				"label" => "Nenhuma ação",
-				"icon" => "el-icon-circle-close"
-			]
-		];
-		$type = $types[$index];
-		return '<div class="d-flex flex-column align-items-center justify-content-center">
-					<span class="mb-2">' . $type['label'] . '</span>
-					<h2><i class="' . $type['icon'] . '"></i></h2>
-				</div>';
-	}
-
 	public function fields()
 	{
 		$cards = [];
 		$is_creating = $this->isCreating();
-
-		$fields = [
-			new Radio([
-				"label" => "Ação",
-				"description" => "Quando o visitante clicar no CTA, o que deverá acontecer ?",
-				"field" => "action",
-				"default" => "none",
-				"options" => [
-					["value" => "redirect", "label" => $this->actionHTMLOption('redirect')],
-					["value" => "download", "label" => $this->actionHTMLOption('download')],
-					["value" => "none", "label" => $this->actionHTMLOption('none')]
-				],
-				"rules" => $is_creating ? [] : ["required", "max:255"]
-			]),
-			new Text([
-				"label" => "Página de Agradecimento",
-				"description" => "O usuário será direcionado para está URL após clicar no CTA",
-				"field" => "action_url",
-				"eval" => "v-if='form.action == `redirect`'",
-				"rules" => ["max:255", function ($attr, $val, $fail) use ($is_creating) {
-					if (!$is_creating && request()->action == 'redirect' && !$val) {
-						return $fail("Url de redirecionamento é obrigatório");
-					}
-				}],
-			]),
-			new Text([
-				"label" => "Url de Download",
-				"description" => "O usuário fará automáticamente o download apartir desta URL após clicar no CTA",
-				"field" => "download_url",
-				"eval" => "v-if='form.action == `download`'",
-				"rules" => ["max:255", function ($attr, $val, $fail) use ($is_creating) {
-					if (!$is_creating && request()->action == 'download' && !$val) {
-						return $fail("Url de download é obrigatório");
-					}
-				}],
-			]),
-		];
-		$cards[] = new Card("Ações do Formulário", $fields);
 
 		$fields = [];
 		$fields = [
@@ -193,27 +131,17 @@ class LandingPages extends Resource
 				"label" => "Títula da Página",
 				"description" => "Importante para o SEO",
 				"field" => "title",
-				"rules" => $this->isCreating() ? [] : ["max:255"]
+				"rules" => $is_creating ? [] : ["max:255"]
 			]),
 			new TextArea([
 				"label" => "Descrição da Página",
 				"description" => "Importante para o SEO",
 				"field" => "description",
-				"rules" => $this->isCreating() ? [] : ["max:500"]
+				"rules" => $is_creating ? [] : ["max:500"]
 			]),
 		];
 		$cards[] = new Card("Informações", $fields);
-		return $cards;
-	}
 
-	public function storeMethod($id, $data)
-	{
-		if ($data["data"]["action"] != "redirect") {
-			$data["data"]["action_url"] = null;
-		}
-		if ($data["data"]["action"] != "download") {
-			$data["data"]["download_url"] = null;
-		}
-		return parent::storeMethod($id, $data);
+		return $cards;
 	}
 }

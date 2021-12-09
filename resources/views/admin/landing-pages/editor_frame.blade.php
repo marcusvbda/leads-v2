@@ -13,6 +13,9 @@
         </div>
     
         <script type="text/javascript">
+          if(!window.parent.__code__) {
+            throw "Code not found";
+          }
           const editor = grapesjs.init({
             showOffsets: 1,
             noticeOnUnload: 0,
