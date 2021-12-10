@@ -9,7 +9,8 @@ use App\Http\Actions\Leads\{
 	LeadDelete,
 	LeadRemoveDuplicates,
 	LeadReprocess,
-	LeadTransfer,
+    LeadSourceReprocess,
+    LeadTransfer,
 };
 use App\Http\Filters\FilterByPresetData;
 use App\Http\Filters\FilterByTags;
@@ -38,7 +39,7 @@ class Leads extends Resource
 
 	public function resultsPerPage()
 	{
-		return [20, 50, 100, 200, 500];
+		return [20, 50, 100, 200, 500,1000];
 	}
 
 	public function maxRowsExportSync()
@@ -96,6 +97,7 @@ class Leads extends Resource
 			$actions[] = new LeadDelete();
 		}
 		if ($is_super_admin_or_admin) {
+			$actions[] = new LeadSourceReprocess();
 			$actions[] = new LeadReprocess();
 			$actions[] = new LeadRemoveDuplicates();
 		}

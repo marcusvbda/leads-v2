@@ -26,7 +26,7 @@ class LeadReprocess extends Action
             $request = new Request($webhook_request->content);
             $controllerWebhook->handler($webhook->token, $request, $lead->id);
         }
-        Messages::send("success", "Os leads foram excluidos");
+        Messages::send("success", "Os leads foram reprocessados");
         return ['success' => true];
     }
 }
