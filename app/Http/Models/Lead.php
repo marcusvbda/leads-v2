@@ -441,4 +441,9 @@ class Lead extends DefaultModel
 		$lead->conversions = $conversions;
 		return $lead;
 	}
+
+	public function responsible()
+	{
+		return $this->belongsTo(User::class, "responsible_id");
+	}
 }
