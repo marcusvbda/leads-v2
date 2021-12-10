@@ -151,6 +151,9 @@ class Leads extends Resource
 		$fields = [
 			"code" => ["label" => "Código"],
 			"name" => ["label" => "Nome"],
+			"origins" => ["label" => "Origens", "handler" => function ($row) {
+				return implode(", ", @$row->data->source ?? []);
+			}],
 			"status->name" => ["label" => "Status"],
 			"profession" => ["label" => "Profissão"],
 			"email" => ["label" => "Email"],
