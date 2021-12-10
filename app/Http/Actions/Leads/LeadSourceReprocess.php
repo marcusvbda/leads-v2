@@ -18,7 +18,7 @@ class LeadSourceReprocess extends Action
 
     public function handler(Request $request)
     {
-        $leads = Lead::whereIn("id", $request["ids"])->get();
+        $leads = Lead::get();
         $controllerWebhook = new WebhookController();
         foreach ($leads as $lead) {
             $content = @$lead->data->lead_api;
