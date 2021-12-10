@@ -150,3 +150,11 @@ if (!function_exists('snakeCaseToCamelCase')) {
 		return $str;
 	}
 }
+
+if (!function_exists('Obj2Array')) {
+	function Obj2Array($oject)
+	{
+		$array = json_decode(json_encode($oject), true);
+		return $array;
+	}
+}

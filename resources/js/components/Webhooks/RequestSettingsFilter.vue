@@ -20,27 +20,28 @@ export default {
     props: ["polos"],
     data() {
         return {
-            polo_id: Number(this.$getUrlParams().polo_id) || ""
+            polo_id: Number(this.$getUrlParams().polo_id) || "",
+            page: this.$getUrlParams().settings_page || 1,
         };
     },
     watch: {
         polo_id() {
             this.makeFilter();
-        }
+        },
     },
     computed: {
         route() {
             if (!this.polo_id) {
                 return `${window.location.pathname}`;
             }
-            return `${window.location.pathname}?polo_id=${this.polo_id}`;
-        }
+            return `${window.location.pathname}?polo_id=${this.polo_id}&settings_page=${this.page}`;
+        },
     },
     methods: {
         makeFilter() {
             this.$loading({ text: "Aguarde ..." });
             window.location.href = this.route;
-        }
-    }
+        },
+    },
 };
 </script>

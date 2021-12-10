@@ -73,7 +73,6 @@ class Leads extends Resource
 		$columns["label"] = ["label" => "Nome", "sortable_index" => "data->name"];
 		$columns["contact"] = ["label" => "Email", "sortable_index" => "data->email"];
 		$columns["f_status_badge"] = ["label" => "Status", "sortable_index" => "status_id"];
-		$columns["f_rating"] = ["label" => "Classificação", "sortable" => false];
 		$columns["f_updated_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
 		return $columns;
 	}
@@ -180,6 +179,11 @@ class Leads extends Resource
 		$filters[] = new LeadsByPhone();
 		$filters[] = new LeadsByStatus();
 		$filters[] = new FilterByTags(Lead::class);
+		$filters[] = new FilterByText([
+			"column" => "data->source",
+			"label" => "Origem",
+			"index" => "source"
+		]);
 		return $filters;
 	}
 

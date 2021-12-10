@@ -25,8 +25,9 @@ export default {
                 status: this.$getUrlParams().request_status || "all",
                 visibility: this.$getUrlParams().visibility || "visible",
                 filter: this.$getUrlParams().request_filter || "",
-                timeout: null
-            }
+                page: this.$getUrlParams().requests_page || 1,
+                timeout: null,
+            },
         };
     },
     watch: {
@@ -38,19 +39,19 @@ export default {
                     this.makeFilter();
                     clearInterval(this.timeout);
                 }, 500);
-            }
-        }
+            },
+        },
     },
     computed: {
         route() {
-            return `${window.location.pathname}?request_status=${this.filter.status}&visibility=${this.filter.visibility}&request_filter=${this.filter.filter}`;
-        }
+            return `${window.location.pathname}?request_status=${this.filter.status}&visibility=${this.filter.visibility}&request_filter=${this.filter.filter}&requests_page=${this.filter.page}`;
+        },
     },
     methods: {
         makeFilter() {
             this.$loading({ text: "Aguarde ..." });
             window.location.href = this.route;
-        }
-    }
+        },
+    },
 };
 </script>
