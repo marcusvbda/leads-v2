@@ -9,7 +9,7 @@
                         <small class="ml-auto text-muted">{{ department }}</small>
                     </b>
                     <el-input placeholder="Pesquisar..." suffix-icon="el-icon-search" v-model="filter.text" clearable />
-                    <small class="text-muted f-12 mb-2">Filtro por nome, email ou telefone</small>
+                    <small class="text-muted f-12 mb-2">Filtro por nome, email, telefone ou origem</small>
                     <el-select-all
                         v-if="!loading.statuses"
                         v-model="filter.status_ids"

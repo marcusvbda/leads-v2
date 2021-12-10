@@ -23,7 +23,20 @@ class G_ProcessAllLeads extends Seeder
 		$leads = Lead::orderBy("id", "desc")->get();
 		$controller = new WebhookController();
 		foreach ($leads as $lead) {
-			dd($controller->getSources($lead->data->lead_api));
+			$this->reprocessSources($controller, $lead);
 		}
+	}
+
+	private function reprocessSources($controller, $lead)
+	{
+		$content = @$lead->data->lead_api;
+		$sources = ["RD Station"];
+		if ($content) {
+			$sources = $controller->getSources($content, ["RD Station"]);
+		}
+		$_data = $lead->data;
+		$_data->source = $sources;
+		$lead->data = $_data;
+		$lead->save();
 	}
 }

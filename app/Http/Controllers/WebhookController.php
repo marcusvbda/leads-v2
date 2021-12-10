@@ -137,79 +137,79 @@ class WebhookController extends Controller
 		return false;
 	}
 
+	private function getHelperIndexes()
+	{
+		$helper_indexes = [
+			"",
+			"first_conversion.",
+			"first_conversion.content.",
+			"first_conversion.conversion_origin.",
+			"last_conversion.",
+			"last_conversion.content.",
+			"last_conversion.conversion_origin.",
+
+			"lead_api.",
+			"lead_api.first_conversion.",
+			"lead_api.first_conversion.content.",
+			"lead_api.first_conversion.conversion_origin.",
+			"lead_api.last_conversion.",
+			"lead_api.last_conversion.content.",
+			"lead_api.last_conversion.conversion_origin.",
+
+			"0.",
+			"lead_api.0.",
+			"lead_api.0.first_conversion.",
+			"lead_api.0.first_conversion.content.",
+			"lead_api.0.first_conversion.conversion_origin.",
+			"lead_api.0.last_conversion.",
+			"lead_api.0.last_conversion.content.",
+			"lead_api.0.last_conversion.conversion_origin.",
+
+			"lead_api.leads.0.",
+			"lead_api.leads.0.first_conversion.",
+			"lead_api.leads.0.first_conversion.content.",
+			"lead_api.leads.0.first_conversion.conversion_origin.",
+			"lead_api.leads.0.last_conversion.",
+			"lead_api.leads.0.last_conversion.content.",
+			"lead_api.leads.0.last_conversion.conversion_origin.",
+
+			"lead_api.0.leads.",
+			"lead_api.0.leads.first_conversion.",
+			"lead_api.0.leads.first_conversion.content.",
+			"lead_api.0.leads.first_conversion.conversion_origin.",
+			"lead_api.0.leads.last_conversion.",
+			"lead_api.0.leads.last_conversion.content.",
+			"lead_api.0.leads.last_conversion.conversion_origin.",
+
+			"leads.",
+			"leads.first_conversion.",
+			"leads.first_conversion.content.",
+			"leads.first_conversion.conversion_origin.",
+			"leads.last_conversion.",
+			"leads.last_conversion.content.",
+			"leads.last_conversion.conversion_origin.",
+
+			"leads.0.",
+			"leads.0.first_conversion.",
+			"leads.0.first_conversion.content.",
+			"leads.0.first_conversion.conversion_origin.",
+			"leads.0.last_conversion.",
+			"leads.0.last_conversion.content.",
+			"leads.0.last_conversion.conversion_origin.",
+		];
+		return $helper_indexes;
+	}
+
 	private function getLeadInfo($content, $indexes = [])
 	{
+		$content = Obj2Array($content);
 		foreach ($indexes as $index) {
-			$value = Arr::get((@$content ? $content : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"] ? $content["lead_api"] : []), $index);
-			$value = Arr::get((@$content["lead_api"] ? $content["lead_api"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"]["first_conversion"] ? $content["lead_api"]["first_conversion"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"]["last_conversion"] ? $content["lead_api"]["last_conversion"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"]["first_conversion"]["content"] ? $content["lead_api"]["first_conversion"]["content"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"]["last_conversion"]["content"] ? $content["lead_api"]["last_conversion"]["content"] : []), $index);
-			if ($value) return $value;
-
-
-			$value = Arr::get((@$content["lead_api"]["leads"][0] ? $content["lead_api"]["leads"][0] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"]["leads"][0]["first_conversion"] ? $content["lead_api"]["leads"][0]["first_conversion"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"]["leads"][0]["first_conversion"]["content"] ? $content["lead_api"]["leads"][0]["first_conversion"]["content"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"]["leads"][0]["first_conversion"]["conversion_origin"] ? $content["lead_api"]["leads"][0]["first_conversion"]["conversion_origin"] : []), $index);
-			if ($value) return $value;
-
-
-			$value = Arr::get((@$content["lead_api"]["leads"][0]["last_conversion"] ? $content["lead_api"]["leads"][0]["last_conversion"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"]["leads"][0]["last_conversion"]["content"] ? $content["lead_api"]["leads"][0]["last_conversion"]["content"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"]["leads"][0]["last_conversion"]["conversion_origin"] ? $content["lead_api"]["leads"][0]["last_conversion"]["conversion_origin"] : []), $index);
-			if ($value) return $value;
-
-
-
-			$value = Arr::get((@$content["leads"][0] ? $content["leads"][0] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["leads"][0]["conversion_origin"] ? $content["leads"][0]["conversion_origin"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["leads"][0]["first_conversion"] ? $content["leads"][0]["first_conversion"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["leads"][0]["first_conversion"]["conversion_origin"] ? $content["leads"][0]["first_conversion"]["conversion_origin"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["leads"][0]["first_conversion"]["content"] ? $content["leads"][0]["first_conversion"]["content"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["leads"][0]["last_conversion"] ? $content["leads"][0]["last_conversion"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["leads"][0]["last_conversion"]["conversion_origin"] ? $content["leads"][0]["last_conversion"]["conversion_origin"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["leads"][0]["last_conversion"]["content"] ? $content["leads"][0]["last_conversion"]["content"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["leads"][0]["last_conversion"]["content"]["conversion_origin"] ? $content["leads"][0]["last_conversion"]["content"]["conversion_origin"] : []), $index);
-			if ($value) return $value;
+			foreach ($this->getHelperIndexes() as $helper_index) {
+				$value = Arr::get((@$content ? $content : []), $helper_index . $index, null);
+				if ($value) {
+					return $value;
+				}
+			}
 		}
 		return null;
 	}

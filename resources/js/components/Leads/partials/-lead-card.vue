@@ -3,14 +3,13 @@
         <h3 class="el-icon-circle-plus" />
         <div class="d-flex flex-column ml-2 flex-grow-1">
             <div class="d-flex flex-row justify-content-between">
-                <b>{{ lead.name }}</b>
-                <v-runtime-template :template="lead.f_rating" />
+                <VRuntimeTemplate :template="lead.label" />
             </div>
             <div class="d-flex flex-row justify-content-between">
                 <span class="text-muted">{{ lead.email }}</span>
                 <span class="text-muted">{{ lead.status.name }}</span>
             </div>
-            <div class="d-flex flex-row justify-content-end" >
+            <div class="d-flex flex-row justify-content-end">
                 <div class="d-flex flex-column mr-auto">
                     <span class="text-muted d-flex flex-row">{{ lead.cellphone_number }}</span>
                     <span class="text-muted d-flex flex-row">{{ lead.phone_number }}</span>
@@ -28,13 +27,20 @@ import VRuntimeTemplate from "v-runtime-template";
 import { mapMutations } from "vuex";
 export default {
     props: ["lead"],
+    data() {
+        return {
+            row: {
+                content: this.lead,
+            },
+        };
+    },
     components: {
-        VRuntimeTemplate
+        VRuntimeTemplate,
     },
     computed: {
         selected_lead() {
             return this.$store.state.lead;
-        }
+        },
     },
     methods: {
         ...mapMutations("lead", ["setLead"]),
@@ -43,8 +49,8 @@ export default {
                 return this.setLead({});
             }
             this.setLead(this.lead);
-        }
-    }
+        },
+    },
 };
 </script>
 <style lang="scss">

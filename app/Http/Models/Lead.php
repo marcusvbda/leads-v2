@@ -21,7 +21,7 @@ class Lead extends DefaultModel
 	];
 
 	public $appends = [
-		"code", "name", "f_status", "email", "profession", "f_last_conversion", "cellphone_number",
+		"code", "name", "label", "f_status", "email", "profession", "f_last_conversion", "cellphone_number",
 		"phone_number", "obs", "f_created_at", "objection", "comment", "interest", "f_status_badge",
 		"f_birthdate", "age", "f_last_conversion_date", "api_ref_token", "other_objection", "conversions",
 		"tries", "lead_api", "f_rating", "f_schedule", "f_updated_at"
@@ -54,7 +54,7 @@ class Lead extends DefaultModel
 		$sources = $this->data->source ?? [];
 		$html = "";
 		foreach ($sources as $source) {
-			$html .= "<span class='badge badge-primary'>{$source}</span> ";
+			$html .= "<span class='badge badge-secondary'>{$source}</span> ";
 		}
 		return $html;
 	}
@@ -63,7 +63,8 @@ class Lead extends DefaultModel
 	{
 		$vstack_tags = "<resource-tags-input class='f-12 mt-1' :default_tags='row.content.tags' only_view />";
 		$tags_origin = $this->getOriginSourcesBadge();
-		return Vstack::makeLinesHtmlAppend($this->name, $tags_origin, $vstack_tags);
+		$name = $this->name ?? "Nome não informado";
+		return Vstack::makeLinesHtmlAppend($name, $this->f_rating, $tags_origin, $vstack_tags);
 	}
 
 	// getters
