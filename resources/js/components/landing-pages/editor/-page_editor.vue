@@ -13,11 +13,7 @@ export default {
         return {
             started: false,
             iframeWindow: null,
-            content: {
-                html: '<h1 id="iw3y">Hello World TESTE</h1>',
-                css: `{ box-sizing: border-box; } body
-                {margin: 0;}#iw3y{font-family:Helvetica, sans-serif;font-size:39px;color:#1639ba;}`,
-            },
+            content: `<style>* { box-sizing: border-box; } body {margin: 0;}*{box-sizing:border-box;}body{margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;}#iw3y{font-family:Helvetica, sans-serif;font-size:39px;color:rgb(22, 57, 186);}.row{display:table;padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;width:100%;}.cell{width:8%;display:table-cell;height:75px;}#i87o{padding:10px;color:#e022b9;}@media (max-width: 768px){.cell{width:100%;display:block;}}</style><h1 id="iw3y">Hello World TESTE</h1><div class="row"><div class="cell"></div></div><div id="i87o">Insert your text here</div>`,
         };
     },
     methods: {
@@ -55,16 +51,23 @@ export default {
             // });
         },
         setInitialValues() {
-            this.iframeWindow.grapesEditor.setComponents(this.content.html);
-            this.iframeWindow.grapesEditor.setStyle(this.content.css);
+            this.iframeWindow.grapesEditor.setComponents(this.content);
         },
         createModel() {
             this.iframeWindow.grapesEditor.on("change:changesCount", () => {
                 if (this.started) {
-                    this.$set(this.content, "html", this.iframeWindow.grapesEditor.getHtml());
-                    this.$set(this.content, "css", this.iframeWindow.grapesEditor.getCss());
+                    let css = this.iframeWindow.grapesEditor.getCss();
+                    let html = this.iframeWindow.grapesEditor.getHtml();
+                    this.content = this.minify(`<style>${css}</style>${html}`);
                 }
             });
+        },
+        minify(content) {
+            content = content
+                .replace(/\>[\r\n ]+\</g, "><")
+                .replace(/(<.*?>)|\s+/g, (m, $1) => ($1 ? $1 : " "))
+                .trim();
+            return content;
         },
     },
 };

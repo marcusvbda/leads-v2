@@ -27,6 +27,7 @@
     "dexie": "^2.0.4",
     "element-ui": "^2.12.0",
     "fabric": "^4.0.0-beta.5",
+    "fs": "^0.0.1-security",
     "grapesjs": "^0.17.29",
     "grapesjs-preset-webpage": "^0.1.11",
     "gsap": "^3.6.1",
