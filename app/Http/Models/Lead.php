@@ -21,7 +21,7 @@ class Lead extends DefaultModel
 	];
 
 	public $appends = [
-		"code", "name", "f_status", "email", "profession", "f_last_conversion", "cellphone_number",
+		"code", "name", "label", "f_status", "email", "profession", "f_last_conversion", "cellphone_number",
 		"phone_number", "obs", "f_created_at", "objection", "comment", "interest", "f_status_badge",
 		"f_birthdate", "age", "f_last_conversion_date", "api_ref_token", "other_objection", "conversions",
 		"tries", "lead_api", "f_rating", "f_schedule", "f_updated_at"
@@ -49,9 +49,22 @@ class Lead extends DefaultModel
 		});
 	}
 
+	public function getOriginSourcesBadge()
+	{
+		$sources = $this->data->source ?? [];
+		$html = "";
+		foreach ($sources as $source) {
+			$html .= "<span class='badge badge-secondary'>{$source}</span> ";
+		}
+		return $html;
+	}
+
 	public function getLabelAttribute()
 	{
-		return Vstack::makeLinesHtmlAppend($this->name, "<resource-tags-input class='f-12 mt-1' :default_tags='row.content.tags' only_view />");
+		$vstack_tags = "<resource-tags-input class='f-12 mt-1' :default_tags='row.content.tags' only_view />";
+		$tags_origin = $this->getOriginSourcesBadge();
+		$name = $this->name ?? "Nome não informado";
+		return Vstack::makeLinesHtmlAppend($name, $this->f_rating, $tags_origin, $vstack_tags);
 	}
 
 	// getters
@@ -427,5 +440,10 @@ class Lead extends DefaultModel
 		}
 		$lead->conversions = $conversions;
 		return $lead;
+	}
+
+	public function responsible()
+	{
+		return $this->belongsTo(User::class, "responsible_id");
 	}
 }

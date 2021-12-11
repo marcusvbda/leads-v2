@@ -22,6 +22,8 @@ class WebhookController extends Controller
 		"state" => ["state", "estado", "Estado Aberto"],
 		"phone" => ["personal_phone", "Telefone Pessoal", "Telefone"],
 		"mobile_phone" => ["mobile_phone", "Telefone Movel", "Celular"],
+		"source" => ["source"],
+		"conversion_origin" => ["conversion_origin.source"],
 	];
 
 	public function handler($token, Request $request, $lead_id = null)
@@ -135,34 +137,99 @@ class WebhookController extends Controller
 		return false;
 	}
 
+	private function getHelperIndexes()
+	{
+		$helper_indexes = [
+			"",
+			"first_conversion.",
+			"first_conversion.content.",
+			"first_conversion.conversion_origin.",
+			"last_conversion.",
+			"last_conversion.content.",
+			"last_conversion.conversion_origin.",
+
+			"lead_api.",
+			"lead_api.first_conversion.",
+			"lead_api.first_conversion.content.",
+			"lead_api.first_conversion.conversion_origin.",
+			"lead_api.last_conversion.",
+			"lead_api.last_conversion.content.",
+			"lead_api.last_conversion.conversion_origin.",
+
+			"0.",
+			"lead_api.0.",
+			"lead_api.0.first_conversion.",
+			"lead_api.0.first_conversion.content.",
+			"lead_api.0.first_conversion.conversion_origin.",
+			"lead_api.0.last_conversion.",
+			"lead_api.0.last_conversion.content.",
+			"lead_api.0.last_conversion.conversion_origin.",
+
+			"lead_api.leads.0.",
+			"lead_api.leads.0.first_conversion.",
+			"lead_api.leads.0.first_conversion.content.",
+			"lead_api.leads.0.first_conversion.conversion_origin.",
+			"lead_api.leads.0.last_conversion.",
+			"lead_api.leads.0.last_conversion.content.",
+			"lead_api.leads.0.last_conversion.conversion_origin.",
+
+			"lead_api.0.leads.",
+			"lead_api.0.leads.first_conversion.",
+			"lead_api.0.leads.first_conversion.content.",
+			"lead_api.0.leads.first_conversion.conversion_origin.",
+			"lead_api.0.leads.last_conversion.",
+			"lead_api.0.leads.last_conversion.content.",
+			"lead_api.0.leads.last_conversion.conversion_origin.",
+
+			"leads.",
+			"leads.first_conversion.",
+			"leads.first_conversion.content.",
+			"leads.first_conversion.conversion_origin.",
+			"leads.last_conversion.",
+			"leads.last_conversion.content.",
+			"leads.last_conversion.conversion_origin.",
+
+			"leads.0.",
+			"leads.0.first_conversion.",
+			"leads.0.first_conversion.content.",
+			"leads.0.first_conversion.conversion_origin.",
+			"leads.0.last_conversion.",
+			"leads.0.last_conversion.content.",
+			"leads.0.last_conversion.conversion_origin.",
+		];
+		return $helper_indexes;
+	}
+
 	private function getLeadInfo($content, $indexes = [])
 	{
+		$content = Obj2Array($content);
 		foreach ($indexes as $index) {
-			$value = Arr::get((@$content ? $content : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["leads"][0] ? $content["leads"][0] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["leads"][0]["last_conversion"]["content"] ? $content["leads"][0]["last_conversion"]["content"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["leads"][0]["first_conversion"]["content"] ? $content["leads"][0]["first_conversion"]["content"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"]["leads"][0] ? $content["lead_api"]["leads"][0] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"] ? $content["lead_api"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"]["last_conversion"]["content"] ? $content["lead_api"]["last_conversion"]["content"] : []), $index);
-			if ($value) return $value;
-
-			$value = Arr::get((@$content["lead_api"]["first_conversion"]["content"] ? $content["lead_api"]["first_conversion"]["content"] : []), $index);
-			if ($value) return $value;
+			foreach ($this->getHelperIndexes() as $helper_index) {
+				$value = Arr::get((@$content ? $content : []), $helper_index . $index, null);
+				if ($value) {
+					return $value;
+				}
+			}
 		}
 		return null;
+	}
+
+	public function getSources($content, $extra_tags = [])
+	{
+		$tags = [];
+		$source = $this->getLeadInfo($content, static::INDEXES["source"]);
+		if ($source) {
+			$tags[] = $source;
+		}
+		$source = $this->getLeadInfo($content, static::INDEXES["conversion_origin"]);
+		if ($source) {
+			$tags[] = $source;
+		}
+		$tags = array_unique(array_merge($tags, $extra_tags));
+		$tags = array_filter($tags, function ($row) {
+			return $row != "unknown";
+		});
+		return $tags;
 	}
 
 	private function createLead($request, $webhook, $setting, $lead_id = null)
@@ -171,9 +238,10 @@ class WebhookController extends Controller
 		$status = Status::value("waiting");
 		$name = $this->getLeadInfo($request->content, static::INDEXES["name"]);
 		$email = $this->getLeadInfo($request->content, static::INDEXES["email"]);
+		$sources = $this->getSources($request->content, [$webhook->name]);
 
 		if (!$lead_id) {
-			$foundedLead = Lead::where('data->name', $name)->where('data->email', $email)->where("status_id",$status->id)->first();
+			$foundedLead = Lead::where('data->name', $name)->where('data->email', $email)->where("status_id", $status->id)->first();
 			$lead = $foundedLead ? $foundedLead : new Lead;
 		} else {
 			$lead = Lead::findOrFail($lead_id);
@@ -200,6 +268,7 @@ class WebhookController extends Controller
 			"city" => @$request->content->lastcidade,
 			"obs" => $obs,
 			"comment" => $comment,
+			"source" => $sources
 		];
 		$lead->conversions = $conversions;
 		$lead->save();

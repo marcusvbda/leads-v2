@@ -9,7 +9,8 @@ use App\Http\Actions\Leads\{
 	LeadDelete,
 	LeadRemoveDuplicates,
 	LeadReprocess,
-	LeadTransfer,
+    LeadSourceReprocess,
+    LeadTransfer,
 };
 use App\Http\Filters\FilterByPresetData;
 use App\Http\Filters\FilterByTags;
@@ -73,7 +74,7 @@ class Leads extends Resource
 		$columns["label"] = ["label" => "Nome", "sortable_index" => "data->name"];
 		$columns["contact"] = ["label" => "Email", "sortable_index" => "data->email"];
 		$columns["f_status_badge"] = ["label" => "Status", "sortable_index" => "status_id"];
-		$columns["f_rating"] = ["label" => "Classificação", "sortable" => false];
+		$columns["responsible->name"] = ["label" => "Responsável", "sortable_index" => "responsible_id"];
 		$columns["f_updated_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
 		return $columns;
 	}
@@ -96,6 +97,7 @@ class Leads extends Resource
 			$actions[] = new LeadDelete();
 		}
 		if ($is_super_admin_or_admin) {
+			$actions[] = new LeadSourceReprocess();
 			$actions[] = new LeadReprocess();
 			$actions[] = new LeadRemoveDuplicates();
 		}
@@ -149,6 +151,9 @@ class Leads extends Resource
 		$fields = [
 			"code" => ["label" => "Código"],
 			"name" => ["label" => "Nome"],
+			"origins" => ["label" => "Origens", "handler" => function ($row) {
+				return implode(", ", @$row->data->source ?? []);
+			}],
 			"status->name" => ["label" => "Status"],
 			"profession" => ["label" => "Profissão"],
 			"email" => ["label" => "Email"],
@@ -180,6 +185,11 @@ class Leads extends Resource
 		$filters[] = new LeadsByPhone();
 		$filters[] = new LeadsByStatus();
 		$filters[] = new FilterByTags(Lead::class);
+		$filters[] = new FilterByText([
+			"column" => "data->source",
+			"label" => "Origem",
+			"index" => "source"
+		]);
 		return $filters;
 	}
 

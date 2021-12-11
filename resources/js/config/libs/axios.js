@@ -4,6 +4,6 @@ import axiosRetry from "axios-retry";
 axiosRetry(axios, {
   retries: 0,
   shouldResetTimeout: true,
-  retryCondition: _error => true
+  retryCondition: () => true,
 });
 export default axios;
