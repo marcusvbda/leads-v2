@@ -15,7 +15,7 @@ export default {
             iframeWindow: null,
             content: {
                 html: '<h1 id="iw3y">Hello World TESTE</h1>',
-                css: `{ box-sizing: border-box; } body 
+                css: `{ box-sizing: border-box; } body
                 {margin: 0;}#iw3y{font-family:Helvetica, sans-serif;font-size:39px;color:#1639ba;}`,
             },
         };
@@ -35,6 +35,10 @@ export default {
                 fromElement: true,
                 storageManager: { autoload: 0 },
                 plugins: [presetWebPage],
+                assetManager: {
+                    headers: { "X-CSRF-TOKEN": laravel.general.csrf_token ? laravel.general.csrf_token : "" },
+                    upload: laravel.vstack.default_upload_route,
+                },
             };
         },
         initiVariables() {
