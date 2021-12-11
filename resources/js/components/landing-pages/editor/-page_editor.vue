@@ -5,7 +5,7 @@
     </div>
 </template>
 <script>
-import grapesBlocksBasic from "grapesjs-blocks-basic";
+import presetWebPage from "grapesjs-preset-webpage";
 
 export default {
     props: ["code"],
@@ -24,7 +24,7 @@ export default {
         onLoadIframe() {
             this.initiVariables();
             this.setGrapesOptions();
-            Promise.all([this.startEditor(), this.createBlocks(), this.setInitialValues(), this.createModel()]).then(() => {
+            Promise.all([this.startEditor(), this.createExtraBlocks(), this.setInitialValues(), this.createModel()]).then(() => {
                 this.started = true;
             });
         },
@@ -34,7 +34,7 @@ export default {
                 noticeOnUnload: 0,
                 fromElement: true,
                 storageManager: { autoload: 0 },
-                plugins: [grapesBlocksBasic],
+                plugins: [presetWebPage],
             };
         },
         initiVariables() {
@@ -43,12 +43,12 @@ export default {
         startEditor() {
             this.iframeWindow.startEditor();
         },
-        createBlocks() {
-            this.iframeWindow.grapesEditor.BlockManager.add("Hello-World", {
-                label: "Hello World",
-                attributes: { class: "gjs-fonts gjs-f-text" },
-                content: `<h1>Hello World</h1>`,
-            });
+        createExtraBlocks() {
+            // this.iframeWindow.grapesEditor.BlockManager.add("Hello-World", {
+            //     label: "Hello World",
+            //     attributes: { class: "gjs-fonts gjs-f-text" },
+            //     content: `<h1>Hello World</h1>`,
+            // });
         },
         setInitialValues() {
             this.iframeWindow.grapesEditor.setComponents(this.content.html);
