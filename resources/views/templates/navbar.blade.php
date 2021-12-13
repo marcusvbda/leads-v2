@@ -95,7 +95,7 @@ if(!$is_super_admin) {
                 </div>
             </li>
             <li
-                class="nav-item dropdown {{ currentClass(['/admin/webhooks/*','/admin/integracoes/*','/admin/landing-pages/*']) }}">
+                class="nav-item dropdown {{ currentClass(['/admin/webhooks/*','/admin/integracoes/*']) }}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
                     <i class="el-icon-s-claim mr-2"></i>Captação
