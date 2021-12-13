@@ -5037,6 +5037,11 @@ grapesjs-component-countdown@^0.1.2:
   resolved "https://registry.yarnpkg.com/grapesjs-component-countdown/-/grapesjs-component-countdown-0.1.3.tgz#7df54b2a6c0bdf3275370f974ac9bd732188aae3"
   integrity sha512-TmxDETedUDv1jGqNLn6E768iyp+xAK/XcTId5WpLrmKPFB6aCuWqfTowhtSvyRJJs83OAFMiQIwIu+tEtSWOeA==
 
+grapesjs-custom-code@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/grapesjs-custom-code/-/grapesjs-custom-code-0.1.3.tgz#b482b42fcb058f2856caab9997b0634c9e3fe6db"
+  integrity sha512-K/DF6JysaO6gY5rxaIEYrBy1z4DOlfC8gGQq2vodaXv4iFHLq+S9YEXAct8VhYdKMlqm1CrMsFx83Tuz8AyWfQ==
+
 grapesjs-navbar@^0.1.5:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/grapesjs-navbar/-/grapesjs-navbar-0.1.5.tgz#62e35eca0f391f94d455e96c206b74b5f495fa6e"
