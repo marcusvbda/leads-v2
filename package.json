@@ -29,6 +29,7 @@
     "fabric": "^4.0.0-beta.5",
     "fs": "^0.0.1-security",
     "grapesjs": "^0.17.29",
+    "grapesjs-preset-newsletter": "^0.2.21",
     "grapesjs-preset-webpage": "^0.1.11",
     "gsap": "^3.6.1",
     "i": "^0.3.6",
