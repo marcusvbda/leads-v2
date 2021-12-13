@@ -16,13 +16,13 @@ class WebhookController extends Controller
 {
 
 	const INDEXES = [
-		"name" => ["name", "nome", "first_name"],
-		"email" => ["email"],
-		"city" => ["city", "cidade", "Cidade Aberto"],
-		"state" => ["state", "estado", "Estado Aberto"],
-		"phone" => ["personal_phone", "Telefone Pessoal", "Telefone"],
-		"mobile_phone" => ["mobile_phone", "Telefone Movel", "Celular"],
-		"source" => ["source"],
+		"name" => ["name", "nome", "first_name", "full_name", "fullname"],
+		"email" => ["email", "e-mail"],
+		"city" => ["city", "cidade", "Cidade Aberto", "cidade_aberto"],
+		"state" => ["state", "estado", "Estado Aberto", "estado_aberto"],
+		"phone" => ["personal_phone", "Telefone Pessoal", "Telefone", "phone_number", "phone"],
+		"mobile_phone" => ["mobile_phone", "Telefone Movel", "Celular", "cellphone", "cell", "cellphone_number"],
+		"source" => ["source", "src", "origem"],
 		"conversion_origin" => ["conversion_origin.source"],
 	];
 
