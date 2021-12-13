@@ -109,10 +109,6 @@ if(!$is_super_admin) {
                         data-label="Usuários de Acesso a API">
                         Integradores
                     </a>
-                    <a class="dropdown-item {{ getMenuClass('viewlist-landing-pages', ['/admin/landing-pages/*']) }}" href="/admin/landing-pages"
-                        data-label="Para Captação de Leads">
-                        Landing Pages
-                    </a>
                 </div>
             </li>
         </ul>        
