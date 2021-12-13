@@ -24,5 +24,4 @@ Route::group(['middleware' => ['auth']], function () {
 Route::get('user_invite/{tenant_id}/{invite_md5}', [UsersController::class, 'userCreate'])->middleware(['hashids:tenant_id'])->name("user.create");
 Route::post('user_invite/{tenant_id}/{invite_md5}', [UsersController::class, 'userConfirm'])->middleware(['hashids:tenant_id'])->name("user.confirm");
 
-
 if (config('app.env') == 'homologation') require "partials/debug.php";

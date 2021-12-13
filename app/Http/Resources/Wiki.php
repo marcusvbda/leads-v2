@@ -6,7 +6,8 @@ use marcusvbda\vstack\Resource;
 use marcusvbda\vstack\Fields\{
 	Card,
 	HtmlEditor,
-	Text
+	Text,
+	TextArea
 };
 use Auth;
 use App\Http\Models\WikiPage;
@@ -103,11 +104,11 @@ class Wiki extends Resource
 			"description" => "Título da Postagem"
 		]);
 
-		$fields[] = new HtmlEditor([
+		$fields[] = new TextArea([
 			"label" => "Descrição",
 			"field" => "description",
 			"rules" => ["required", "max:255"],
-			"description" => "Descrição da Postagem"
+			"description" => "Descrição da Postagem",
 		]);
 		$cards[] = new Card("Identificação", $fields);
 
@@ -116,6 +117,17 @@ class Wiki extends Resource
 			"label" => "Conteúdo da Página",
 			"rules" => ["required"],
 			"field" => "body",
+			"mode" => "webpage",
+			"description" => "Oque será exibido ao acessar a página",
+			// "blocks" => [
+			// 	"hello_world_teste" => [
+			// 		"label"  => "Hello World",
+			// 		"attributes" =>  [
+			// 			"class" => "gjs-fonts gjs-f-text"
+			// 		],
+			// 		"content" =>  "<h1>Hello World TESTE</h1>"
+			// 	]
+			// ]
 		]);
 		$cards[] = new Card("Conteúdo", $fields);
 

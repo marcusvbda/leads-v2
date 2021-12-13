@@ -33,7 +33,7 @@ if(!$is_super_admin) {
 	<h1>{!!  $page->title !!}</h1>
 	<div class="card">
 		<div class="card-body">			
-			{!!  $page->body !!}
+			<advanced-iframe src="/admin/wiki-page/iframe/{{ $page->path }}"></advanced-iframe>
 		</div>
 	</div>
 </div>

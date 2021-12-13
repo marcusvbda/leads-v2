@@ -11,4 +11,10 @@ class WikiController extends Controller
         $page = WikiPage::where('path', $path)->firstOrFail();
         return view('admin.wiki.post', compact('page'));
     }
+
+    public function wikiIframe($path)
+    {
+        $page = WikiPage::where('path', $path)->firstOrFail();
+        return $page->body;
+    }
 }
