@@ -22,8 +22,8 @@ class WebhookController extends Controller
 		"state" => ["state", "estado", "Estado Aberto", "estado_aberto"],
 		"phone" => ["personal_phone", "Telefone Pessoal", "Telefone", "phone_number", "phone"],
 		"mobile_phone" => ["mobile_phone", "Telefone Movel", "Celular", "cellphone", "cell", "cellphone_number"],
-		"source" => ["source", "src", "origem"],
-		"conversion_origin" => ["conversion_origin.source"],
+		"source" => ["source", "src", "origem","extra_source"],
+		"conversion_origin" => ["conversion_origin.source","conversion_identifier"],
 	];
 
 	public function handler($token, Request $request, $lead_id = null)
