@@ -74,6 +74,12 @@
                             <tr>
                                 <td>
                                     <div class="d-flex flex-column">
+                                        <b class="f-12 text-muted">Cidade</b>
+                                        <small v-html="lead.city" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column">
                                         <b class="f-12 text-muted">Status</b>
                                         <small v-html="lead.f_status_badge" />
                                     </div>
@@ -94,7 +100,6 @@
                                         </small>
                                     </div>
                                 </td>
-                                <td></td>
                                 <td></td>
                                 <td>
                                     <slot />
@@ -142,11 +147,11 @@ export default {
         return {
             undefined_text: "Não Informado",
             lead: this.original_lead ?? null,
-            showing_request: false
+            showing_request: false,
         };
     },
     components: {
-        "v-runtime-template": VRuntimeTemplate
+        "v-runtime-template": VRuntimeTemplate,
     },
     created() {
         if (!this.lead) {
@@ -158,12 +163,12 @@ export default {
             let { data } = await this.$http.post("/vstack/json-api", {
                 model: "\\App\\Http\\Models\\Lead",
                 filters: {
-                    where: [["id", "=", this.lead_id]]
-                }
+                    where: [["id", "=", this.lead_id]],
+                },
             });
             this.lead = data[0];
-        }
-    }
+        },
+    },
 };
 </script>
 <style lang="scss" scoped>

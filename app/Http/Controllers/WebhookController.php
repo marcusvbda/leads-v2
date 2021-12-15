@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Lead;
+use App\Http\Models\Polo;
 use App\Http\Models\Status;
 use App\Http\Models\UserNotification;
 use App\Http\Models\Webhook;
@@ -14,7 +15,6 @@ use Carbon\Carbon;
 
 class WebhookController extends Controller
 {
-
 	const INDEXES = [
 		"name" => ["name", "nome", "first_name", "full_name", "fullname"],
 		"email" => ["email", "e-mail"],
@@ -22,8 +22,8 @@ class WebhookController extends Controller
 		"state" => ["state", "estado", "Estado Aberto", "estado_aberto"],
 		"phone" => ["personal_phone", "Telefone Pessoal", "Telefone", "phone_number", "phone"],
 		"mobile_phone" => ["mobile_phone", "Telefone Movel", "Celular", "cellphone", "cell", "cellphone_number"],
-		"source" => ["source", "src", "origem","extra_source"],
-		"conversion_origin" => ["conversion_origin.source","conversion_identifier"],
+		"source" => ["source", "src", "origem", "extra_source"],
+		"conversion_origin" => ["conversion_origin.source", "conversion_identifier"],
 	];
 
 	public function handler($token, Request $request, $lead_id = null)
@@ -93,14 +93,21 @@ class WebhookController extends Controller
 		$webhook = Webhook::where('token', $token)->firstOrFail();
 		$data = $request->all();
 		$indexes = $this->getIndexesObject($this->getSortedObject($data["value"]));
-		$setting = $webhook->settings()->firstOrNew([
-			'indexes' => $indexes,
-		]);
-		$setting->polo_id = $data["polo_id"];
-		$setting->save();
+		$this->makeWebhookSettings($webhook, $indexes, $data["polo_id"]);
 		$this->processNotApprovedRequests($webhook);
 		Messages::send("success", "Configuração de webhook salva com sucesso !!");
 		return ["success" => true];
+	}
+
+	private function makeWebhookSettings($webhook, $indexes, $polo_id)
+	{
+		$setting = $webhook->settings()->firstOrNew([
+			'indexes' => $indexes,
+		]);
+		$setting->polo_id = $polo_id;
+		$setting->save();
+		$setting->refresh();
+		return $setting;
 	}
 
 	private function processNotApprovedRequests($webhook)
@@ -127,14 +134,31 @@ class WebhookController extends Controller
 				return $value === $content_value;
 			}, $indexes))) == count($indexes);
 			if ($hasPositiveResults) {
-				$this->createLead($request, $webhook, $setting, $lead_id);
-				$request->approved = true;
-				$request->hide = false;
-				$request->save();
-				return true;
+				return $this->createLeadWithSetting($request, $webhook, $setting, $lead_id);
 			}
 		}
+
+		$city = $this->getRequestCity($request);
+		$processed_city = mb_convert_encoding(strtolower(preg_replace('/\s+/', '', $city["complete"])), "EUC-JP", "auto");
+		$polo = Polo::whereRaw("(convert(replace(lower(json_unquote(json_extract(data,'$.city'))),' ','') USING ASCII) = '$processed_city' and json_unquote(json_extract(data,'$.head')) = 'false')")->first();
+		if ($polo) {
+			$only_city = $city['city'];
+			$only_state = $city['state'];
+			$indexes = "['city']=>$only_city|['state']=>$only_state";
+			$setting = $this->makeWebhookSettings($webhook, $indexes, $polo->id);
+			return $this->createLeadWithSetting($request, $webhook, $setting, $lead_id);
+		}
+
 		return false;
+	}
+
+	private function createLeadWithSetting($request, $webhook, $setting, $lead_id)
+	{
+		$this->createLead($request, $webhook, $setting, $lead_id);
+		$request->approved = true;
+		$request->hide = false;
+		$request->save();
+		return true;
 	}
 
 	private function getHelperIndexes()
@@ -200,7 +224,7 @@ class WebhookController extends Controller
 		return $helper_indexes;
 	}
 
-	private function getLeadInfo($content, $indexes = [])
+	private function getLeadInfo($content, $indexes = [], $fallback = null)
 	{
 		$content = Obj2Array($content);
 		foreach ($indexes as $index) {
@@ -211,7 +235,7 @@ class WebhookController extends Controller
 				}
 			}
 		}
-		return null;
+		return $fallback;
 	}
 
 	public function getSources($content, $extra_tags = [])
@@ -230,6 +254,17 @@ class WebhookController extends Controller
 			return $row != "unknown";
 		});
 		return $tags;
+	}
+
+	private function getRequestCity($request)
+	{
+		$city = $this->getLeadInfo($request->content, static::INDEXES["city"], 'Cidade não informada');
+		$state = $this->getLeadInfo($request->content, static::INDEXES["state"], 'Estado não informado');
+		return [
+			"city" => $city,
+			"state" => $state,
+			"complete" => $city . " - " . $state,
+		];
 	}
 
 	private function createLead($request, $webhook, $setting, $lead_id = null)
@@ -259,13 +294,16 @@ class WebhookController extends Controller
 		$comment = @$lead->comment ?? '';
 		$obs = @$lead->obs ?? 'via Webhook ( ' . $webhook->name . ' )';
 
+		$phone_1 = $this->getLeadInfo($request->content, static::INDEXES["phone"]);
+		$phone_2 = $this->getLeadInfo($request->content, static::INDEXES["mobile_phone"]);
+		$city = $this->getRequestCity($request);
+
 		$lead->data = [
 			"lead_api" => $request->content,
-			"city" => $this->getLeadInfo($request->content, static::INDEXES["city"]) . " " . $this->getLeadInfo($request->content, static::INDEXES["state"]),
+			"city" => $city["complete"],
 			"email" => $email,
 			"name" => $name,
-			"phones" => [$this->getLeadInfo($request->content, static::INDEXES["phone"]), $this->getLeadInfo($request->content, static::INDEXES["mobile_phone"])],
-			"city" => @$request->content->lastcidade,
+			"phones" => [$phone_1, $phone_2],
 			"obs" => $obs,
 			"comment" => $comment,
 			"source" => $sources

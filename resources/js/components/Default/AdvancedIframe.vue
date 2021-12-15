@@ -4,9 +4,6 @@
 <script>
 export default {
     props: ["src"],
-    created() {
-        console.log("teste");
-    },
     methods: {
         resizeIframe() {
             let height = this.$refs.iframe.contentWindow.document.body.scrollHeight + "px";
