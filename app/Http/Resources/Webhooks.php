@@ -153,4 +153,9 @@ class Webhooks extends Resource
 		$tenant_id = Auth::user()->tenant_id;
 		return view("admin.webhooks.requests", compact("data", "webhook", "tenant_id"));
 	}
+
+	public function tableAfterRow($row)
+	{;
+		return view("admin.webhooks.after_row", compact("row"))->render();
+	}
 }

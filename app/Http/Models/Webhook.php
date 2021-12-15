@@ -16,6 +16,8 @@ class Webhook extends DefaultModel
 		"enabled" => "boolean",
 	];
 
+	public $appends = ["code", "url_script"];
+
 	public static function boot()
 	{
 		parent::boot();
@@ -57,5 +59,10 @@ class Webhook extends DefaultModel
 	public function requests()
 	{
 		return $this->hasMany(WebhookRequest::class);
+	}
+
+	public function getUrlScriptAttribute()
+	{
+		return $this->url . "/script.js";
 	}
 }

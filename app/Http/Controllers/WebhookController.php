@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use marcusvbda\vstack\Services\Messages;
 use Carbon\Carbon;
+use Tholu\Packer\Packer;
 
 class WebhookController extends Controller
 {
@@ -338,5 +339,22 @@ class WebhookController extends Controller
 			"event" => "required|string"
 		]);
 		return response('OK');
+	}
+
+	public function scriptDirectRequest($token)
+	{
+		$webhook = Webhook::where('token', $token)->firstOrFail();
+		$path = public_path("assets/js/webhook_script.js");
+		$script_content = file_get_contents($path);
+
+		$script_content = preg_replace('/\_WEBHOOK_URL_\b/', $webhook->url, $script_content);
+		$script_content = preg_replace('/\_WEBHOOK_NAME_\b/', $webhook->name, $script_content);
+		$script_content = str_replace("/*", "", $script_content);
+		$script_content = str_replace("*/", "", $script_content);
+
+		$packer = new  Packer($script_content, 'Normal', true, false, true);
+		$script_content = $packer->pack();
+
+		return response($script_content)->header('Content-Type', 'application/javascript');
 	}
 }
