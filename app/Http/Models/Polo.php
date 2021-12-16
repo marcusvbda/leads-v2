@@ -76,4 +76,10 @@ class Polo extends DefaultModel
 	{
 		return $this->poloNotifications()->isNew()->count();
 	}
+
+	public function enabled_modules()
+	{
+		return $this->belongsToMany(Module::class, RelationModule::class, "model_id", "module_id")
+			->where("model_type", static::class)->where("enabled", true);
+	}
 }
