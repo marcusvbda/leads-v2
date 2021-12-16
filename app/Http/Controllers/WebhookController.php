@@ -29,7 +29,7 @@ class WebhookController extends Controller
 
 	public function handler($token, Request $request, $lead_id = null)
 	{
-		$webhook = Webhook::where('token', $token)->firstOrFail();
+		$webhook = Webhook::where('token', $token)->where("enabled", true)->firstOrFail();
 		$createdRequest = $webhook->requests()->create(['content' => $request->all()]);
 		$processed = $this->processRequest($webhook, $webhook->settings, $createdRequest, $lead_id);
 		if (!$processed) {
@@ -343,7 +343,7 @@ class WebhookController extends Controller
 
 	public function scriptDirectRequest($token)
 	{
-		$webhook = Webhook::where('token', $token)->firstOrFail();
+		$webhook = Webhook::where('token', $token)->where("enabled", true)->firstOrFail();
 		$path = public_path("assets/js/webhook_script.js");
 		$script_content = file_get_contents($path);
 
