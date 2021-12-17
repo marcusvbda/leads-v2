@@ -299,8 +299,8 @@ class WebhookController extends Controller
 		$comment = @$lead->comment ?? '';
 		$obs = @$lead->obs ?? 'via Webhook ( ' . $webhook->name . ' )';
 
-		$phone_1 = $this->getLeadInfo($request->content, static::INDEXES["phone"]);
-		$phone_2 = $this->getLeadInfo($request->content, static::INDEXES["mobile_phone"]);
+		$mobile_phone = $this->getLeadInfo($request->content, static::INDEXES["mobile_phone"]);
+		$phone = $this->getLeadInfo($request->content, static::INDEXES["phone"]);
 		$city = $this->getRequestCity($request);
 
 		$lead->data = [
@@ -308,7 +308,7 @@ class WebhookController extends Controller
 			"city" => $city["complete"],
 			"email" => $email,
 			"name" => $name,
-			"phones" => [$phone_1, $phone_2],
+			"phones" => [$mobile_phone, $phone],
 			"obs" => $obs,
 			"comment" => $comment,
 			"source" => $sources

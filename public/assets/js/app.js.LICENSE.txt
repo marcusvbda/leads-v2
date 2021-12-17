@@ -5,7 +5,7 @@
   */
 
 /*!
- * CSSPlugin 3.8.0
+ * CSSPlugin 3.9.0
  * https://greensock.com
  *
  * Copyright 2008-2021, GreenSock. All rights reserved.
@@ -27,7 +27,7 @@
  */
 
 /*!
- * GSAP 3.8.0
+ * GSAP 3.9.0
  * https://greensock.com
  *
  * @license Copyright 2008-2021, GreenSock. All rights reserved.
@@ -45,7 +45,7 @@
  */
 
 /*!
- * ScrollTrigger 3.8.0
+ * ScrollTrigger 3.9.0
  * https://greensock.com
  *
  * @license Copyright 2008-2021, GreenSock. All rights reserved.
