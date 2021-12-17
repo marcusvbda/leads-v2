@@ -144,7 +144,7 @@ class WebhookController extends Controller
 		if (in_array("direct_script", $sources)) {
 			$city = $this->getRequestCity($request);
 			$processed_city = mb_convert_encoding(strtolower(preg_replace('/\s+/', '', $city["complete"])), "EUC-JP", "auto");
-			if ($city != "Cidade não informada") {
+			try {
 				$polo = Polo::whereRaw("(convert(replace(lower(json_unquote(json_extract(data,'$.city'))),' ','') USING ASCII) = '$processed_city' and json_unquote(json_extract(data,'$.head')) = 'false')")->first();
 				if ($polo) {
 					$only_city = $city['city'];
@@ -153,6 +153,8 @@ class WebhookController extends Controller
 					$setting = $this->makeWebhookSettings($webhook, $indexes, $polo->id);
 					return $this->createLeadWithSetting($request, $webhook, $setting, $lead_id);
 				}
+			} catch (\Exception $e) {
+				return false;
 			}
 		}
 
