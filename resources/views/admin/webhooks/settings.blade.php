@@ -25,7 +25,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($data as $row)
-                                    <tr>
+                                    <tr id="{{ $row->id }}">
                                         <td>
                                             <Json-template :content='@json($row->json_indexes)'>
                                             </Json-template>
