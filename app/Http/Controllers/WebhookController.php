@@ -30,12 +30,18 @@ class WebhookController extends Controller
 	public function handler($token, Request $request, $lead_id = null)
 	{
 		$webhook = Webhook::where('token', $token)->where("enabled", true)->firstOrFail();
-		$createdRequest = $webhook->requests()->create(['content' => $request->all()]);
-		$processed = $this->processRequest($webhook, $webhook->settings, $createdRequest, $lead_id);
-		if (!$processed) {
-			$this->sendNotProcessedRequestNotificationToAdminUsers($webhook);
+		$content = $request->all();
+		$request_city = $this->getProcessedCityFromContent($content);
+		if ($request_city) {
+			$createdRequest = $webhook->requests()->create(['content' => $content]);
+			$processed = $this->processRequest($webhook, $webhook->settings, $createdRequest, $lead_id);
+			if (!$processed) {
+				$this->sendNotProcessedRequestNotificationToAdminUsers($webhook);
+			}
+			return response('OK');
+		} else {
+			return response('Invalid request', 400);
 		}
-		return response('OK');
 	}
 
 	public function actions($code, $action, Request $request)
@@ -140,10 +146,8 @@ class WebhookController extends Controller
 		}
 
 		$sources = $this->getSources($request->content, [$webhook->name]);
-
 		if (in_array("direct_script", $sources)) {
-			$city = $this->getRequestCity($request);
-			$processed_city = mb_convert_encoding(strtolower(preg_replace('/\s+/', '', $city["complete"])), "EUC-JP", "auto");
+			$processed_city = $this->getProcessedCityFromContent($request->content);
 			try {
 				$polo = Polo::whereRaw("(convert(replace(lower(json_unquote(json_extract(data,'$.city'))),' ','') USING ASCII) = '$processed_city' and json_unquote(json_extract(data,'$.head')) = 'false')")->first();
 				if ($polo) {
@@ -159,6 +163,13 @@ class WebhookController extends Controller
 		}
 
 		return false;
+	}
+
+	private function getProcessedCityFromContent($content)
+	{
+		$city = $this->getRequestCity($content);
+		$processed_city = mb_convert_encoding(strtolower(preg_replace('/\s+/', '', $city["complete"])), "EUC-JP", "auto");
+		return $processed_city;
 	}
 
 	private function createLeadWithSetting($request, $webhook, $setting, $lead_id)
@@ -265,14 +276,15 @@ class WebhookController extends Controller
 		return $tags;
 	}
 
-	private function getRequestCity($request)
+	private function getRequestCity($content)
 	{
-		$city = $this->getLeadInfo($request->content, static::INDEXES["city"], 'Cidade não informada');
-		$state = $this->getLeadInfo($request->content, static::INDEXES["state"], 'Estado não informado');
+		$fallback = "não informada";
+		$city = $this->getLeadInfo($content, static::INDEXES["city"], $fallback);
+		$state = $this->getLeadInfo($content, static::INDEXES["state"], $fallback);
 		return [
 			"city" => $city,
 			"state" => $state,
-			"complete" => $city . " - " . $state,
+			"complete" => ($city == $fallback && $state == $fallback) ? "" :  $city . " - " . $state,
 		];
 	}
 
@@ -305,7 +317,7 @@ class WebhookController extends Controller
 
 		$mobile_phone = $this->getLeadInfo($request->content, static::INDEXES["mobile_phone"]);
 		$phone = $this->getLeadInfo($request->content, static::INDEXES["phone"]);
-		$city = $this->getRequestCity($request);
+		$city = $this->getRequestCity($request->content);
 
 		$lead->data = [
 			"lead_api" => $request->content,
