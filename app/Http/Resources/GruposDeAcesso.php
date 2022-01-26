@@ -158,7 +158,7 @@ class GruposDeAcesso extends Resource
 			$route = route('resource.index', ["resource" => $this->id]);
 		}
 
-		$permissions = request()->except(["id", "description", "resource_id", "clicked_btn"]);
+		$permissions = request()->except(["id", "description", "resource_id", "clicked_btn", "page_type"]);
 
 		$new_permissions = [];
 		foreach ($permissions as $key => $value) {
