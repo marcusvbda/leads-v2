@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Models\Cart;
-use App\Http\Models\Status;
 use Illuminate\Foundation\Inspiring;
 /*
 |--------------------------------------------------------------------------

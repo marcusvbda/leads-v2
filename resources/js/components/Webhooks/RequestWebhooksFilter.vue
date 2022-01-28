@@ -12,8 +12,7 @@
             </el-radio-group>
         </div>
         <div class="col-12 my-3">
-            <el-input placeholder="Filtro de conteúdo" suffix-icon="el-input__icon el-icon-search" v-model="filter.filter">
-            </el-input>
+            <el-input placeholder="Filtro de conteúdo" suffix-icon="el-input__icon el-icon-search" v-model="filter.filter" />
         </div>
     </div>
 </template>

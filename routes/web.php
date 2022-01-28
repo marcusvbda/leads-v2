@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\UsersController;
+use App\Http\Controllers\LogViewerController;
 
 Route::get('', function () {
 	return redirect("/admin"); //temporário até termos uma landing page
@@ -18,6 +19,7 @@ Route::group(['middleware' => ['auth']], function () {
 		require "partials/rating.php";
 		require "partials/attendance.php";
 		require "partials/webhook.php";
+		require "partials/log-viewer.php";
 	});
 });
 
