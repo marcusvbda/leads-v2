@@ -36,13 +36,9 @@ class LogViewerController extends Controller
 
     public function getContent(Request $request)
     {
-        $logFile = file($request->path);
-        $logCollection = [];
-        foreach ($logFile as $line_num => $line) {
-            if (trim(preg_replace('/\s\s+/', ' ', $line))) {
-                $logCollection[] = array('line' => $line_num, 'content' => htmlspecialchars($line));
-            }
-        }
-        return $logCollection;
+        ini_set('memory_limit', "2048M");
+        ini_set('max_execution_time', 60);
+        $content = file_get_contents($request->path);
+        return $content;
     }
 }

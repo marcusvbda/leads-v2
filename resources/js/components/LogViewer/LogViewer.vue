@@ -5,22 +5,14 @@
         </div>
         <div class="col-md-9 col-sm-12">
             <div v-if="is_loading" class="shimmer is-loading" />
-            <template v-else-if="selected_node_content_rows">
-                <ElTable :data="filtered_data" style="width: 100%">
-                    <ElTableColumn label="Conteúdo" prop="content">
-                        <template slot-scope="{ row }">
-                            <code v-html="truncate(row.content, 200)" />
-                        </template>
-                    </ElTableColumn>
-                    <ElTableColumn align="right" width="250">
-                        <template slot="header" slot-scope="scope">
-                            <ElInput v-model="search_filter" size="mini" placeholder="Pesquisar ..." clearable />
-                        </template>
-                        <template slot-scope="{ row }">
-                            <ElButton icon="el-icon-search" size="mini" @click="view_details(row)" />
-                        </template>
-                    </ElTableColumn>
-                </ElTable>
+            <template v-else-if="selected_node_content">
+                <PrismEditor
+                    class="my-editor"
+                    v-model="selected_node_content"
+                    :highlight="highlighter"
+                    :readonly="true"
+                    :lineNumbers="true"
+                />
             </template>
             <template v-else>
                 <div class="text-center my-5">
@@ -34,42 +26,30 @@
     </div>
 </template>
 <script>
-import VueJsonPretty from "vue-json-pretty";
-import "vue-json-pretty/lib/styles.css";
+import { PrismEditor } from "vue-prism-editor";
+import "vue-prism-editor/dist/prismeditor.min.css";
+import { highlight, languages } from "prismjs/components/prism-core";
+import "prismjs/components/prism-clike";
+import "prismjs/components/prism-javascript";
+import "prismjs/themes/prism-tomorrow.css";
+
 export default {
     props: ["tree"],
     data() {
         return {
             is_loading: false,
-            selected_node_content_rows: null,
-            search: "",
-            search_filter: "",
-            interval: null,
+            selected_node_content: null,
             dialog_visible: false,
             selected_node: "",
         };
     },
     components: {
-        VueJsonPretty,
-    },
-    watch: {
-        search_filter(val) {
-            clearInterval(this.interval);
-            this.interval = setInterval(() => {
-                this.search = val;
-                clearInterval(this.interval);
-            }, 500);
-        },
-    },
-    computed: {
-        filtered_data() {
-            let search = this.search;
-            return this.selected_node_content_rows.filter(
-                (data) => !search || data.content.toLowerCase().includes(search.toLowerCase())
-            );
-        },
+        PrismEditor,
     },
     methods: {
+        highlighter(code) {
+            return highlight(code, languages.js);
+        },
         view_details(node) {
             this.selected_node = node.content;
             this.dialog_visible = true;
@@ -81,10 +61,16 @@ export default {
         },
         getContent(node) {
             this.is_loading = true;
-            this.$http.post(`/admin/log-viewer/get-content`, node).then(({ data }) => {
-                this.selected_node_content_rows = data;
-                this.is_loading = false;
-            });
+            this.$http
+                .post(`/admin/log-viewer/get-content`, node)
+                .then(({ data }) => {
+                    this.selected_node_content = data;
+                    this.is_loading = false;
+                })
+                .catch((er) => {
+                    this.$message.error(er.message);
+                    this.is_loading = false;
+                });
         },
         truncate(text, len) {
             if (text.length > len) {
@@ -106,9 +92,21 @@ export default {
     height: 800px;
     width: 100%;
 }
+.my-editor {
+    background: white;
+    font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 5px;
+}
 
-.el-table__row {
-    .is-right {
-    }
+// optional
+.prism-editor__textarea:focus {
+    outline: none;
+}
+
+// not required:
+.height-300 {
+    height: 300px;
 }
 </style>
