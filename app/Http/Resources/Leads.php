@@ -9,8 +9,8 @@ use App\Http\Actions\Leads\{
 	LeadDelete,
 	LeadRemoveDuplicates,
 	LeadReprocess,
-    LeadSourceReprocess,
-    LeadTransfer,
+	LeadSourceReprocess,
+	LeadTransfer,
 };
 use App\Http\Filters\FilterByPresetData;
 use App\Http\Filters\FilterByTags;
@@ -148,23 +148,31 @@ class Leads extends Resource
 
 	public function export_columns($cx)
 	{
-		$fields = [
-			"code" => ["label" => "Código"],
-			"name" => ["label" => "Nome"],
-			"origins" => ["label" => "Origens", "handler" => function ($row) {
-				return implode(", ", @$row->data->source ?? []);
-			}],
-			"status->name" => ["label" => "Status"],
-			"profession" => ["label" => "Profissão"],
-			"email" => ["label" => "Email"],
-			"phones" => ["label" => "Telefones", "handler" => function ($row) {
-				return implode(" - ", $row->data->phones);
-			}],
-			"interest" => ["label" => "Interesse"],
-			"data" => ["label" => "Data", "handler" => function ($row) {
-				return formatDate($row->created_at);
-			}],
-		];
+		// dd(request()->page_type);
+		$fields["code"] = ["label" => "Código"];
+		$fields["name"] = ["label" => "Nome"];
+		$fields["origins"] = ["label" => "Origens", "handler" => function ($row) {
+			return implode(", ", @$row->data->source ?? []);
+		}];
+		$fields["status->name"] = ["label" => "Status"];
+		$fields["profession"] = ["label" => "Profissão"];
+		$fields["email"] = ["label" => "Email"];
+		$fields["primary_phone"] = ["label" => "Telefone", "handler" => function ($row) {
+			return $row->primary_phone_number;
+		}];
+		$fields["primary_phone_clean"] = ["label" => "Telefone Limpo", "handler" => function ($row) {
+			return preg_replace("/[^0-9]/", "", $row->primary_phone_number);
+		}];
+		$fields["secondary_phone"] =  ["label" => "Tel. Secundário", "handler" => function ($row) {
+			return $row->secondary_phone_number;
+		}];
+		$fields["secondary_phone_clean"] =  ["label" => "Tel. Secundário Limpo", "handler" => function ($row) {
+			return  preg_replace("/[^0-9]/", "", $row->secondary_phone_number);
+		}];
+		$fields["interest"] = ["label" => "Interesse"];
+		$fields["data"] = ["label" => "Data", "handler" => function ($row) {
+			return formatDate($row->created_at);
+		}];
 		return $fields;
 	}
 

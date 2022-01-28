@@ -326,6 +326,16 @@ class Lead extends DefaultModel
 		setModelDataValue($this, "phones", [$value, $this->phone_number]);
 	}
 
+	public function getPrimaryPhoneNumberAttribute()
+	{
+		return @$this->cellphone_number ? $this->cellphone_number : $this->phone_number;
+	}
+
+	public function getSecondaryPhoneNumberAttribute()
+	{
+		return (@$this->cellphone_number &&  @$this->cellphone_number != @$this->phone_number) ? $this->phone_number : "";
+	}
+
 	public function setNameAttribute($value)
 	{
 		setModelDataValue($this, "name", $value);
