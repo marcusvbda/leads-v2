@@ -14,6 +14,11 @@ class Kernel extends ConsoleKernel
 	protected function schedule(Schedule $schedule)
 	{
 		$schedule
+			->command('logs:clear')
+			->days(2)
+			->withoutOverlapping(5);
+
+		$schedule
 			->command('queue:work --queue=resource-import,resource-export,alert-broadcasts,event-broadcasts')
 			->everyMinute()
 			->withoutOverlapping(5);
