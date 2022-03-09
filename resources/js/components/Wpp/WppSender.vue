@@ -3,7 +3,7 @@
         <div class="col-12">
             <div class="card" v-loading="isLoading">
                 <div class="card-header">
-                    <b>{{ status }}</b>
+                    <b>{{ translated_status }}</b>
                 </div>
                 <div class="card-body">
                     <template v-if="status === 'notLogged'">
@@ -11,7 +11,8 @@
                     </template>
                     <template v-else-if="status === 'logged'">
                         <input v-model="message" />
-                        <button>Enviar</button>
+                        <input v-model="phone" />
+                        <button @click="sendTextMessage">Enviar</button>
                     </template>
                 </div>
             </div>
@@ -26,6 +27,7 @@ export default {
     data() {
         return {
             message: "",
+            phone: "5514996766177@c.us",
         };
     },
     created() {
@@ -36,9 +38,20 @@ export default {
         isLoading() {
             return ["initializing"].includes(this.status);
         },
+        translated_status() {
+            const options = {
+                notLogged: "Não logado",
+                initializing: "Inicializando",
+                logged: "Logado",
+            };
+            return options[this.status] ?? this.status;
+        },
     },
     methods: {
-        ...mapActions("wpp", ["initSocket"]),
+        ...mapActions("wpp", ["initSocket", "sendMessage"]),
+        sendTextMessage() {
+            this.sendMessage({ message: this.message, to: this.phone, type: "text" });
+        },
     },
 };
 </script>
