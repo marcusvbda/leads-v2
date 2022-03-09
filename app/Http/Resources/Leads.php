@@ -12,7 +12,7 @@ use App\Http\Actions\Leads\{
 	LeadSourceReprocess,
 	LeadTransfer,
 };
-use App\Http\Filters\FilterByPresetData;
+use App\Http\Filters\FilterByPresetDate;
 use App\Http\Filters\FilterByTags;
 use App\Http\Filters\FilterByText;
 use App\Http\Filters\Leads\LeadsByPhone;
@@ -179,7 +179,7 @@ class Leads extends Resource
 	public function filters()
 	{
 		$filters = [];
-		$filters[] = new FilterByPresetData("Data de Criação");
+		$filters[] = new FilterByPresetDate("Data de Criação");
 		$filters[] = new FilterByText([
 			"column" => "data->name",
 			"label" => "Nome",

@@ -110,4 +110,19 @@ class User extends Authenticatable
 	{
 		return @$this->roles()->first()->id;
 	}
+
+	public function getWppLastSession()
+	{
+		$tenant = $this->tenant;
+		return @$tenant->data->wpp_last_session ?? [];
+	}
+
+	public function setWppLastSession($token)
+	{
+		$tenant = $this->tenant;
+		$data = $tenant->data;
+		$data->wpp_last_session = (object)$token;
+		$tenant->data = $data;
+		$tenant->save();
+	}
 }

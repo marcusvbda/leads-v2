@@ -20,6 +20,7 @@ Route::group(['middleware' => ['auth']], function () {
 		require "partials/attendance.php";
 		require "partials/webhook.php";
 		require "partials/log-viewer.php";
+		require "partials/wpp.php";
 	});
 });
 

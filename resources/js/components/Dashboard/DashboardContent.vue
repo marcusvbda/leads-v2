@@ -58,7 +58,7 @@ export default {
         "qty-canceled-tax": require("./-qty-canceled-tax.vue").default,
         "qty-finished-tax": require("./-qty-finished-tax.vue").default,
         "chart-status": require("./-chart-status.vue").default,
-        "chart-objection": require("./-chart-objection.vue").default
-    }
+        "chart-objection": require("./-chart-objection.vue").default,
+    },
 };
 </script>
