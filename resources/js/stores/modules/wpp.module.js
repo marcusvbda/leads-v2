@@ -1,21 +1,24 @@
 import api from "~/config/libs/axios";
 import io from "socket.io-client";
+import Vue from "vue";
 
 const state = {
     socket: {},
     status: "initializing",
     qr_code_data: {},
     connection_id: null,
-    keep_alive_interval: null,
+    // keep_alive_interval: null,
     config: {
         uri: "http://localhost:3000",
     },
     session: {},
+    token: {},
 };
 
 const getters = {
     status: (state) => state.status,
     qr_code_data: (state) => state.qr_code_data,
+    token: (state) => state.token,
 };
 
 const mutations = {
@@ -23,34 +26,32 @@ const mutations = {
     setStatus: (state, payload) => (state.status = payload),
     setQrCodeData: (state, payload) => (state.qr_code_data = payload),
     setConnectionId: (state, payload) => (state.connection_id = payload),
-    setKeepAliveInterval: (state, payload) => (state.keep_alive_interval = payload),
+    // setKeepAliveInterval: (state, payload) => (state.keep_alive_interval = payload),
     setSession: (state, payload) => (state.session = payload),
-};
-const uid = () => {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    setToken: (state, payload) => (state.token = payload),
 };
 
 const actions = {
-    stopKeepAlive({ state }) {
-        clearInterval(state.keep_alive_interval);
-    },
-    startKeepAlive({ commit, dispatch, state }) {
-        dispatch("stopKeepAlive");
-        const keepAliveHandler = setInterval(() => {
-            api.get(`${state.config.uri}/sessions/get-status/${state.session.code}`, { timeout: 20000 })
-                .then(({ data }) => {
-                    if (data !== "connected") {
-                        dispatch("stopKeepAlive");
-                        dispatch("initSocket", state.session);
-                    }
-                })
-                .catch(() => {
-                    dispatch("stopKeepAlive");
-                    dispatch("initSocket", state.session);
-                });
-        }, 3000);
-        commit("setKeepAliveInterval", keepAliveHandler);
-    },
+    // stopKeepAlive({ state }) {
+    //     clearInterval(state.keep_alive_interval);
+    // },
+    // startKeepAlive({ commit, dispatch, state }) {
+    //     dispatch("stopKeepAlive");
+    //     const keepAliveHandler = setInterval(() => {
+    //         api.get(`${state.config.uri}/sessions/get-status/${state.session.code}`, { timeout: 20000 })
+    //             .then(({ data }) => {
+    //                 if (data !== "connected") {
+    //                     dispatch("stopKeepAlive");
+    //                     dispatch("initSocket", state.session);
+    //                 }
+    //             })
+    //             .catch(() => {
+    //                 dispatch("stopKeepAlive");
+    //                 dispatch("initSocket", state.session);
+    //             });
+    //     }, 3000);
+    //     commit("setKeepAliveInterval", keepAliveHandler);
+    // },
     // eslint-disable-next-line no-empty-pattern
     saveTenantToken({}, payload) {
         return api.post("/admin/wpp/token-update", payload);
@@ -70,13 +71,12 @@ const actions = {
 
         socket.on("session-updated", (data) => {
             console.log("session-updated", data);
-            dispatch("stopKeepAlive");
             const actions = {
                 notLogged: () => {
                     commit("setStatus", "notLogged");
                 },
                 qrReadSuccess: () => {
-                    dispatch("startKeepAlive");
+                    // dispatch("startKeepAlive");
                     commit("setStatus", "logged");
                 },
                 isLogged: () => {
@@ -90,9 +90,10 @@ const actions = {
         });
 
         socket.on("token-generated", (data) => {
-            dispatch("saveTenantToken", data).then(() => {
-                dispatch("startKeepAlive");
-            });
+            commit("setToken", JSON.stringify(data));
+            // dispatch("saveTenantToken", data).then(() => {
+            //     dispatch("startKeepAlive");
+            // });
         });
 
         socket.on("qr-generated", (data) => {
@@ -122,7 +123,7 @@ const actions = {
     },
     sendMessage({ state }, payload) {
         const { socket } = state;
-        socket.emit("send-message", { session_code: state.session.code, ...payload, uid: uid() });
+        socket.emit("send-message", { session_code: state.session.code, ...payload, uid: Vue.$uid() });
     },
 };
 

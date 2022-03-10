@@ -55,8 +55,3 @@ export default {
     },
 };
 </script>
-<style lang="scss">
-.advanced-iframe {
-    width: 100%;
-}
-</style>

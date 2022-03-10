@@ -81,7 +81,7 @@ if(!$is_super_admin) {
                 class="nav-item dropdown {{ currentClass(['/admin/resposta-contatos/*', '/admin/tipos-contato/*', '/admin/respostas-contato/*', '/admin/regra-classificacao/*', '/admin/objecoes/*']) }}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
-                    <i class="el-icon-bangzhu mr-2"></i>Tabelas Auxiliares
+                    <i class="el-icon-bangzhu mr-2"></i>Definições
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="{{ getMenuClass('viewlist-objections', ['/admin/objecoes/*']) }}" href="/admin/objecoes"
@@ -92,6 +92,8 @@ if(!$is_super_admin) {
                         data-label="Contatos com Lead">Respostas de Contato</a>
                     <a class="{{ getMenuClass('config-rating-behavior', ['/admin/regra-classificacao/*']) }}" href="/admin/regra-classificacao"
                         data-label="Regra de Rating de Lead">Regra de Classificação</a>
+                    <a class="{{ getMenuClass('config-rating-behavior', ['/admin/sessoes-wpp/*']) }}" href="/admin/sessoes-wpp"
+                        data-label="Perfis autenticados">Sessões WhatsApp</a>
                 </div>
             </li>
             <li

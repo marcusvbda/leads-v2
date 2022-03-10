@@ -133,4 +133,9 @@ class User extends Authenticatable
 		$tenant->data = $data;
 		$tenant->save();
 	}
+
+	public function canAccessModule($module)
+	{
+		return true;
+	}
 }
