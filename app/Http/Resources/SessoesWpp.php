@@ -7,7 +7,6 @@ use marcusvbda\vstack\Fields\{
 	Card,
 	CustomComponent,
 	Text,
-	TextArea
 };
 use Auth;
 use App\Http\Models\WppSession;
@@ -27,11 +26,6 @@ class SessoesWpp extends Resource
 		return "Sessões WhatsApp";
 	}
 
-	public function indexLabel()
-	{
-		return "<span class='" . $this->icon() . " mr-2'></span>" . $this->label();
-	}
-
 	public function singularLabel()
 	{
 		return "Sessão WhatsApp";
@@ -39,7 +33,12 @@ class SessoesWpp extends Resource
 
 	public function icon()
 	{
-		return "el-icon-s-opportunity";
+		return "el-icon-s-promotion";
+	}
+
+	public function search()
+	{
+		return ["name"];
 	}
 
 	public function table()
@@ -47,6 +46,7 @@ class SessoesWpp extends Resource
 		$columns = [];
 		$columns["code"] = ["label" => "Código", "sortable_index" => "id"];
 		$columns["name"] = ["label" => "Nome"];
+		$columns["status_check"] = ["label" => "Status da Sessão", "sortable" => false];
 		$columns["f_created_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
 		return $columns;
 	}
@@ -119,7 +119,7 @@ class SessoesWpp extends Resource
 		}
 		$fields[] = new Text([
 			"label" => "Token",
-			"description" =>  $is_creating ? "" : "Escaneie o código QR para obter o token",
+			"description" =>  $is_creating ? "Escaneie o código QR para obter o token" : "",
 			"field" => "string_token",
 			"rules" => ["required"],
 			"disabled" => true,

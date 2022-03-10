@@ -20,8 +20,20 @@ class WppSession extends DefaultModel
 		static::addGlobalScope(new OrderByScope(with(new static)->getTable()));
 	}
 
+	public function getTokenAttribute()
+	{
+		return $this->data->token ?? [];
+	}
+
 	public function getStringTokenAttribute()
 	{
-		return json_encode($this->data->token) ?? "";
+		return json_encode($this->token) ?? "";
+	}
+
+	public function getStatusCheckAttribute()
+	{
+		$string_token = $this->string_token;
+		$code = $this->code;
+		return "<wpp-status-check code='$code' :session='$string_token'></wpp-status-check>";
 	}
 }

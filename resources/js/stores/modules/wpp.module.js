@@ -53,8 +53,16 @@ const actions = {
     //     commit("setKeepAliveInterval", keepAliveHandler);
     // },
     // eslint-disable-next-line no-empty-pattern
-    saveTenantToken({}, payload) {
-        return api.post("/admin/wpp/token-update", payload);
+    // saveTenantToken({}, payload) {
+    //     return api.post("/admin/wpp/token-update", payload);
+    // },
+    // eslint-disable-next-line no-empty-pattern
+    checkSection({}, payload) {
+        return api.get(`${state.config.uri}/sessions/get-status/${payload}`);
+    },
+    // eslint-disable-next-line no-empty-pattern
+    logSection({}, payload) {
+        api.post(`${state.config.uri}/sessions/login`, payload);
     },
     initSocket({ dispatch, commit }, session) {
         commit("setStatus", "initializing");
