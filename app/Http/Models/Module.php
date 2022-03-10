@@ -19,11 +19,6 @@ class Module extends DefaultModel
 		static::addGlobalScope(new OrderByScope(with(new static)->getTable()));
 	}
 
-	public function getFEnabledAttribute()
-	{
-		return getEnabledIcon(@$this->enabled);
-	}
-
 	public function getFNewBadgeAttribute()
 	{
 		return getEnabledIcon(@$this->new_badge);
