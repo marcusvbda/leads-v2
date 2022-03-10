@@ -9,7 +9,7 @@ const state = {
     connection_id: null,
     // keep_alive_interval: null,
     config: {
-        uri: "http://localhost:3000",
+        uri: laravel.config.wpp_service.uri,
     },
     session: {},
     token: {},

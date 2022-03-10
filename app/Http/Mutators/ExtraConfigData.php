@@ -10,7 +10,10 @@ class ExtraConfigData extends BaseMutator
 	public function process($content)
 	{
 		$content["config"] = array_merge($content["config"], [
-			"description" => config("app.description")
+			"description" => config("app.description"),
+			"wpp_service" => [
+				"uri" => config("wpp.service_uri")
+			]
 		]);
 		return $content;
 	}
