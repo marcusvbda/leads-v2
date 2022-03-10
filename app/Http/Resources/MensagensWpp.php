@@ -30,15 +30,18 @@ class MensagensWpp extends Resource
 		return "el-icon-s-comment";
 	}
 
-	// public function table()
-	// {
-	// 	$columns = [];
-	// 	$columns["code"] = ["label" => "Código", "sortable_index" => "id"];
-	// 	$columns["name"] = ["label" => "Nome"];
-	// 	$columns["status_check"] = ["label" => "Status da Sessão", "sortable" => false];
-	// 	$columns["f_created_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
-	// 	return $columns;
-	// }
+	public function table()
+	{
+		$columns = [];
+		$columns["code"] = ["label" => "Código", "sortable_index" => "id"];
+		$columns["f_phone"] = ["label" => "Telefone", "sortable_index" => "data->phone"];
+		$columns["message_cuted"] = ["label" => "Mensagem", "sortable_index" => "data->telefone"];
+		$columns["f_status"] = ["label" => "Status", "sortable_index" => "status"];
+		$columns["user->name"] = ["label" => "Autor", "sortable_index" => "user_id"];
+		$columns["user->name"] = ["label" => "Autor", "sortable_index" => "user_id"];
+		$columns["f_created_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
+		return $columns;
+	}
 
 	private function canAccessModule()
 	{
@@ -97,6 +100,11 @@ class MensagensWpp extends Resource
 	public function canDelete()
 	{
 		return  $this->canAccessModule();
+	}
+
+	public function canDeleteRow($row)
+	{
+		return $row->status == "waiting";
 	}
 
 	public function canExport()
