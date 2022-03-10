@@ -179,7 +179,7 @@ class Leads extends Resource
 	public function filters()
 	{
 		$filters = [];
-		$filters[] = new FilterByPresetDate("Data de Criação");
+		$filters[] = new FilterByPresetDate(["label" => "Data de Criação"]);
 		$filters[] = new FilterByText([
 			"column" => "data->name",
 			"label" => "Nome",

@@ -136,7 +136,7 @@ class Usuarios extends Resource
 		}
 		return "
         <div class='my-5'>
-            <h4 class='mb-4'><span class='el-icon-s-promotion mr-2 mr-2'></span> Convites Pendentes</h4>
+            <h4 class='mb-4'><span class='el-icon-s-promotion mr-2'></span> Convites Pendentes</h4>
             $view
         </div>
         ";
