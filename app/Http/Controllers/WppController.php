@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Auth;
 
 class WppController extends Controller
 {
-    public function sender()
-    {
-        return view('admin.wpp.sender');
-    }
+    // public function sender()
+    // {
+    //     return view('admin.wpp.sender');
+    // }
 
     public function tokenUpdate(Request $request)
     {

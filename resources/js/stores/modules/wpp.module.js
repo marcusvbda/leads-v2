@@ -1,6 +1,6 @@
 import api from "~/config/libs/axios";
 import io from "socket.io-client";
-import Vue from "vue";
+const uid = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 
 const state = {
     socket: {},
@@ -129,9 +129,13 @@ const actions = {
             console.log("message-failed", res);
         });
     },
+    sendDirectMessage({ state }, payload) {
+        const params = { session_code: state.session_code, ...payload, uid: uid(), type: "text" };
+        return api.post(`${state.config.uri}/sessions/send-direct-message`, params);
+    },
     sendMessage({ state }, payload) {
         const { socket } = state;
-        socket.emit("send-message", { session_code: state.session.code, ...payload, uid: Vue.$uid() });
+        socket.emit("send-message", { session_code: state.session.code, ...payload, uid: uid() });
     },
 };
 

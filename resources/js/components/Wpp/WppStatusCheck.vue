@@ -3,7 +3,14 @@
         <a href="#" @click.prevent="startConsult" v-if="consulting == false">Consultar Status</a>
         <template v-else>
             <template v-if="loading"> Consultando <span v-html="getloadingGif" /> </template>
-            <template v-else> {{ connected ? "Ativo" : "Inativo" }} <span v-html="$getEnabledIcons(connected)" /> </template>
+            <template v-else>
+                <div class="d-flex flex-column">
+                    <div class="status-row">
+                        {{ connected ? "Ativo" : "Inativo" }} <span v-html="$getEnabledIcons(connected)" />
+                    </div>
+                    <WppSendMessage v-if="connected" :session="session" :code="code" />
+                </div>
+            </template>
         </template>
     </div>
 </template>

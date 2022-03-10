@@ -27,7 +27,7 @@ export default {
     data() {
         return {
             message: "",
-            phone: "5514996766177@c.us",
+            phone: "",
         };
     },
     created() {
