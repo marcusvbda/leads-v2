@@ -12,7 +12,7 @@ use App\Http\Models\Tenant;
 use marcusvbda\vstack\Models\Scopes\TenantScope;
 use marcusvbda\vstack\Models\Observers\TenantObserver;
 use App\Http\Models\Pivots\{UserPolo};
-use App\Http\Models\{Department, UserNotification, Polo};
+use App\Http\Models\{Department, Module, UserNotification, Polo};
 use App\Http\Models\Scopes\{OrderByScope};
 
 class User extends Authenticatable
@@ -136,6 +136,7 @@ class User extends Authenticatable
 
 	public function canAccessModule($module)
 	{
-		return true;
+		$whatsapp_module = Module::where("slug", $module)->first();
+		return $whatsapp_module;
 	}
 }

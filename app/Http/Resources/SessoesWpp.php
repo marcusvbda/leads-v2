@@ -53,7 +53,7 @@ class SessoesWpp extends Resource
 
 	private function canAccessModule()
 	{
-		return Auth::user()->canAccessModule("WhatsApp");
+		return Auth::user()->canAccessModule("whatsapp");
 	}
 
 	public function canViewList()

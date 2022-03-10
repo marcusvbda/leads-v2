@@ -41,6 +41,7 @@ if(!$is_super_admin) {
     $wiki_url = '/admin/wiki/?order_by=id&order_type=asc';
 }
 
+$whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
 @endphp
 <nav class="navbar navbar-expand-lg navbar-light bg-light py-0">
     <a class="navbar-brand py-0" href="/admin">
@@ -78,7 +79,7 @@ if(!$is_super_admin) {
                 </div>
             </li>
             <li
-                class="nav-item dropdown {{ currentClass(['/admin/resposta-contatos/*', '/admin/tipos-contato/*', '/admin/respostas-contato/*', '/admin/regra-classificacao/*', '/admin/objecoes/*']) }}">
+                class="nav-item dropdown {{ currentClass(['/admin/resposta-contatos/*', '/admin/tipos-contato/*', '/admin/respostas-contato/*', '/admin/regra-classificacao/*', '/admin/objecoes/*','/admin/sessoes-wpp/*']) }}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
                     <i class="el-icon-bangzhu mr-2"></i>Definições
@@ -92,8 +93,15 @@ if(!$is_super_admin) {
                         data-label="Contatos com Lead">Respostas de Contato</a>
                     <a class="{{ getMenuClass('config-rating-behavior', ['/admin/regra-classificacao/*']) }}" href="/admin/regra-classificacao"
                         data-label="Regra de Rating de Lead">Regra de Classificação</a>
-                    <a class="{{ getMenuClass('config-rating-behavior', ['/admin/sessoes-wpp/*']) }}" href="/admin/sessoes-wpp"
-                        data-label="Perfis autenticados">Sessões WhatsApp</a>
+                    @if(@$whatsapp_module->id)
+                            <a class="{{ getMenuClass('config-rating-behavior', ['/admin/sessoes-wpp/*']) }}" href="/admin/sessoes-wpp"
+                                data-label="Perfis autenticados"
+                            >
+                                @if(@$whatsapp_module->new_badge) <el-badge value="Novo" class="badge-new"  type="primary"> @endif
+                                    Sessões WhatsApp
+                                @if(@$whatsapp_module->new_badge) </el-badge> @endif
+                            </a>
+                    @endif
                 </div>
             </li>
             <li
@@ -148,6 +156,7 @@ if(!$is_super_admin) {
                     <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/usuarios">Usuários</a>
                     <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/polos">Polos</a>
                     <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/departamentos">Departamentos</a>
+                    <a class="dropdown-item @if (!$is_super_admin) disabled @endif" href="/admin/modulos">Modulos</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/login">Sair</a>
                 </div>
