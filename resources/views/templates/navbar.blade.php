@@ -21,6 +21,7 @@ function currentClass($routes)
     }
     return '';
 }
+
 $is_super_admin = $user->isSuperAdmin();
 $is_admin = $user->hasRole(['admin']);
 $is_admin_or_super_admin = $user->hasRole(['admin', 'super-admin']);
@@ -54,7 +55,7 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item {{ currentClass(['/admin']) }}">
-                <a class="nav-link" href="/admin"><i class="el-icon-data-line mr-2"></i>CRM Dashboard <span
+                <a class="nav-link" href="/admin"><i class="el-icon-data-line mr-2"></i>Dashboard<span
                         class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item dropdown {{ currentClass(['/admin/leads/*', '/admin/atendimento/*']) }}">
@@ -77,33 +78,7 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
                     <a class="{{ getMenuClass('view-leads-report', ['/admin/relatorios/leads/*']) }}" href="/admin/relatorios/leads"
                         data-label="Relatório de Leads">Leads</a>
                 </div>
-            </li>
-            <li
-                class="nav-item dropdown {{ currentClass(['/admin/resposta-contatos/*', '/admin/tipos-contato/*', '/admin/respostas-contato/*', '/admin/regra-classificacao/*', '/admin/objecoes/*','/admin/sessoes-wpp/*']) }}">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                    <i class="el-icon-bangzhu mr-2"></i>Definições
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="{{ getMenuClass('viewlist-objections', ['/admin/objecoes/*']) }}" href="/admin/objecoes"
-                        data-label="Objeções de respostas negativas">Objeções de Contato</a>
-                    <a class="{{ getMenuClass('viewlist-contacttype', ['/admin/tipos-contato/*']) }}" href="/admin/tipos-contato"
-                        data-label="Formar que o lead foi contato">Tipos de Contato</a>
-                    <a class="{{ getMenuClass('viewlist-leadanswer', ['/admin/respostas-contato/*']) }}" href="/admin/respostas-contato"
-                        data-label="Contatos com Lead">Respostas de Contato</a>
-                    <a class="{{ getMenuClass('config-rating-behavior', ['/admin/regra-classificacao/*']) }}" href="/admin/regra-classificacao"
-                        data-label="Regra de Rating de Lead">Regra de Classificação</a>
-                    @if(@$whatsapp_module->id)
-                            <a class="{{ getMenuClass('config-rating-behavior', ['/admin/sessoes-wpp/*']) }}" href="/admin/sessoes-wpp"
-                                data-label="Perfis autenticados"
-                            >
-                                @if(@$whatsapp_module->new_badge) <el-badge value="Novo" class="badge-new"  type="primary"> @endif
-                                    Sessões WhatsApp
-                                @if(@$whatsapp_module->new_badge) </el-badge> @endif
-                            </a>
-                    @endif
-                </div>
-            </li>
+            </li>            
             <li
                 class="nav-item dropdown {{ currentClass(['/admin/webhooks/*','/admin/integracoes/*']) }}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
@@ -119,6 +94,48 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
                         data-label="Usuários de Acesso a API">
                         Integradores
                     </a>
+                </div>
+            </li>
+            <li
+                class="nav-item dropdown {{ currentClass(['/admin/resposta-contatos/*', '/admin/tipos-contato/*', '/admin/respostas-contato/*', '/admin/regra-classificacao/*', '/admin/objecoes/*','/admin/sessoes-wpp/*']) }}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <i class="el-icon-s-tools mr-2"></i>Configurações
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="{{ getMenuClass('viewlist-objections', ['/admin/objecoes/*']) }}" href="/admin/objecoes"
+                        data-label="Objeções de respostas negativas">Objeções de Contato</a>
+                    <a class="{{ getMenuClass('viewlist-contacttype', ['/admin/tipos-contato/*']) }}" href="/admin/tipos-contato"
+                        data-label="Formar que o lead foi contato">Tipos de Contato</a>
+                    <a class="{{ getMenuClass('viewlist-leadanswer', ['/admin/respostas-contato/*']) }}" href="/admin/respostas-contato"
+                        data-label="Contatos com Lead">Respostas de Contato</a>
+                    <a class="{{ getMenuClass('config-rating-behavior', ['/admin/regra-classificacao/*']) }}" href="/admin/regra-classificacao"
+                        data-label="Regra de Rating de Lead">Regra de Classificação</a>
+                    @if(@$whatsapp_module->id)
+                        <a class="dropdown-item  {{ currentClass(['/admin/sessoes-wpp/*']) }}" href="/admin/sessoes-wpp"
+                            data-label="Perfis autenticados"
+                        >
+                            @if(@$whatsapp_module->new_badge) <el-badge value="Novo" class="badge-new"  type="primary"> @endif
+                                Sessões WhatsApp
+                            @if(@$whatsapp_module->new_badge) </el-badge> @endif
+                        </a>
+                    @endif
+                </div>
+            </li>
+            <li
+                class="nav-item dropdown {{ currentClass(['/admin/mensagens-wpp/*']) }}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <i class="el-icon-chat-dot-round mr-2"></i>Comunicação
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    @if(@$whatsapp_module->id)
+                        <a class="dropdown-item {{ currentClass(['/admin/mensagens-wpp/*']) }}" href="/admin/mensagens-wpp">
+                            @if(@$whatsapp_module->new_badge) <el-badge value="Novo" class="badge-new"  type="primary"> @endif
+                                Mensagens WhatsApp
+                            @if(@$whatsapp_module->new_badge) </el-badge> @endif
+                        </a>
+                    @endif
                 </div>
             </li>
         </ul>        
