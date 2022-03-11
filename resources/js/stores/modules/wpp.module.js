@@ -98,6 +98,7 @@ const actions = {
         });
 
         socket.on("token-generated", (data) => {
+            console.log("token-generated", data);
             commit("setToken", JSON.stringify(data));
             // dispatch("saveTenantToken", data).then(() => {
             //     dispatch("startKeepAlive");
@@ -105,11 +106,13 @@ const actions = {
         });
 
         socket.on("qr-generated", (data) => {
+            console.log("qr-generated", data);
             commit("setStatus", "notLogged");
             commit("setQrCodeData", data);
         });
 
         socket.on("connected", (data) => {
+            console.log("connected", data);
             commit("setConnectionId", data.id);
         });
 
