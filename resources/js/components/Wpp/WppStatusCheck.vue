@@ -1,6 +1,6 @@
 <template>
     <div class="status-row">
-        <a href="#" @click.prevent="startConsult" v-if="consulting == false">Consultar Status</a>
+        <a href="#" @click.prevent="logSection" v-if="consulting == false">Consultar Status</a>
         <template v-else>
             <template v-if="loading"> Consultando <span v-html="getloadingGif" /> </template>
             <template v-else>
@@ -48,19 +48,9 @@ export default {
     },
     methods: {
         ...mapActions("wpp", ["initSocket", "checkSection"]),
-        startConsult() {
+        logSection() {
             this.loading = true;
             this.consulting = true;
-            this.checkSection({ code: this.session }).then(({ data }) => {
-                if (data !== "connected") {
-                    this.logSection();
-                } else {
-                    this.connected = true;
-                    this.loading = false;
-                }
-            });
-        },
-        logSection() {
             const actionEvents = {
                 authenticated: () => {
                     this.connected = true;

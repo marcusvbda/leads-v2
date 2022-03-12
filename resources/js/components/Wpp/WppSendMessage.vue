@@ -15,7 +15,7 @@
     </div>
 </template>
 <script>
-import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 export default {
     props: ["session"],
     data() {
@@ -28,12 +28,12 @@ export default {
         };
     },
     computed: {
+        ...mapGetters("wpp", ["socket"]),
         canSend() {
             return this.message.length > 0 && this.phone.length === this.phone_mask.length;
         },
     },
     methods: {
-        ...mapActions("wpp", ["sendDirectMessage"]),
         showDialog() {
             this.loading = false;
             this.visible = true;
@@ -41,12 +41,22 @@ export default {
             this.phone = "";
         },
         sendTextMessage() {
+            const _uid = this.$uid();
             this.loading = true;
-            const phone = this.phone.replace(/[^0-9]/g, "") + "@c.us";
-            this.sendDirectMessage({ session_code: this.session, message: this.message, to: phone }).then(({ data }) => {
-                if (data.event === "message-sent") {
+            const phone = this.phone.replace(/[^0-9]/g, "");
+            this.socket.emit("message", {
+                code: this.session,
+                message: this.message,
+                number: phone,
+                type: "text",
+                _uid,
+            });
+
+            this.socket.on("sent_message", (data) => {
+                console.log("RECEBI", data, _uid);
+                if (data._uid === _uid) {
                     this.visible = false;
-                    this.$message.success("Mensagem enviada com sucesso!");
+                    this.$message.success("Mensagem enviada com sucesso !!");
                 }
             });
         },

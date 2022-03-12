@@ -1,6 +1,5 @@
 import api from "~/config/libs/axios";
 import io from "socket.io-client";
-const uid = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 const debug = require("console-development");
 
 const state = {
@@ -19,7 +18,6 @@ const getters = {
     status: (state) => state.status,
     qr: (state) => state.qr,
     token: (state) => state.token,
-    event_list: (state) => state.event_list,
     socket: (state) => state.socket,
 };
 
@@ -32,6 +30,8 @@ const mutations = {
     setToken: (state, payload) => (state.token = payload),
 };
 
+const serviceEvents = ["auth_failure", "disconnected", "qr", "authenticated", "auth_failure", "ready", "message", "sent_message"];
+
 const actioEvents = {
     qr: (commit, data) => {
         commit("setStatus", "qr");
@@ -41,7 +41,7 @@ const actioEvents = {
         commit("setStatus", "authenticated");
         commit("setToken", cx.state.session);
     },
-    ready(commit, data, cx) {
+    ready: (commit, data, cx) => {
         commit("setStatus", "ready");
         commit("setToken", cx.state.session);
     },
@@ -70,7 +70,7 @@ const actions = {
             commit("setSession", code);
 
             const events = payload.action_events ? payload.action_events : actioEvents;
-            data.events.forEach((event) => {
+            serviceEvents.forEach((event) => {
                 socket.on(event, (data) => {
                     debug.log(event, data);
                     events[event] && events[event](commit, data, cx);
@@ -79,14 +79,6 @@ const actions = {
         });
 
         socket.emit("start-engine", code);
-    },
-    sendDirectMessage({ state }, payload) {
-        const params = { session_code: state.session_code, ...payload, uid: uid(), type: "text" };
-        return api.post(`${state.config.uri}/sessions/send-direct-message`, params);
-    },
-    sendMessage({ state }, payload) {
-        const { socket } = state;
-        socket.emit("send-message", { session_code: state.session.code, ...payload, uid: uid() });
     },
 };
 
