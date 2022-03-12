@@ -10,7 +10,6 @@ const state = {
     config: {
         uri: laravel.config.wpp_service.uri,
     },
-    session: {},
     token: "",
 };
 
@@ -26,24 +25,23 @@ const mutations = {
     setStatus: (state, payload) => (state.status = payload),
     setQr: (state, payload) => (state.qr = payload),
     setConnectionId: (state, payload) => (state.connection_id = payload),
-    setSession: (state, payload) => (state.session = payload),
     setToken: (state, payload) => (state.token = payload),
 };
 
 const serviceEvents = ["auth_failure", "disconnected", "qr", "authenticated", "auth_failure", "ready", "message", "sent_message"];
 
-const actioEvents = {
+const actionEvents = {
     qr: (commit, data) => {
         commit("setStatus", "qr");
         commit("setQr", data);
     },
     authenticated: (commit, data, cx) => {
         commit("setStatus", "authenticated");
-        commit("setToken", cx.state.session);
+        commit("setToken", cx.state.token);
     },
     ready: (commit, data, cx) => {
         commit("setStatus", "ready");
-        commit("setToken", cx.state.session);
+        commit("setToken", cx.state.token);
     },
 };
 
@@ -56,6 +54,7 @@ const actions = {
         const { commit } = cx;
         const { code } = payload;
         commit("setStatus", "qr");
+        commit("setToken", code);
 
         const socket = io(state.config.uri, {
             reconnection: true,
@@ -67,18 +66,18 @@ const actions = {
             debug.log("connected", data);
             commit("setConnectionId", data.id);
             commit("setSocket", socket);
-            commit("setSession", code);
 
-            const events = payload.action_events ? payload.action_events : actioEvents;
             serviceEvents.forEach((event) => {
                 socket.on(event, (data) => {
                     debug.log(event, data);
-                    events[event] && events[event](commit, data, cx);
+                    actionEvents[event] && actionEvents[event](commit, data, cx);
                 });
             });
         });
 
         socket.emit("start-engine", code);
+
+        return socket;
     },
 };
 

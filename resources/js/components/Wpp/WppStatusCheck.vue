@@ -8,7 +8,7 @@
                     <div class="status-row">
                         {{ connected ? "Ativo" : "Inativo" }} <span v-html="$getEnabledIcons(connected)" />
                     </div>
-                    <WppSendMessage v-if="connected" :session="session" />
+                    <WppSendMessage v-if="connected" :session="session" :socket="socket" />
                 </div>
             </template>
         </template>
@@ -25,7 +25,7 @@ export default {
             consulting: false,
             interval: null,
             connected: false,
-            counter: 0,
+            socket: null,
         };
     },
     computed: {
@@ -48,20 +48,21 @@ export default {
     },
     methods: {
         ...mapActions("wpp", ["initSocket", "checkSection"]),
-        logSection() {
+        async logSection() {
             this.loading = true;
             this.consulting = true;
-            const actionEvents = {
-                authenticated: () => {
-                    this.connected = true;
-                    this.loading = false;
-                },
-                qr: () => {
-                    this.connected = false;
-                    this.loading = false;
-                },
-            };
-            this.initSocket({ code: this.session, action_events: actionEvents });
+
+            this.socket = await this.initSocket({ code: this.session });
+
+            this.socket.on("authenticated", () => {
+                this.connected = true;
+                this.loading = false;
+            });
+
+            this.socket.on("qr", () => {
+                this.connected = false;
+                this.loading = false;
+            });
         },
     },
 };

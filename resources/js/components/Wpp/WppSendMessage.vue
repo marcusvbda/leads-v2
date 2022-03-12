@@ -15,9 +15,8 @@
     </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
 export default {
-    props: ["session"],
+    props: ["session", "socket"],
     data() {
         return {
             visible: false,
@@ -28,7 +27,6 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("wpp", ["socket"]),
         canSend() {
             return this.message.length > 0 && this.phone.length === this.phone_mask.length;
         },
@@ -53,7 +51,6 @@ export default {
             });
 
             this.socket.on("sent_message", (data) => {
-                console.log("RECEBI", data, _uid);
                 if (data._uid === _uid) {
                     this.visible = false;
                     this.$message.success("Mensagem enviada com sucesso !!");
