@@ -78,7 +78,7 @@ class SessoesWpp extends Resource
 
 	public function canUpdate()
 	{
-		return false;
+		return  false;
 	}
 
 	public function canDelete()

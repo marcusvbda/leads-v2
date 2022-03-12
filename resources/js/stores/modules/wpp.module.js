@@ -1,6 +1,7 @@
 import api from "~/config/libs/axios";
 import io from "socket.io-client";
 const uid = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
+const debug = require("console-development");
 
 const state = {
     socket: {},
@@ -78,7 +79,7 @@ const actions = {
         socket.emit("start-engine", session);
 
         socket.on("session-updated", (data) => {
-            console.log("session-updated", data);
+            debug.log("session-updated", data);
             const actions = {
                 notLogged: () => {
                     commit("setStatus", "notLogged");
@@ -98,7 +99,7 @@ const actions = {
         });
 
         socket.on("token-generated", (data) => {
-            console.log("token-generated", data);
+            debug.log("token-generated", data);
             commit("setToken", JSON.stringify(data));
             // dispatch("saveTenantToken", data).then(() => {
             //     dispatch("startKeepAlive");
@@ -106,19 +107,19 @@ const actions = {
         });
 
         socket.on("qr-generated", (data) => {
-            console.log("qr-generated", data);
+            debug.log("qr-generated", data);
             commit("setStatus", "notLogged");
             commit("setQrCodeData", data);
         });
 
         socket.on("connected", (data) => {
-            console.log("connected", data);
+            debug.log("connected", data);
             commit("setConnectionId", data.id);
         });
 
-        // socket.on("message-received", (data) => {
-        //     console.log("message-received", data);
-        // });
+        socket.on("message-received", (data) => {
+            debug.log("message-received", data);
+        });
 
         socket.on("disconnect", () => {
             dispatch("initSocket", session);

@@ -111,32 +111,11 @@ class User extends Authenticatable
 		return @$this->roles()->first()->id;
 	}
 
-	private function getWppCode($tenant)
-	{
-		return $this->code . "_" . $tenant->code;
-	}
-
-	public function getWppLastSession()
-	{
-		$tenant = $this->tenant;
-		return @$tenant->data->wpp_last_session ?? [
-			"code" => $this->getWppCode($tenant)
-		];
-	}
-
-	public function setWppLastSession($token)
-	{
-		$tenant = $this->tenant;
-		$data = $tenant->data;
-		$data->wpp_last_session = $token;
-		$data->wpp_last_session["code"] =  $this->getWppCode($tenant);
-		$tenant->data = $data;
-		$tenant->save();
-	}
-
 	public function canAccessModule($module)
 	{
-		$whatsapp_module = Module::where("slug", $module)->first();
-		return $whatsapp_module;
+		$tenant = $this->tenant;
+		return $tenant->storeRemember(__CLASS__ . "@" . __FUNCTION__ . "_" . $module, 60 * 10, function () use ($module) {
+			return Module::where("slug", $module)->count() > 0;
+		});
 	}
 }
