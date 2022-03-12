@@ -45,7 +45,7 @@ class SessoesWpp extends Resource
 	{
 		$columns = [];
 		$columns["code"] = ["label" => "Código", "sortable_index" => "id"];
-		$columns["name"] = ["label" => "Nome"];
+		$columns["label"] = ["label" => "Nome"];
 		$columns["status_check"] = ["label" => "Status da Sessão", "sortable" => false];
 		$columns["f_created_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
 		return $columns;
@@ -146,7 +146,7 @@ class SessoesWpp extends Resource
 		$target = @$id ? $this->getModelInstance()->findOrFail($id) : $this->getModelInstance();
 		$target->name  = data_get($data, "data.name");
 		$model_data = [
-			"token" =>  json_decode(data_get($data, "data.string_token"))
+			"token" =>  data_get($data, "data.string_token")
 		];
 		$target->data = $model_data;
 		$target->save();

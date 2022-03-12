@@ -5,133 +5,80 @@ const debug = require("console-development");
 
 const state = {
     socket: {},
-    status: "initializing",
-    qr_code_data: {},
+    status: "qr",
+    qr: "",
     connection_id: null,
-    // keep_alive_interval: null,
     config: {
         uri: laravel.config.wpp_service.uri,
     },
     session: {},
-    token: {},
+    token: "",
 };
 
 const getters = {
     status: (state) => state.status,
-    qr_code_data: (state) => state.qr_code_data,
+    qr: (state) => state.qr,
     token: (state) => state.token,
+    event_list: (state) => state.event_list,
+    socket: (state) => state.socket,
 };
 
 const mutations = {
     setSocket: (state, payload) => (state.socket = payload),
     setStatus: (state, payload) => (state.status = payload),
-    setQrCodeData: (state, payload) => (state.qr_code_data = payload),
+    setQr: (state, payload) => (state.qr = payload),
     setConnectionId: (state, payload) => (state.connection_id = payload),
-    // setKeepAliveInterval: (state, payload) => (state.keep_alive_interval = payload),
     setSession: (state, payload) => (state.session = payload),
     setToken: (state, payload) => (state.token = payload),
 };
 
+const actioEvents = {
+    qr: (commit, data) => {
+        commit("setStatus", "qr");
+        commit("setQr", data);
+    },
+    authenticated: (commit, data, cx) => {
+        commit("setStatus", "authenticated");
+        commit("setToken", cx.state.session);
+    },
+    ready(commit, data, cx) {
+        commit("setStatus", "ready");
+        commit("setToken", cx.state.session);
+    },
+};
+
 const actions = {
-    // stopKeepAlive({ state }) {
-    //     clearInterval(state.keep_alive_interval);
-    // },
-    // startKeepAlive({ commit, dispatch, state }) {
-    //     dispatch("stopKeepAlive");
-    //     const keepAliveHandler = setInterval(() => {
-    //         api.get(`${state.config.uri}/sessions/get-status/${state.session.code}`, { timeout: 20000 })
-    //             .then(({ data }) => {
-    //                 if (data !== "connected") {
-    //                     dispatch("stopKeepAlive");
-    //                     dispatch("initSocket", state.session);
-    //                 }
-    //             })
-    //             .catch(() => {
-    //                 dispatch("stopKeepAlive");
-    //                 dispatch("initSocket", state.session);
-    //             });
-    //     }, 3000);
-    //     commit("setKeepAliveInterval", keepAliveHandler);
-    // },
-    // eslint-disable-next-line no-empty-pattern
-    // saveTenantToken({}, payload) {
-    //     return api.post("/admin/wpp/token-update", payload);
-    // },
     // eslint-disable-next-line no-empty-pattern
     checkSection({}, payload) {
-        return api.get(`${state.config.uri}/sessions/get-status/${payload}`);
+        return api.get(`${state.config.uri}/sessions/${payload.code}/check-status`);
     },
-    // eslint-disable-next-line no-empty-pattern
-    logSection({}, payload) {
-        api.post(`${state.config.uri}/sessions/login`, payload);
-    },
-    initSocket({ dispatch, commit }, session) {
-        commit("setStatus", "initializing");
+    initSocket(cx, payload) {
+        const { commit } = cx;
+        const { code } = payload;
+        commit("setStatus", "qr");
+
         const socket = io(state.config.uri, {
             reconnection: true,
             reconnectionDelay: 500,
             reconnectionAttempts: 10,
         });
 
-        commit("setSocket", socket);
-        commit("setSession", session);
-
-        socket.emit("start-engine", session);
-
-        socket.on("session-updated", (data) => {
-            debug.log("session-updated", data);
-            const actions = {
-                notLogged: () => {
-                    commit("setStatus", "notLogged");
-                },
-                qrReadSuccess: () => {
-                    // dispatch("startKeepAlive");
-                    commit("setStatus", "logged");
-                },
-                isLogged: () => {
-                    commit("setStatus", "logged");
-                },
-            };
-
-            if (actions[data.statusSession]) {
-                actions[data.statusSession]();
-            }
-        });
-
-        socket.on("token-generated", (data) => {
-            debug.log("token-generated", data);
-            commit("setToken", JSON.stringify(data));
-            // dispatch("saveTenantToken", data).then(() => {
-            //     dispatch("startKeepAlive");
-            // });
-        });
-
-        socket.on("qr-generated", (data) => {
-            debug.log("qr-generated", data);
-            commit("setStatus", "notLogged");
-            commit("setQrCodeData", data);
-        });
-
         socket.on("connected", (data) => {
             debug.log("connected", data);
             commit("setConnectionId", data.id);
+            commit("setSocket", socket);
+            commit("setSession", code);
+
+            const events = payload.action_events ? payload.action_events : actioEvents;
+            data.events.forEach((event) => {
+                socket.on(event, (data) => {
+                    debug.log(event, data);
+                    events[event] && events[event](commit, data, cx);
+                });
+            });
         });
 
-        socket.on("message-received", (data) => {
-            debug.log("message-received", data);
-        });
-
-        socket.on("disconnect", () => {
-            dispatch("initSocket", session);
-        });
-
-        socket.on("message-sent", (res) => {
-            console.log("message-sent", res);
-        });
-
-        socket.on("message-failed", (res) => {
-            console.log("message-failed", res);
-        });
+        socket.emit("start-engine", code);
     },
     sendDirectMessage({ state }, payload) {
         const params = { session_code: state.session_code, ...payload, uid: uid(), type: "text" };

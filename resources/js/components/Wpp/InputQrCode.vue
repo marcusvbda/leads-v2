@@ -1,22 +1,28 @@
 <template>
-    <CustomResourceComponent :label="label" :description="description">
-        <div class="qr-section" v-loading="isLoading" v-if="status !== 'logged'">
-            <img :src="qrImage" />
+    <CustomResourceComponent :label="label" :description="description" :class="status">
+        <div class="qr-section" v-loading="isLoading" v-if="status === 'qr'">
+            <img src="/assets/images/264.png" v-if="isLoading" />
+            <VueQr :text="qr" v-else :size="264" />
         </div>
         <template v-else> Qr Code escaneado corretamente</template>
     </CustomResourceComponent>
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
+import VueQr from "vue-qr/src/packages/vue-qr.vue";
+
 export default {
     props: ["form", "data", "errors"],
+    components: {
+        VueQr,
+    },
     data() {
         return {
             loading: true,
         };
     },
     computed: {
-        ...mapGetters("wpp", ["status", "qr_code_data", "token"]),
+        ...mapGetters("wpp", ["status", "qr", "token"]),
         label() {
             return this.field?.options?.label ?? false;
         },
@@ -33,10 +39,7 @@ export default {
             return this.$uid();
         },
         isLoading() {
-            return this.loading || !this.qr_code_data.base64Qrimg;
-        },
-        qrImage() {
-            return this.qr_code_data.base64Qrimg ?? "/assets/images/264.png";
+            return this.loading || !this.qr;
         },
     },
     watch: {

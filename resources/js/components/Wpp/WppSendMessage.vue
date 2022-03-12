@@ -17,7 +17,7 @@
 <script>
 import { mapActions } from "vuex";
 export default {
-    props: ["session", "code"],
+    props: ["session"],
     data() {
         return {
             visible: false,
@@ -43,7 +43,7 @@ export default {
         sendTextMessage() {
             this.loading = true;
             const phone = this.phone.replace(/[^0-9]/g, "") + "@c.us";
-            this.sendDirectMessage({ session_code: this.code, message: this.message, to: phone }).then(({ data }) => {
+            this.sendDirectMessage({ session_code: this.session, message: this.message, to: phone }).then(({ data }) => {
                 if (data.event === "message-sent") {
                     this.visible = false;
                     this.$message.success("Mensagem enviada com sucesso!");

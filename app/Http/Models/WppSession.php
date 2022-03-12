@@ -4,6 +4,7 @@ namespace App\Http\Models;
 
 use marcusvbda\vstack\Models\DefaultModel;
 use App\Http\Models\Scopes\{OrderByScope};
+use marcusvbda\vstack\Vstack;
 
 class WppSession extends DefaultModel
 {
@@ -22,18 +23,17 @@ class WppSession extends DefaultModel
 
 	public function getTokenAttribute()
 	{
-		return $this->data->token ?? [];
-	}
-
-	public function getStringTokenAttribute()
-	{
-		return json_encode($this->token) ?? "";
+		return @$this->data->token ?? "";
 	}
 
 	public function getStatusCheckAttribute()
 	{
-		$string_token = $this->string_token;
-		$code = $this->code;
-		return "<wpp-status-check code='$code' :session='$string_token'></wpp-status-check>";
+		$token = $this->token;
+		return "<wpp-status-check session='$token'></wpp-status-check>";
+	}
+
+	public function getLabelAttribute()
+	{
+		return Vstack::makeLinesHtmlAppend($this->name, $this->token);
 	}
 }
