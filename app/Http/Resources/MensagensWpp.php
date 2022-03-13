@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Http\Models\WppMessage;
+use App\Http\Models\WppSession;
 use marcusvbda\vstack\Resource;
 use Auth;
 
@@ -30,12 +31,26 @@ class MensagensWpp extends Resource
 		return "el-icon-s-comment";
 	}
 
+	public function beforeListSlot()
+	{
+		return View("admin.wpp_messages.before_list")->render();
+	}
+
+	public function lenses()
+	{
+		return [
+			"Aguardando" => ["field" => "status", "value" => 'waiting'],
+			"Enviadas" => ["field" => "status", "value" => 'sent'],
+		];
+	}
+
 	public function table()
 	{
 		$columns = [];
 		$columns["code"] = ["label" => "Código", "sortable_index" => "id"];
 		$columns["f_phone"] = ["label" => "Telefone", "sortable_index" => "data->phone"];
 		$columns["message_cuted"] = ["label" => "Mensagem", "sortable_index" => "data->telefone"];
+		$columns["wpp_session->name"] = ["label" => "Sessão", "sortable_index" => "wpp_session_id"];
 		$columns["f_status"] = ["label" => "Status", "sortable_index" => "status"];
 		$columns["user->name"] = ["label" => "Autor", "sortable_index" => "user_id"];
 		$columns["user->name"] = ["label" => "Autor", "sortable_index" => "user_id"];
@@ -60,7 +75,7 @@ class MensagensWpp extends Resource
 
 	public function canCreate()
 	{
-		return  false;
+		return  $this->canAccessModule();
 	}
 
 	public function canImport()
@@ -75,7 +90,9 @@ class MensagensWpp extends Resource
 
 	public function nothingStoredSubText()
 	{
-		return "<span>Caso queira, você pode importar mensagens do WhatsApp utilizando o importador de planilhas.</span>";
+		return "<span>
+			Caso queira, você pode importar mensagens do WhatsApp utilizando o importador de planilhas ou cadastrando uma nova mensagem.
+		</span>";
 	}
 
 	public function getTableColumns()
@@ -114,15 +131,16 @@ class MensagensWpp extends Resource
 
 	public function importCustomCrudMessage()
 	{
-		return false;
+		return "Você também pode criar sua própria planilha, lembrando que as colunas nome e telefone são obrigatórias e as demais serão utilizadas como variaveis de substitução na mansagem.";
 	}
 
 	public function importCustomMapStep()
 	{
+		$sessions = WppSession::all();
 		return [
-			"title" => "Anexo de Arquivos",
+			"title" => "Anexo de Arquivos e Seleção de Sessão",
 			"subtitle" => "Caso queira anexar algum arquivo, faça isso aqui",
-			"template" => "<WppImportMapStep :step_data='step_data' :form='frm' />"
+			"template" => "<WppImportMapStep :step_data='step_data' :form='frm' :sessions='" . json_encode($sessions) . "'/>"
 		];
 	}
 
@@ -139,7 +157,6 @@ class MensagensWpp extends Resource
 
 			$row_values = $row_values->toArray();
 			$new = ["data" => []];
-			dd(request()->all());
 
 			foreach ($fieldlist as $field) {
 				$index = array_search($field, $importer->headers);
@@ -157,75 +174,28 @@ class MensagensWpp extends Resource
 			$new_model->save();
 			$qty++;
 		}
+
 		$importer->setResult([
 			'success' => true,
 			'qty' => $qty
 		]);
 	}
 
-	// public function importMethod($data, $file)
-	// {
-	// 	$wpp_file = @$data["wpp_file"];
-	// 	if ($wpp_file) {
-	// 		if ($wpp_file->getSize() > 50000000) {
-	// 			return ["success" => false, "message" => ["type" => "error", "text" => "Arquivo maior do que o permitido..."]];
-	// 		}
-	// 	}
-
-	// 	$config = json_decode($data["config"]);
-	// 	$fieldlist = $config->fieldlist;
-
-	// 	$user = Auth::user();
-	// 	$tenant_id = $user->tenant_id;
-	// 	$file_extension = Vstack::resource_export_extension();
-	// 	$filename = $user->tenant_id . "_" . uniqid() . "." . $file_extension;
-	// 	$filepath = $file->storeAs('local', $filename);
-	// 	$resource = $this;
-
-	// 	$importer = new GlobalImporter($filepath, self::class, 'sheetImportRow', compact('resource', 'fieldlist', 'filepath', 'tenant_id'));
-	// 	Excel::import($importer, $importer->getFile());
-	// 	$result = $importer->getResult();
-
-	// 	// dispatch(function () use ($resource, $fieldlist, $filepath, $tenant_id, $user) {
-	// 	$importer = new GlobalImporter($filepath, self::class, 'sheetImportRow', compact('resource', 'fieldlist', 'filepath', 'tenant_id'));
-	// 	Excel::import($importer, $importer->getFile());
-	// 	$result = $importer->getResult();
-	// 	unlink(storage_path("app/" . $filepath));
-
-	// 	if (@$result["success"]) {
-	// 		$message = "Foi importado com sucesso sua planilha de " . $resource->label() . ". (" . $result['qty'] . " Registro" . ($result['qty'] > 1 ? 's' : '') . ")";
-	// 	} else {
-	// 		$message = "Erro na importação de planilha de " . $resource->label() . " ( " . $result["error"]['message'] . " )";
-	// 	}
-	// 	DB::table("notifications")->insert([
-	// 		"type" => 'App\Notifications\CustomerNotification',
-	// 		"notifiable_type" => 'App\User',
-	// 		"notifiable_id" => $user->id,
-	// 		"alert_type" => 'vstack_alert',
-	// 		"tenant_id" => $user->tenant_id,
-	// 		"created_at" => Carbon::now(),
-	// 		"data" => json_encode([
-	// 			"message" => $message,
-	// 			"type" => @$result["success"] ? 'success' : 'error'
-	// 		]),
-	// 	]);
-	// 	// })->onQueue(Vstack::queue_resource_import());
-
-	// 	return ["success" => true];
-	// }
-
 	public function prepareImportData($data)
 	{
 		$wpp_file = @$data["wpp_file"];
+
 		if ($wpp_file) {
 			if ($wpp_file->getSize() > 50000000) {
 				return ["success" => false, "message" => ["type" => "error", "text" => "Arquivo maior do que o permitido..."]];
 			}
 		}
 		$user = Auth::user();
+
 		return ["success" => true, "data" => [
 			"user_id" => $user->id,
 			"polo_id" => $user->polo_id,
+			"session_id" => request()->session_id,
 		]];
 	}
 
@@ -235,6 +205,7 @@ class MensagensWpp extends Resource
 		$new_model->tenant_id = data_get($data, "tenant_id");
 		$new_model->polo_id = data_get($extra_data, "polo_id");
 		$new_model->user_id = data_get($extra_data, "user_id");
+		$new_model->wpp_session_id = data_get($extra_data, "session_id");
 		unset($data["tenant_id"]);
 		$new_model->data = $data;
 		$new_model->save();

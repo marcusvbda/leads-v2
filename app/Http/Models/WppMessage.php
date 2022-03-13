@@ -19,8 +19,9 @@ class WppMessage extends DefaultModel
 	public static function boot()
 	{
 		parent::boot();
-		static::addGlobalScope(new PoloScope(with(new static)->getTable()));
-		static::addGlobalScope(new OrderByScope(with(new static)->getTable()));
+		$table = with(new static)->getTable();
+		static::addGlobalScope(new PoloScope($table, true));
+		static::addGlobalScope(new OrderByScope($table));
 	}
 
 	public function polo()
@@ -31,6 +32,11 @@ class WppMessage extends DefaultModel
 	public function user()
 	{
 		return $this->belongsTo(User::class);
+	}
+
+	public function wpp_session()
+	{
+		return $this->belongsTo(WppSession::class);
 	}
 
 	public function tenant()
@@ -67,8 +73,8 @@ class WppMessage extends DefaultModel
 
 	public function getPhoneAttribute()
 	{
-		$phone = @$this->data->teleffone ?? "";
-		$phone = preg_replace("/[^0-9]/", "", @$this->data->telefone ?? "");
+		$phone = @$this->data->telefone ?? "";
+		$phone = preg_replace("/[^0-9]/", "", $phone ?? "");
 		return $phone;
 	}
 
@@ -79,10 +85,10 @@ class WppMessage extends DefaultModel
 		$parsed = $phoneUtil->parse($phone, "BR");
 		if ($phoneUtil->isValidNumberForRegion($parsed, 'BR')) {
 			$lineA = $phoneUtil->format($parsed, PhoneNumberFormat::INTERNATIONAL);
-			$lineB = getEnabledIcon(true) . " Válido";
+			$lineB = getEnabledIcon(true) . " Número Válido";
 		} else {
 			$lineA = $phone;
-			$lineB = getEnabledIcon(false) . " Inválido ou não reconhecido";
+			$lineB = getEnabledIcon(false) . " Número Inválido ou não reconhecido";
 		}
 
 		return Vstack::makeLinesHtmlAppend($lineA, $lineB);

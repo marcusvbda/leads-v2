@@ -41,12 +41,25 @@ class SessoesWpp extends Resource
 		return ["name"];
 	}
 
+	public function lenses()
+	{
+		return [
+			"Sem Mensagens" => ["field" => "with_messages", "value" => 'without', 'handler' => function ($q) {
+				$q->whereDoesntHave('wpp_messages');
+			}],
+			"com Mensagens" => ["field" => "with_messages", "value" => 'with', 'handler' => function ($q) {
+				$q->whereHas('wpp_messages');
+			}],
+		];
+	}
+
 	public function table()
 	{
 		$columns = [];
 		$columns["code"] = ["label" => "Código", "sortable_index" => "id"];
 		$columns["label"] = ["label" => "Nome"];
 		$columns["status_check"] = ["label" => "Status da Sessão", "sortable" => false];
+		$columns["qty_messages"] = ["label" => "Qtde de mensagens", "sortable" => false];
 		$columns["f_created_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
 		return $columns;
 	}
@@ -153,5 +166,10 @@ class SessoesWpp extends Resource
 		Messages::send("success", "Registro salvo com sucesso !!");
 		$route = route('resource.index', ["resource" => $this->id]);
 		return ["success" => true, "route" => $route, "model" => $target];
+	}
+
+	public function canDeleteRow($row)
+	{
+		return $row->qty_messages <= 0;
 	}
 }

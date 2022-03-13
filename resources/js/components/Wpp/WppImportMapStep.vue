@@ -22,11 +22,29 @@
                 </template>
             </div>
         </div>
+
+        <div class="row mb-3">
+            <div class="col-12">Selecione a sessão que deseja utilizar para efetuar os envios</div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6 col-sm-12">
+                <ElSelect
+                    v-model="form.session_id"
+                    placeholder="Selecione a sessão"
+                    clearable
+                    filterable
+                    class="w-100"
+                    @change="checkCanNext"
+                >
+                    <ElOption v-for="(sess, i) in sessions" :key="i" :label="sess.name" :value="sess.id" />
+                </ElSelect>
+            </div>
+        </div>
     </div>
 </template>
 <script>
 export default {
-    props: ["form", "step_data", "title"],
+    props: ["form", "step_data", "title", "sessions"],
     data() {
         return {
             without_file: true,
@@ -34,8 +52,20 @@ export default {
         };
     },
     watch: {
-        without_file(val) {
-            if (val) {
+        without_file() {
+            this.checkCanNext();
+        },
+        file(val) {
+            this.$set(this.form, "wpp_file", val);
+        },
+    },
+    created() {
+        this.$set(this.form, "session_id", null);
+        this.step_data.can_next = false;
+    },
+    methods: {
+        checkCanNext() {
+            if (this.without_file && this.form.session_id) {
                 this.step_data.can_next = true;
             } else {
                 this.step_data.can_next = false;
@@ -43,14 +73,6 @@ export default {
                 this.prevent();
             }
         },
-        file(val) {
-            this.$set(this.form, "wpp_file", val);
-        },
-    },
-    created() {
-        this.step_data.can_next = true;
-    },
-    methods: {
         prevent() {
             this.without_file = true;
             this.file = null;

@@ -16,15 +16,19 @@ class CreateWppMessages extends Migration
             $table->bigIncrements('id');
             $table->jsonb('data')->nullable();
             $table->string('status')->default("waiting");
+            $table->unsignedBigInteger('wpp_session_id')->nullable();
+            $table->foreign('wpp_session_id')
+                ->references('id')
+                ->on('wpp_sessions');
             $table->unsignedBigInteger('polo_id')->nullable();
             $table->foreign('polo_id')
                 ->references('id')
                 ->on('polos');
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users');
-            $table->unsignedBigInteger('tenant_id')->nullable();
+            $table->unsignedBigInteger('tenant_id');
             $table->foreign('tenant_id')
                 ->references('id')
                 ->on('tenants');

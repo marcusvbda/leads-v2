@@ -25,8 +25,12 @@ class PoloScope implements Scope
 		if (@$this->polo->id) {
 			@$builder->where(function ($q) {
 				$column = $this->table . ".polo_id";
-				$q->where($column, $this->polo->id);
-				if ($this->has_global)	$q->orWhereNull($column);
+				$q->where(function ($q) use ($column) {
+					$q->where($column, $this->polo->id);
+					if ($this->has_global) {
+						$q->orWhereNull($column);
+					}
+				});
 			});
 		}
 	}

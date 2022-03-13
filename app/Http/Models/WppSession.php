@@ -9,6 +9,8 @@ use marcusvbda\vstack\Vstack;
 class WppSession extends DefaultModel
 {
 	protected $table = "wpp_sessions";
+	public $restrictDeletes = ["wpp_messages"];
+
 
 	public $casts = [
 		"data" => "object",
@@ -24,6 +26,16 @@ class WppSession extends DefaultModel
 	public function getTokenAttribute()
 	{
 		return @$this->data->token ?? "";
+	}
+
+	public function wpp_messages()
+	{
+		return $this->hasMany(WppMessage::class);
+	}
+
+	public function getQtyMessagesAttribute()
+	{
+		return $this->wpp_messages->count();
 	}
 
 	public function getStatusCheckAttribute()
