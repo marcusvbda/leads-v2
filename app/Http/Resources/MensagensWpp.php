@@ -6,6 +6,11 @@ use App\Http\Models\WppMessage;
 use App\Http\Models\WppSession;
 use marcusvbda\vstack\Resource;
 use Auth;
+use marcusvbda\vstack\Fields\BelongsTo;
+use marcusvbda\vstack\Fields\Card;
+use marcusvbda\vstack\Fields\Text;
+use marcusvbda\vstack\Fields\TextArea;
+use marcusvbda\vstack\Services\Messages;
 
 class MensagensWpp extends Resource
 {
@@ -210,5 +215,68 @@ class MensagensWpp extends Resource
 		$new_model->data = $data;
 		$new_model->save();
 		return $new_model;
+	}
+
+	public function fields()
+	{
+		$fields = [];
+		$fields[] = new Text([
+			"label" => "Nome",
+			"field" => "nome",
+			"rules" => ["required", "max:255"],
+			"description" => "Nome da ontato"
+		]);
+		$fields[] = new Text([
+			"label" => "Telefone",
+			"field" => "telefone",
+			"rules" => ["required", "max:255"],
+			"mask" => ['+# (##) ####-####', '+## (##) ####-####', '+## (##) #####-####'],
+			"description" => "Telefone da Contato"
+		]);
+		$cards[] = new Card("Contato", $fields);
+
+		$fields = [];
+		$fields[] = new BelongsTo([
+			"label" => "Sessão",
+			"description" => "Sessão do whatsApp que enviará a mensagem",
+			"required" => true,
+			"field" => "wpp_session_id",
+			"options" => WppSession::select("id as id", "name as value")->get()
+		]);
+		$cards[] = new Card("Processamento", $fields);
+
+		$fields = [];
+		$fields[] = new TextArea([
+			"label" => "Mensagem",
+			"description" => "Mensagem que será enviada",
+			"required" => true,
+			"field" => "mensagem",
+			"rows" => 15
+		]);
+		$cards[] = new Card("Conteúdo", $fields);
+		return $cards;
+	}
+
+	public function secondCrudBtn()
+	{
+		return false;
+	}
+
+	public function storeMethod($id, $data)
+	{
+		$user = Auth::user();
+		$target = @$id ? $this->getModelInstance()->findOrFail($id) : $this->getModelInstance();
+		$target->wpp_session_id = data_get($data, "data.wpp_session_id");
+		$target->polo_id = $user->polo_id;
+		$target->user_id = $user->id;
+		$target->data = data_get($data, "data");
+		$target->save();
+
+		// $controller = new ResourceController;
+		// $controller->storeUploads($target, $data["upload"]);
+
+		Messages::send("success", "Registro salvo com sucesso !!");
+		$route = route('resource.index', ["resource" => $this->id]);
+		return ["success" => true, "route" => $route, "model" => $target];
 	}
 }
