@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Filters\WppMessages\MessagesByStatus;
 use App\Http\Models\WppMessage;
 use App\Http\Models\WppSession;
 use marcusvbda\vstack\Resource;
@@ -47,6 +48,12 @@ class MensagensWpp extends Resource
 			"Aguardando" => ["field" => "status", "value" => 'waiting'],
 			"Enviadas" => ["field" => "status", "value" => 'sent'],
 		];
+	}
+
+	public function filters()
+	{
+		$filters[] = new MessagesByStatus();
+		return $filters;
 	}
 
 	public function table()
