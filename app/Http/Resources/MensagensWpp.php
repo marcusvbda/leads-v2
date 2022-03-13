@@ -143,7 +143,7 @@ class MensagensWpp extends Resource
 
 	public function importCustomCrudMessage()
 	{
-		return "Você também pode criar sua própria planilha, lembrando que as colunas nome e telefone são obrigatórias e as demais serão utilizadas como variaveis de substitução na mansagem.";
+		return "Você também pode criar sua própria planilha, lembrando que a colunas telefone são obrigatórias e as demais serão utilizadas como variaveis de substitução na mansagem.";
 	}
 
 	public function importCustomMapStep()
@@ -227,12 +227,6 @@ class MensagensWpp extends Resource
 	public function fields()
 	{
 		$fields = [];
-		$fields[] = new Text([
-			"label" => "Nome",
-			"field" => "nome",
-			"rules" => ["required", "max:255"],
-			"description" => "Nome da ontato"
-		]);
 		$fields[] = new Text([
 			"label" => "Telefone",
 			"field" => "telefone",
