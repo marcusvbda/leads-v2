@@ -9,9 +9,15 @@ use Auth;
 
 class DashboardController extends Controller
 {
+	private $time_to_cache = 2; // minutos
 	public function index()
 	{
 		return view('admin.index');
+	}
+
+	protected function getCacheTime()
+	{
+		return 60 * $this->time_to_cache;
 	}
 
 	private function getDateRange($index)
@@ -27,35 +33,49 @@ class DashboardController extends Controller
 	protected function polosQty()
 	{
 		$user = Auth::user();
-		$data = DB::select("select count(*) as qty from polos where deleted_at is null and tenant_id = :tenant_id", [
-			"tenant_id" => $user->tenant_id,
-		]);
-		return response()->json($data[0]->qty);
+		$data = $user->tenant->storeRemember(__CLASS__ . "@" . __FUNCTION__, $this->getCacheTime(), function () use ($user) {
+			$data = DB::select("select count(*) as qty from polos where deleted_at is null and tenant_id = :tenant_id", [
+				"tenant_id" => $user->tenant_id,
+			]);
+			return  ["qty" => @$data[0]->qty ? $data[0]->qty : 0];
+		});
+		return response()->json(data_get($data, "qty"));
 	}
 
 	protected function departmentesQty()
 	{
 		$user = Auth::user();
-		$data = DB::select("select count(*) as qty from departments where deleted_at is null and tenant_id = :tenant_id", [
-			"tenant_id" => $user->tenant_id
-		]);
-		return response()->json($data[0]->qty);
+		$data = $user->tenant->storeRemember(__CLASS__ . "@" . __FUNCTION__, $this->getCacheTime(), function () use ($user) {
+			$data = DB::select("select count(*) as qty from departments where deleted_at is null and tenant_id = :tenant_id", [
+				"tenant_id" => $user->tenant_id
+			]);
+			return  ["qty" => @$data[0]->qty ? $data[0]->qty : 0];
+		});
+		return response()->json(data_get($data, "qty"));
 	}
 
 	protected function usersQty()
 	{
-		$data = DB::select("select count(*) as qty from users where deleted_at is null and tenant_id = :tenant_id", ["tenant_id" => Auth::user()->tenant_id]);
-		return response()->json($data[0]->qty);
+		$user = Auth::user();
+		$data = $user->tenant->storeRemember(__CLASS__ . "@" . __FUNCTION__, $this->getCacheTime(), function () use ($user) {
+			$data = DB::select("select count(*) as qty from users where deleted_at is null and tenant_id = :tenant_id", ["tenant_id" => $user->tenant_id]);
+			return  ["qty" => @$data[0]->qty ? $data[0]->qty : 0];
+		});
+		return response()->json(data_get($data, "qty"));
 	}
 
 	protected function newLeadsQty(Request $request)
 	{
 		$user = Auth::user();
-		$data = DB::select("select * from leads where deleted_at is null and tenant_id = :tenant_id and DATE(created_at) = DATE(:created_at)", [
-			"tenant_id" => $user->tenant_id,
-			"created_at" => $request["today"]
-		]);
-		return response()->json(@$data[0]->qty ?? 0);
+		$today = $request["today"];
+		$data = $user->tenant->storeRemember(__CLASS__ . "@" . __FUNCTION__, $this->getCacheTime(), function () use ($user, $today) {
+			$data = DB::select("select * from leads where deleted_at is null and tenant_id = :tenant_id and DATE(created_at) = DATE(:created_at)", [
+				"tenant_id" => $user->tenant_id,
+				"created_at" => $today
+			]);
+			return  ["qty" => @$data[0]->qty ? $data[0]->qty : 0];
+		});
+		return response()->json(data_get($data, "qty"));
 	}
 
 	private function makeParameters(Request $request)
@@ -75,13 +95,18 @@ class DashboardController extends Controller
 		$parameters = $this->makeParameters($request);
 		$polos_ids = $parameters["polo_ids"];
 		unset($parameters["polo_ids"]);
-		$data = DB::select(
-			"select count(*) as qty from leads where deleted_at is null and tenant_id = :tenant_id and 
+		$cacheName = __CLASS__ . "@" . __FUNCTION__ . ":" . json_encode($parameters);
+		$user = Auth::user();
+		$data = $user->tenant->storeRemember($cacheName, $this->getCacheTime(), function () use ($polos_ids, $parameters) {
+			$data = DB::select(
+				"select count(*) as qty from leads where deleted_at is null and tenant_id = :tenant_id and 
 			( DATE(created_at) >= DATE(:start_date) and DATE(created_at) <= DATE(:end_date))
 			and polo_id in ($polos_ids)",
-			$parameters
-		);
-		return response()->json(@$data[0]->qty ?? 0);
+				$parameters
+			);
+			return  ["qty" => @$data[0]->qty ? $data[0]->qty : 0];
+		});
+		return response()->json(data_get($data, "qty"));
 	}
 
 	protected function getLeadFinishedData(Request $request)
@@ -90,14 +115,19 @@ class DashboardController extends Controller
 		$parameters = array_merge($this->makeParameters($request), ["finished_status_id" => $finished]);
 		$polos_ids = $parameters["polo_ids"];
 		unset($parameters["polo_ids"]);
-		$data = DB::select(
-			"select count(*) as qty from leads where deleted_at is null and tenant_id = :tenant_id and 
+		$cacheName = __CLASS__ . "@" . __FUNCTION__ . ":" . json_encode($parameters);
+		$user = Auth::user();
+		$data = $user->tenant->storeRemember($cacheName, $this->getCacheTime(), function () use ($polos_ids, $parameters) {
+			$data = DB::select(
+				"select count(*) as qty from leads where deleted_at is null and tenant_id = :tenant_id and 
 			( DATE(finished_at) >= DATE(:start_date) and DATE(finished_at) <= DATE(:end_date))
 			and polo_id in ($polos_ids)
 			and status_id = :finished_status_id",
-			$parameters
-		);
-		return response()->json($data[0]->qty);
+				$parameters
+			);
+			return  ["qty" => @$data[0]->qty ? $data[0]->qty : 0];
+		});
+		return response()->json(data_get($data, "qty"));
 	}
 
 	protected function getRankingDepartments(Request $request)
@@ -106,8 +136,11 @@ class DashboardController extends Controller
 		$parameters = array_merge($this->makeParameters($request), ["finished_status_id" => $finished]);
 		$polos_ids = $parameters["polo_ids"];
 		unset($parameters["polo_ids"]);
-		$data = DB::select(
-			"select ifnull(departments.name,'Sem departamento') as department,count(*) as qty FROM 
+		$cacheName = __CLASS__ . "@" . __FUNCTION__ . ":" . json_encode($parameters);
+		$user = Auth::user();
+		$data = $user->tenant->storeRemember($cacheName, $this->getCacheTime(), function () use ($polos_ids, $parameters) {
+			$data = DB::select(
+				"select ifnull(departments.name,'Sem departamento') as department,count(*) as qty FROM 
 			leads left join departments on departments.id=leads.department_id where leads.tenant_id = :tenant_id
 			and ( DATE(leads.finished_at) >= DATE(:start_date) and DATE(leads.finished_at) <= DATE(:end_date))
 			and leads.polo_id in ($polos_ids)
@@ -115,8 +148,10 @@ class DashboardController extends Controller
 			and leads.deleted_at is null
 			group by leads.department_id order by qty desc
 			limit 10",
-			$parameters
-		);
+				$parameters
+			);
+			return $data;
+		});
 		return response()->json($data);
 	}
 
@@ -126,8 +161,11 @@ class DashboardController extends Controller
 		$parameters = array_merge($this->makeParameters($request), ["finished_status_id" => $finished]);
 		$polos_ids = $parameters["polo_ids"];
 		unset($parameters["polo_ids"]);
-		$data = DB::select(
-			"select ifnull(users.name,'Sem Responsável') as user,count(*) as qty FROM 
+		$cacheName = __CLASS__ . "@" . __FUNCTION__ . ":" . json_encode($parameters);
+		$user = Auth::user();
+		$data = $user->tenant->storeRemember($cacheName, $this->getCacheTime(), function () use ($polos_ids, $parameters) {
+			$data = DB::select(
+				"select ifnull(users.name,'Sem Responsável') as user,count(*) as qty FROM 
 			leads left join users on users.id=leads.responsible_id where leads.tenant_id = :tenant_id
 			and ( DATE(leads.finished_at) >= DATE(:start_date) and DATE(leads.finished_at) <= DATE(:end_date))
 			and leads.polo_id in ($polos_ids)
@@ -135,8 +173,10 @@ class DashboardController extends Controller
 			and leads.deleted_at is null			
 			group by leads.responsible_id order by qty desc
 			limit 10",
-			$parameters
-		);
+				$parameters
+			);
+			return $data;
+		});
 		return response()->json($data);
 	}
 
@@ -145,8 +185,11 @@ class DashboardController extends Controller
 		$parameters = $this->makeParameters($request);
 		$polos_ids = $parameters["polo_ids"];
 		unset($parameters["polo_ids"]);
-		$data = DB::select(
-			"select if(statuses.value = 'canceled','canceled','other') as status, count(*) as qty 
+		$cacheName = __CLASS__ . "@" . __FUNCTION__ . ":" . json_encode($parameters);
+		$user = Auth::user();
+		$data = $user->tenant->storeRemember($cacheName, $this->getCacheTime(), function () use ($polos_ids, $parameters) {
+			$data = DB::select(
+				"select if(statuses.value = 'canceled','canceled','other') as status, count(*) as qty 
 			from  statuses left join leads  on leads.status_id = statuses.id  
 			where leads.tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
@@ -154,8 +197,10 @@ class DashboardController extends Controller
 			and leads.deleted_at is null
 			group by status
 			ORDER BY qty DESC",
-			$parameters
-		);
+				$parameters
+			);
+			return $data;
+		});
 		return response()->json($data);
 	}
 
@@ -164,8 +209,11 @@ class DashboardController extends Controller
 		$parameters = $this->makeParameters($request);
 		$polos_ids = $parameters["polo_ids"];
 		unset($parameters["polo_ids"]);
-		$data = DB::select(
-			"select if(statuses.value = 'finished','finished','other') as status, count(*) as qty 
+		$cacheName = __CLASS__ . "@" . __FUNCTION__ . ":" . json_encode($parameters);
+		$user = Auth::user();
+		$data = $user->tenant->storeRemember($cacheName, $this->getCacheTime(), function () use ($polos_ids, $parameters) {
+			$data = DB::select(
+				"select if(statuses.value = 'finished','finished','other') as status, count(*) as qty 
 			from statuses left join leads on leads.status_id = statuses.id  
 			where leads.tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
@@ -173,8 +221,10 @@ class DashboardController extends Controller
 			and leads.deleted_at is null
 			group by status
 			ORDER BY qty DESC",
-			$parameters
-		);
+				$parameters
+			);
+			return $data;
+		});
 		return response()->json($data);
 	}
 
@@ -183,16 +233,21 @@ class DashboardController extends Controller
 		$parameters = $this->makeParameters($request);
 		$polos_ids = $parameters["polo_ids"];
 		unset($parameters["polo_ids"]);
-		$data = DB::select(
-			"select statuses.name as status, count(*) as qty 
+		$cacheName = __CLASS__ . "@" . __FUNCTION__ . ":" . json_encode($parameters);
+		$user = Auth::user();
+		$data = $user->tenant->storeRemember($cacheName, $this->getCacheTime(), function () use ($polos_ids, $parameters) {
+			$data = DB::select(
+				"select statuses.name as status, count(*) as qty 
 			from statuses left join leads on leads.status_id = statuses.id  
 			where leads.tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
 			and leads.polo_id in ($polos_ids)
 			and leads.deleted_at is null
 			group by status",
-			$parameters
-		);
+				$parameters
+			);
+			return $data;
+		});
 		return response()->json($data);
 	}
 
@@ -201,16 +256,21 @@ class DashboardController extends Controller
 		$parameters = $this->makeParameters($request);
 		$polos_ids = $parameters["polo_ids"];
 		unset($parameters["polo_ids"]);
-		$data = DB::select(
-			"select JSON_UNQUOTE(JSON_EXTRACT(data,'$.objection.name')) as objection, count(*) as qty
+		$cacheName = __CLASS__ . "@" . __FUNCTION__ . ":" . json_encode($parameters);
+		$user = Auth::user();
+		$data = $user->tenant->storeRemember($cacheName, $this->getCacheTime(), function () use ($polos_ids, $parameters) {
+			$data = DB::select(
+				"select JSON_UNQUOTE(JSON_EXTRACT(data,'$.objection.name')) as objection, count(*) as qty
 			FROM leads where JSON_UNQUOTE(JSON_EXTRACT(data,'$.objection.name')) is not null 
 			and tenant_id = :tenant_id
 			and ( DATE(leads.created_at) >= DATE(:start_date) and DATE(leads.created_at) <= DATE(:end_date))
 			and leads.polo_id in ($polos_ids) 
 			and leads.deleted_at is null
 			group by objection",
-			$parameters
-		);
+				$parameters
+			);
+			return $data;
+		});
 		return response()->json($data);
 	}
 }
