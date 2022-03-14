@@ -10,6 +10,9 @@ return [
 	"extra_javascript_global_variables" => [
 		ExtraConfigData::class
 	],
+	"animation" => [
+		"enabled" => false,
+	],
 	// "timezone" => "+00:00",
 	"timezones" => [
 		'Pacific/Midway'       => "-11:00",

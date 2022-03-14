@@ -25,7 +25,6 @@
 	$is_head = $user->polo->data->head
 @endphp
 <dashboard-content
-	data-aos="fade-down"
 	title="Mostradores e Desempenho"
 	user_id="{{ $user->id }}"
 	:is_head='@json($is_head)'
