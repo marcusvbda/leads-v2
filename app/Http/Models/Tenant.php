@@ -6,6 +6,7 @@ use marcusvbda\vstack\Models\DefaultModel;
 use App\User;
 use App\Http\Models\Scopes\OrderByScope;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class Tenant extends DefaultModel
 {
@@ -70,9 +71,10 @@ class Tenant extends DefaultModel
 	public function storeRemember($type, $timeout, $callback)
 	{
 		$now = Carbon::now();
+		$user = Auth::user();
 		$formated_now = $now->format("Y-m-d H:i:s");
 		$query = "DATE_ADD(created_at, INTERVAL $timeout second) >= '$formated_now'";
-		$store = $this->stores()->where("type", "=", $type)->whereRaw($query)->first();
+		$store = $this->stores()->where("user_id", $user->id)->where("type", "=", $type)->whereRaw($query)->first();
 		$data = [];
 		if (@$store) {
 			$data = (array)$store->data;
@@ -80,6 +82,7 @@ class Tenant extends DefaultModel
 			$data = @$callback();
 			$store = $this->stores()->firstOrNew(["type" => $type]);
 			$store->data = $data;
+			$store->user_id = $user->id;
 			$store->created_at = $now;
 			$store->save();
 		}
@@ -88,6 +91,7 @@ class Tenant extends DefaultModel
 
 	public function clearStores()
 	{
-		$this->stores()->delete();
+		$user = Auth::user();
+		$this->stores()->where("user_id", $user->id)->ehdelete();
 	}
 }

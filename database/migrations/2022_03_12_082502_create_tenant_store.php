@@ -15,6 +15,10 @@ class CreateTenantStore extends Migration
             $table->bigIncrements('id');
             $table->string("type");
             $table->jsonb("data");
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users');
             $table->unsignedBigInteger('tenant_id');
             $table->foreign('tenant_id')
                 ->references('id')
