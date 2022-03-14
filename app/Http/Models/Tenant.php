@@ -92,6 +92,6 @@ class Tenant extends DefaultModel
 	public function clearStores()
 	{
 		$user = Auth::user();
-		$this->stores()->where("user_id", $user->id)->ehdelete();
+		$this->stores()->where("user_id", $user->id)->delete();
 	}
 }
