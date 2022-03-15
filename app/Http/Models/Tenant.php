@@ -77,11 +77,28 @@ class Tenant extends DefaultModel
 		$store = $this->stores()->where("user_id", $user->id)->where("type", "=", $type)->whereRaw($query)->first();
 		$data = [];
 		if (@$store) {
-			$data = (array)$store->data;
+			$value = data_get($store->data, "value.0");
+			$type = @data_get($store->data, "type");
+			$actions = [
+				"boolean" => function ($val) {
+					return boolval($val);
+				},
+				"array" => function ($val) {
+					return (array)$val;
+				},
+				"integer" => function ($val) {
+					return intval($val);
+				},
+				"double" => function ($val) {
+					return floatval($val);
+				}
+			];
+			$data = @$actions[$type] ? $actions[$type]($value) : $value;
 		} else {
 			$data = @$callback();
 			$store = $this->stores()->firstOrNew(["type" => $type]);
-			$store->data = $data;
+			$type = gettype($data);
+			$store->data = ["value" => [$data], "type" => $type];
 			$store->user_id = $user->id;
 			$store->created_at = $now;
 			$store->save();
