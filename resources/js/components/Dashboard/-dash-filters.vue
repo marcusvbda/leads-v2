@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex row align-items-center mr-1">
+    <div class="d-flex row align-items-center mr-1 dash-filter">
         <el-radio-group v-model="default_filter.selected_range" size="small">
             <el-radio-button v-if="Object.keys(date_ranges).includes('_this_year_')" label="_this_year_" border>
                 Este Ano
@@ -10,9 +10,7 @@
             <el-radio-button v-if="Object.keys(date_ranges).includes('_this_week_')" label="_this_week_" border>
                 Esta Semana
             </el-radio-button>
-            <el-radio-button v-if="Object.keys(date_ranges).includes('_today_')" label="_today_" border>
-                Hoje
-            </el-radio-button>
+            <el-radio-button v-if="Object.keys(date_ranges).includes('_today_')" label="_today_" border> Hoje </el-radio-button>
         </el-radio-group>
         <a href="#" @click.prevent="dialog_polo_visible = !dialog_polo_visible" class="f-12 ml-3">Selecionar os Polos</a>
         <el-dialog title="Selecionar o polo" :visible.sync="dialog_polo_visible" width="50%">
@@ -25,7 +23,7 @@
                 class="w-100"
                 clearable
                 label="Todos os Polos"
-                :options="polos.map(x => ({ label: x.name, value: x.id }))"
+                :options="polos.map((x) => ({ label: x.name, value: x.id }))"
             />
         </el-dialog>
     </div>
@@ -39,8 +37,8 @@ export default {
             dialog_polo_visible: false,
             default_filter: {
                 selected_range: "_this_month_",
-                polo_ids: this.selected_polo_ids
-            }
+                polo_ids: this.selected_polo_ids,
+            },
         };
     },
     watch: {
@@ -48,8 +46,8 @@ export default {
             handler(val) {
                 this.setFilter(val);
             },
-            deep: true
-        }
+            deep: true,
+        },
     },
     created() {
         this.getPolos(this.user_id);
@@ -57,11 +55,11 @@ export default {
         this.setFilter(this.default_filter);
     },
     computed: {
-        ...mapGetters("dashboard", ["polos", "date_ranges", "filter"])
+        ...mapGetters("dashboard", ["polos", "date_ranges", "filter"]),
     },
     methods: {
         ...mapActions("dashboard", ["getPolos", "getDateRanges"]),
-        ...mapMutations("dashboard", ["setFilter"])
-    }
+        ...mapMutations("dashboard", ["setFilter"]),
+    },
 };
 </script>

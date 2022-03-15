@@ -5,9 +5,12 @@ $quaternary: #32373c;
 $quinary: #78909c;
 $bgColor: #edeff2;
 
+$screen-sm-max: 767px;
+
 :export {
     primary: $primary;
     secondary: $secondary;
     tertiary: $tertiary;
     quaternary: $quaternary;
+    screen-sm-max: 767px;
 }

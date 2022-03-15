@@ -54,7 +54,7 @@ export default {
 
             this.socket = await this.initSocket({ code: this.session });
 
-            this.socket.on("authenticated", () => {
+            this.socket.on("ready", () => {
                 this.connected = true;
                 this.loading = false;
             });

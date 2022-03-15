@@ -19,6 +19,7 @@ export default {
     data() {
         return {
             loading: true,
+            scoket: null,
         };
     },
     computed: {
@@ -50,11 +51,8 @@ export default {
     created() {
         if (!this.form.string_token) {
             clearTimeout(window.qr_timeout);
-            window.qr_timeout = setTimeout(() => {
-                this.initSocket({
-                    code: this.uid,
-                });
-                this.init();
+            window.qr_timeout = setTimeout(async () => {
+                this.initFields();
             }, 2000);
         } else {
             this.loading = false;
@@ -62,7 +60,14 @@ export default {
     },
     methods: {
         ...mapActions("wpp", ["initSocket", "sendMessage"]),
-        init() {
+        async initFields() {
+            this.socket = await this.initSocket({
+                code: this.uid,
+            });
+
+            this.socket.on("ready", () => {
+                this.$set(this.form, "string_token", this.uid);
+            });
             if (this.form[this.field.options.field] === undefined) {
                 this.$set(this.form, this.field.options.field, null);
                 this.$set(this.form, "string_token", "");

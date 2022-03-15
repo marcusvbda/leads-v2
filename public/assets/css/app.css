@@ -1041,6 +1041,65 @@ ul.pagination {
   margin-top: 0 !important;
 }
 
+@media screen and (max-width: 767px) {
+  .table-responsive-sm {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .resource-pagination .pagination-content {
+    flex-wrap: wrap;
+    justify-content: flex-end !important;
+  }
+
+  .resource-pagination .pagination-content .pagination-row {
+    flex-wrap: wrap;
+    justify-content: flex-end !important;
+  }
+
+  .resource-pagination .pagination-content .nav-scroller .ml-3 {
+    margin-left: 0 !important;
+  }
+
+  .resource-pagination .pagination-content .nav-scroller .pagination {
+    flex-wrap: wrap !important;
+  }
+
+  .sm-mt-4 {
+    margin-top: 15px !important;
+  }
+
+  .sm-w-100 {
+    width: 100% !important;
+  }
+
+  .resource-btn {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .resource-btn a {
+    margin: 0 !important;
+  }
+
+  .el-drawer.rtl {
+    width: 100% !important;
+  }
+
+  .el-dialog__wrapper {
+    padding: 10px !important;
+  }
+
+  .el-dialog__wrapper .el-dialog {
+    width: 100% !important;
+  }
+
+  .btn-sm-block {
+    width: 100%;
+  }
+}
+
 a {
   display: inline-block;
   position: relative;
@@ -12469,5 +12528,57 @@ a.el-button:hover {
   height: 21px !important;
   padding: 0px 10px !important;
   font-size: 10px !important;
+}
+
+ol.breadcrumb {
+  margin-top: 10px !important;
+}
+
+@media screen and (max-width: 767px) {
+  #auth {
+    margin: 0;
+  }
+
+  #auth .right-side .container {
+    max-width: unset !important;
+  }
+
+  #auth .el-dialog__wrapper {
+    padding: 10px;
+  }
+
+  #auth .el-dialog__wrapper .el-dialog.el-dialog--center {
+    width: 100% !important;
+    max-width: unset;
+  }
+
+  #auth .el-dialog__wrapper .el-dialog .el-dialog__footer button {
+    width: 100%;
+  }
+
+  .dashboard-content .dash-filter {
+    display: none !important;
+  }
+
+  .navbar {
+    padding: 0.5rem 1rem !important;
+  }
+
+  .navbar .nav-link {
+    padding: 8px 10px !important;
+  }
+
+  .sm-hide {
+    display: none !important;
+  }
+
+  .table-responsive-sm {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .sm-flex-wrap {
+    flex-wrap: wrap !important;
+  }
 }
 

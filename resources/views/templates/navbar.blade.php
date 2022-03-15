@@ -140,7 +140,7 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
             </li>
         </ul>        
         <select-polo polo_name="{{ $polo->name }}" user_id="{{ $user->id }}" :logged_id='@json($polo->id)'></select-polo>
-        <ul class="navbar-nav ml-3">
+        <ul class="navbar-nav ml-3 sm-hide">
             <li class="nav-item bell-note mx-0">
                 <el-tooltip class="item" effect="dark" content="Clique aqui caso precise de ajuda" placement="bottom">
                     <a class="nav-link text-center bell-notification" href="{{ $wiki_url }}">
@@ -149,7 +149,7 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
                 </el-tooltip>
             </li>
         </ul>
-        <notification-bell polo_id="{{ $polo->id }}" :active='@json(currentClass([' /admin/notificacoes/*']))'></notification-bell>
+        <notification-bell class="sm-hide" polo_id="{{ $polo->id }}" :active='@json(currentClass([' /admin/notificacoes/*']))'></notification-bell>
         <ul class="navbar-nav">
             <li class="nav-item dropdown hover-color ml-0">
                 <a class="nav-link dropdown-toggle py-0 d-flex flex-row align-items-center" href="#" id="navbarDropdown" role="button"

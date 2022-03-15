@@ -11,6 +11,7 @@ use App\Http\Actions\Leads\{
 	LeadReprocess,
 	LeadSourceReprocess,
 	LeadTransfer,
+	SendWppMessage,
 };
 use App\Http\Filters\FilterByPresetDate;
 use App\Http\Filters\FilterByTags;
@@ -100,6 +101,9 @@ class Leads extends Resource
 			$actions[] = new LeadSourceReprocess();
 			$actions[] = new LeadReprocess();
 			$actions[] = new LeadRemoveDuplicates();
+		}
+		if (Auth::user()->canAccessModule("whatsapp")) {
+			$actions[] = new SendWppMessage();
 		}
 		return $actions;
 	}
