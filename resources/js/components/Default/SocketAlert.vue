@@ -1,7 +1,7 @@
 <template></template>
 <script>
 export default {
-    props: ["polo_id", "active", "event", "channel"],
+    props: ["polo_id", "event", "channel"],
     data() {
         return {
             qty: 0,
