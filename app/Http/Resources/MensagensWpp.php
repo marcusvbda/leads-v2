@@ -211,7 +211,7 @@ class MensagensWpp extends Resource
 		]];
 	}
 
-	public function importMethod($data, $extra_data)
+	public function importRowMethod($data, $extra_data)
 	{
 		$new_model = $this->getModelInstance();
 		$new_model->tenant_id = data_get($data, "tenant_id");

@@ -26,6 +26,7 @@ use marcusvbda\vstack\Fields\{
 	TextArea,
 };
 use Auth;
+use marcusvbda\vstack\Vstack;
 
 class Leads extends Resource
 {
@@ -50,7 +51,7 @@ class Leads extends Resource
 
 	public function canClone()
 	{
-		return true;
+		return false;
 	}
 
 	public function singularLabel()
@@ -141,7 +142,12 @@ class Leads extends Resource
 
 	public function canImport()
 	{
-		return false;
+		return hasPermissionTo("create-leads");
+	}
+
+	public function importerColumns()
+	{
+		return ["name", "email"];
 	}
 
 	public function canExport()
@@ -149,32 +155,42 @@ class Leads extends Resource
 		return hasPermissionTo("view-leads-report");
 	}
 
-
-	public function export_columns($cx)
+	public function exportColumns()
 	{
-		// dd(request()->page_type);
-		$fields["code"] = ["label" => "Código"];
-		$fields["name"] = ["label" => "Nome"];
-		$fields["origins"] = ["label" => "Origens", "handler" => function ($row) {
+		$fields[] = ["label" => "Código", "handler" => function ($item) {
+			return $item->code;
+		}];
+		$fields[] = ["label" => "Nome", "handler" => function ($item) {
+			return $item->name;
+		}];
+		$fields[] = ["label" => "Origens", "handler" => function ($row) {
 			return implode(", ", @$row->data->source ?? []);
 		}];
-		$fields["status->name"] = ["label" => "Status"];
-		$fields["profession"] = ["label" => "Profissão"];
-		$fields["email"] = ["label" => "Email"];
-		$fields["primary_phone"] = ["label" => "Telefone", "handler" => function ($row) {
-			return $row->primary_phone_number;
+		$fields[] = ["label" => "Status", "handler" => function ($row) {
+			return @$row->status->name;
 		}];
-		$fields["primary_phone_clean"] = ["label" => "Telefone Limpo", "handler" => function ($row) {
+		$fields[] = ["label" => "Profissão", "handler" => function ($row) {
+			return @$row->profession;
+		}];
+		$fields[] = ["label" => "Email", "handler" => function ($row) {
+			return @$row->email;
+		}];
+		$fields[] = ["label" => "Telefone", "handler" => function ($row) {
+			return @$row->primary_phone;
+		}];
+		$fields[] = ["label" => "Telefone Limpo", "handler" => function ($row) {
 			return preg_replace("/[^0-9]/", "", $row->primary_phone_number);
 		}];
-		$fields["secondary_phone"] =  ["label" => "Tel. Secundário", "handler" => function ($row) {
+		$fields[] =  ["label" => "Tel. Secundário", "handler" => function ($row) {
 			return $row->secondary_phone_number;
 		}];
-		$fields["secondary_phone_clean"] =  ["label" => "Tel. Secundário Limpo", "handler" => function ($row) {
+		$fields[] =  ["label" => "Tel. Secundário Limpo", "handler" => function ($row) {
 			return  preg_replace("/[^0-9]/", "", $row->secondary_phone_number);
 		}];
-		$fields["interest"] = ["label" => "Interesse"];
-		$fields["data"] = ["label" => "Data", "handler" => function ($row) {
+		$fields[] = ["label" => "Interesse", "handler" => function ($row) {
+			return @$row->interest;
+		}];
+		$fields[] = ["label" => "Data", "handler" => function ($row) {
 			return formatDate($row->created_at);
 		}];
 		return $fields;
@@ -183,7 +199,10 @@ class Leads extends Resource
 	public function filters()
 	{
 		$filters = [];
-		$filters[] = new FilterByPresetDate(["label" => "Data de Criação"]);
+		$filters[] = new FilterByPresetDate([
+			"label" => "Data de Criação",
+			"field" => "leads.created_at"
+		]);
 		$filters[] = new FilterByText([
 			"column" => "data->name",
 			"label" => "Nome",
@@ -316,5 +335,12 @@ class Leads extends Resource
 	public function tableAfterRow($row)
 	{
 		return view("admin.leads.after_row", compact("row"))->render();
+	}
+
+	public function prepareImportData($data)
+	{
+		return ["success" => true, "data" => [
+			"polo_id" => Auth::user()->polo_id,
+		]];
 	}
 }

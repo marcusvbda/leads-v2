@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Auth\UsersController;
-use App\Http\Controllers\LogViewerController;
 
 Route::get('', function () {
 	return redirect("/admin"); //temporário até termos uma landing page
