@@ -2190,7 +2190,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/marcusvbda/vstack.git",
-                "reference": "1703ec2809cb48e5931f3587bede2556f99b7d19"
+                "reference": "31f77756249936f60a68d81c1ef26feec30a1021"
             },
             "require": {
                 "spatie/laravel-permission": "^3.3",

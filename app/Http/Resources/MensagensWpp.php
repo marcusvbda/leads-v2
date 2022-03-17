@@ -280,4 +280,26 @@ class MensagensWpp extends Resource
 		$route = route('resource.index', ["resource" => $this->id]);
 		return ["success" => true, "route" => $route, "model" => $target];
 	}
+
+	public function listItemsContent($query)
+	{
+		$items[] = [
+			"label" => "AGUARDANDO",
+			"value" => $query->where("status", "waiting")->count(),
+			"class" => "col-md-2 col-sm-12"
+		];
+
+		$items[] = [
+			"label" => "PROCESSANDO",
+			"value" => $query->where("status", "processing")->count() ?? 0,
+			"class" => "col-md-2 col-sm-12"
+		];
+
+		$items[] = [
+			"label" => "ENVIADAS",
+			"value" => $query->where("status", "sent")->count() ?? 0,
+			"class" => "col-md-2 col-sm-12"
+		];
+		return $items;
+	}
 }
