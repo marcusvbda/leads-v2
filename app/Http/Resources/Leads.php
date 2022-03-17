@@ -7,9 +7,9 @@ use App\Http\Models\Lead;
 use App\Http\Actions\Leads\{
 	LeadStatusChange,
 	LeadDelete,
-	LeadRemoveDuplicates,
-	LeadReprocess,
-	LeadSourceReprocess,
+	// LeadRemoveDuplicates,
+	// LeadReprocess,
+	// LeadSourceReprocess,
 	LeadTransfer,
 	SendWppMessage,
 };
@@ -88,8 +88,8 @@ class Leads extends Resource
 
 	public function actions()
 	{
-		$user = Auth::user();
-		$is_super_admin_or_admin = $user->hasRole(["super-admin", "admin"]);
+		// $user = Auth::user();
+		// $is_super_admin_or_admin = $user->hasRole(["super-admin", "admin"]);
 		$actions = [];
 		if (hasPermissionTo("edit-leads")) {
 			$actions[] = new LeadStatusChange();
@@ -98,11 +98,11 @@ class Leads extends Resource
 		if (hasPermissionTo("destroy-leads")) {
 			$actions[] = new LeadDelete();
 		}
-		if ($is_super_admin_or_admin) {
-			$actions[] = new LeadSourceReprocess();
-			$actions[] = new LeadReprocess();
-			$actions[] = new LeadRemoveDuplicates();
-		}
+		// if ($is_super_admin_or_admin) {
+		// 	$actions[] = new LeadSourceReprocess();
+		// 	$actions[] = new LeadReprocess();
+		// 	$actions[] = new LeadRemoveDuplicates();
+		// }
 		if (Auth::user()->canAccessModule("whatsapp")) {
 			$actions[] = new SendWppMessage();
 		}
@@ -343,4 +343,20 @@ class Leads extends Resource
 			"polo_id" => Auth::user()->polo_id,
 		]];
 	}
+
+	// public function listItemsContent($data)
+	// {
+	// 	$items[] = [
+	// 		"label" => "TOTAL DE ITENS",
+	// 		"value" => $data->count(),
+	// 		"class" => "col-md-2 col-sm-12"
+	// 	];
+	// 	$items[] = [
+	// 		"label" => "TOTAL",
+	// 		"value" => 'R$ 551.533,00',
+	// 		"class" => "col-md-3 col-sm-12"
+	// 	];
+
+	// 	return $items;
+	// }
 }
