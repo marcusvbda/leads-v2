@@ -135,7 +135,7 @@ class Lead extends DefaultModel
 
 	public function getEmailAttribute()
 	{
-		return $this->data->email;
+		return @$this->data->email;
 	}
 
 	public function getEmailUrlAttribute()
