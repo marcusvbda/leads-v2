@@ -127,6 +127,9 @@ class Leads extends Resource
 
 	public function canViewList()
 	{
+		if (request()->is_api) {
+			return false;
+		}
 		return hasPermissionTo("viewlist-leads");
 	}
 

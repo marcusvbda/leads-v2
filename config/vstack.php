@@ -10,6 +10,9 @@ return [
 	"extra_javascript_global_variables" => [
 		ExtraConfigData::class
 	],
+	"api" => [
+		"token_expiration" => "1 day",
+	],
 	"animation" => [
 		"enabled" => false,
 	],
