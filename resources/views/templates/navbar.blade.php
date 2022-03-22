@@ -75,27 +75,29 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
                     <i class="el-icon-data-analysis mr-2"></i>Relatórios
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="{{ getMenuClass('view-leads-report', ['/admin/relatorios/leads/*']) }}" href="/admin/relatorios/leads"
+                    <a class="{{ getMenuClass('viewlist-leads', ['/admin/relatorios/leads/*']) }}" href="/admin/relatorios/leads"
                         data-label="Relatório de Leads">Leads</a>
                 </div>
             </li>            
-            <li
-                class="nav-item dropdown {{ currentClass(['/admin/webhooks/*','/admin/integracoes/*']) }}">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                    <i class="el-icon-s-claim mr-2"></i>Captação
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item {{  getMenuClass($is_admin_or_super_admin, ['/admin/webhooks/*']) }}" href="/admin/webhooks"
-                        data-label="Rotas de Entrada de Lead">
-                        Webhook
+            @if($is_admin_or_super_admin)
+                <li
+                    class="nav-item dropdown {{ currentClass(['/admin/webhooks/*','/admin/integracoes/*']) }}">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="el-icon-s-claim mr-2"></i>Captação
                     </a>
-                    <a class="dropdown-item {{ getMenuClass($is_admin_or_super_admin, ['/admin/integracoes/*']) }}" href="/admin/integradores"
-                        data-label="Usuários de Acesso a API">
-                        Integradores
-                    </a>
-                </div>
-            </li>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/admin/webhooks"
+                            data-label="Rotas de Entrada de Lead">
+                            Webhook
+                        </a>
+                        <a class="dropdown-item" href="/admin/integradores"
+                            data-label="Usuários de Acesso a API">
+                            Integradores
+                        </a>
+                    </div>
+                </li>
+            @endif
             <li
                 class="nav-item dropdown {{ currentClass(['/admin/resposta-contatos/*', '/admin/tipos-contato/*', '/admin/respostas-contato/*', '/admin/regra-classificacao/*', '/admin/objecoes/*','/admin/sessoes-wpp/*']) }}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
@@ -112,7 +114,7 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
                     <a class="{{ getMenuClass('config-rating-behavior', ['/admin/regra-classificacao/*']) }}" href="/admin/regra-classificacao"
                         data-label="Regra de Rating de Lead">Regra de Classificação</a>
                     @if(@$whatsapp_module->id)
-                        <a class="dropdown-item  {{ currentClass(['/admin/sessoes-wpp/*']) }}" href="/admin/sessoes-wpp"
+                        <a class="dropdown-item  {{ getMenuClass('viewlist-wppsession',['/admin/sessoes-wpp/*']) }}" href="/admin/sessoes-wpp"
                             data-label="Perfis autenticados"
                         >
                             @if(@$whatsapp_module->new_badge) <el-badge value="Novo" class="badge-new"  type="primary"> @endif
@@ -130,7 +132,7 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     @if(@$whatsapp_module->id)
-                        <a class="dropdown-item {{ currentClass(['/admin/mensagens-wpp/*']) }}" href="/admin/mensagens-wpp">
+                        <a class="dropdown-item {{ getMenuClass('viewlist-wppmessage',['/admin/mensagens-wpp/*']) }}" href="/admin/mensagens-wpp">
                             @if(@$whatsapp_module->new_badge) <el-badge value="Novo" class="badge-new"  type="primary"> @endif
                                 Mensagens WhatsApp
                             @if(@$whatsapp_module->new_badge) </el-badge> @endif
@@ -160,20 +162,18 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    @if ($is_super_admin)
-                        <a class="dropdown-item" href="/admin/permissoes">Permissões</a>
-                    @endif
-                    <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/grupos-de-acesso">Grupos de Acesso</a>
                     <a class="dropdown-item" href="/admin/usuarios/{{ $user->code }}/edit">
                         <div class="d-flex justify-content-between">
                             <span>Conta</span>
                             <span class="badge badge-default ml-5 pt-1 px-2">ID.: {{ $user->code }}</span>
                         </div>
                     </a>
-                    <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/usuarios">Usuários</a>
-                    <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/polos">Polos</a>
-                    <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/departamentos">Departamentos</a>
-                    <a class="dropdown-item @if (!$is_super_admin) disabled @endif" href="/admin/modulos">Modulos</a>
+                    <a class="dropdown-item {{ getMenuClass('viewlist-users',['/admin/usuarios/*'])  }}" href="/admin/usuarios">Usuários</a>
+                    @if ($is_admin_or_super_admin)
+                        <a class="dropdown-item" href="/admin/polos">Polos</a>
+                        <a class="dropdown-item" href="/admin/departamentos">Departamentos</a>
+                        <a class="dropdown-item" href="/admin/modulos">Modulos</a>
+                    @endif
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/login">Sair</a>
                 </div>

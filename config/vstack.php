@@ -131,5 +131,5 @@ return [
 		'Asia/Magadan'         => "+12:00",
 		'Pacific/Auckland'     => "+12:00",
 		'Pacific/Fiji'         => "+12:00",
-	]
+	],
 ];

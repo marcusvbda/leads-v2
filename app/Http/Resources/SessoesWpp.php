@@ -71,7 +71,7 @@ class SessoesWpp extends Resource
 
 	public function canViewList()
 	{
-		return  $this->canAccessModule();
+		return  $this->canAccessModule() && hasPermissionTo('viewlist-wppsession');
 	}
 
 	public function canView()
@@ -81,7 +81,7 @@ class SessoesWpp extends Resource
 
 	public function canCreate()
 	{
-		return  $this->canAccessModule();
+		return  $this->canAccessModule() && hasPermissionTo('create-wppsession');
 	}
 
 	public function canClone()
@@ -96,7 +96,12 @@ class SessoesWpp extends Resource
 
 	public function canDelete()
 	{
-		return  $this->canAccessModule();
+		return  $this->canAccessModule() && hasPermissionTo('destroy-wppsession');
+	}
+
+	public function canDeleteRow($row)
+	{
+		return $row->qty_messages <= 0;
 	}
 
 	public function canImport()
@@ -166,10 +171,5 @@ class SessoesWpp extends Resource
 		Messages::send("success", "Registro salvo com sucesso !!");
 		$route = route('resource.index', ["resource" => $this->id]);
 		return ["success" => true, "route" => $route, "model" => $target];
-	}
-
-	public function canDeleteRow($row)
-	{
-		return $row->qty_messages <= 0;
 	}
 }

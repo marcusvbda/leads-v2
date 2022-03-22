@@ -58,9 +58,13 @@ if (!function_exists('removeCpfCnpfMask')) {
 if (!function_exists('hasPermissionTo')) {
 	function hasPermissionTo($permission)
 	{
-		if (!\Auth::check()) return false;
+		if (!\Auth::check()) {
+			return false;
+		}
 		$user = \Auth::user();
-		if ($user->hasRole(["super-admin", "admin"])) return true;
+		if ($user->hasRole(["super-admin"])) {
+			return true;
+		}
 		$permission = trim($permission);
 		return $user->can($permission);
 	}

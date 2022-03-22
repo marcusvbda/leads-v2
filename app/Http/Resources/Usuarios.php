@@ -78,7 +78,12 @@ class Usuarios extends Resource
 
 	public function canUpdate()
 	{
-		return hasPermissionTo("edit-users");;
+		return true;
+	}
+
+	public function canUpdateRow($row)
+	{
+		return hasPermissionTo("edit-users") || $row->id == Auth::user()->id;
 	}
 
 	public function canViewList()
@@ -115,7 +120,9 @@ class Usuarios extends Resource
 	{
 		$user = Auth::user();
 		$filters = [];
-		if ($user->hasRole(["super-admin"])) $filters[] = new UsersByTenant();
+		if ($user->hasRole(["super-admin"])) {
+			$filters[] = new UsersByTenant();
+		}
 		return $filters;
 	}
 
@@ -176,7 +183,6 @@ class Usuarios extends Resource
 	private function inviteFields()
 	{
 		$user = Auth::user();
-		$is_super_admin = $user->hasRole(["super-admin"]);
 		$cards = [];
 		$fields = [
 			new Text([
@@ -191,7 +197,7 @@ class Usuarios extends Resource
 				"label" => "Grupo de Acesso",
 				"field" => "role_id",
 				"required" => true,
-				"options" => $this->getRoleOptions($is_super_admin, $user->tenant_id)
+				"options" => $this->getRoleOptions()
 			]),
 			new BelongsTo([
 				"label" => "Polos",
@@ -211,18 +217,22 @@ class Usuarios extends Resource
 		return $cards;
 	}
 
-	private function getRoleOptions($is_super_admin, $tenant_id)
+	private function getRoleOptions()
 	{
-		return (!$is_super_admin ?  DB::table("roles")->where("tenant_id", $tenant_id) : DB::table("roles"))
-			->select("id as id", "description as value")
-			->where("tenant_id", $tenant_id)
-			->get();
+		$roles = config("roles", []);
+		$is_super_admin = Auth::user()->hasRole(["super-admin"]);
+		$roles = array_filter(array_map(function ($key) use ($roles, $is_super_admin) {
+			$found_role = data_get($roles, $key);
+			if (!data_get($found_role, "hidden") || $is_super_admin) {
+				return ["id" => $key, "value" => data_get($found_role, "title", $key)];
+			}
+		}, array_keys($roles)));
+		return $roles;
 	}
 
 	private function editFields($content)
 	{
 		$user = Auth::user();
-		$is_super_admin = $user->hasRole(["super-admin"]);
 		$cards = [];
 
 		$fields = [
@@ -255,15 +265,15 @@ class Usuarios extends Resource
 				"model" => Department::class,
 			]),
 		];
-		if (Auth::user()->hasRole(["super-admin", "admin"]) && @request("content") && @request("content")->id != @$user->id) {
-			$fields[] = new BelongsTo([
-				"label" => "Grupo de Acesso",
-				"field" => "role_id",
-				"required" => true,
-				"default" => @$user->roleName,
-				"options" => $this->getRoleOptions($is_super_admin, $user->tenant_id)
-			]);
-		}
+		$block_edit_role = @request("content") && @request("content")->id == @$user->id;
+		$fields[] = new BelongsTo([
+			"label" => "Grupo de Acesso",
+			"field" => "role",
+			"required" => true,
+			"default" => @$user->role,
+			"disabled" => $block_edit_role,
+			"options" => $this->getRoleOptions()
+		]);
 		$cards[] = new Card("Informações", $fields);
 		return $cards;
 	}

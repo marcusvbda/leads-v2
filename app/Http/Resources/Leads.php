@@ -127,9 +127,6 @@ class Leads extends Resource
 
 	public function canViewList()
 	{
-		if (request()->is_api) {
-			return false;
-		}
 		return hasPermissionTo("viewlist-leads");
 	}
 
@@ -140,7 +137,7 @@ class Leads extends Resource
 
 	public function canViewReport()
 	{
-		return hasPermissionTo("view-leads-report");
+		return hasPermissionTo("viewlist-leads");
 	}
 
 	public function canImport()
@@ -155,7 +152,7 @@ class Leads extends Resource
 
 	public function canExport()
 	{
-		return hasPermissionTo("view-leads-report");
+		return hasPermissionTo("viewlist-leads");
 	}
 
 	public function exportColumns()

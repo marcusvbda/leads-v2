@@ -77,7 +77,7 @@ class MensagensWpp extends Resource
 
 	public function canViewList()
 	{
-		return  $this->canAccessModule();
+		return  $this->canAccessModule() && hasPermissionTo('viewlist-wppmessage');
 	}
 
 	public function canView()
@@ -87,12 +87,12 @@ class MensagensWpp extends Resource
 
 	public function canCreate()
 	{
-		return  $this->canAccessModule();
+		return  $this->canAccessModule()  && hasPermissionTo('create-wppmessage');
 	}
 
 	public function canImport()
 	{
-		return  $this->canAccessModule();
+		return  $this->canAccessModule()  && hasPermissionTo('create-wppmessage');
 	}
 
 	public function nothingStoredText()
@@ -128,7 +128,7 @@ class MensagensWpp extends Resource
 
 	public function canDelete()
 	{
-		return  $this->canAccessModule();
+		return  $this->canAccessModule()  && hasPermissionTo('destroy-wppmessage');
 	}
 
 	public function canDeleteRow($row)
