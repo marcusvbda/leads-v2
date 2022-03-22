@@ -2,7 +2,7 @@
     <div class="d-flex flex-column">
         <el-select v-model="type" filterable class="w-100" clearable>
             <el-option label="Customizado" value="custom" />
-            <el-option label="Todos" value="todos" />
+            <!-- <el-option label="Todos" value="todos" /> -->
             <template v-for="(key, i) in Object.keys(options)">
                 <el-option :label="options[key][0]" :value="key" :key="i" />
             </template>
