@@ -11,7 +11,7 @@ return [
 		ExtraConfigData::class
 	],
 	"api" => [
-		"token_expiration" => "1 day",
+		"token_expiration" => "1 hour",
 	],
 	"animation" => [
 		"enabled" => false,
