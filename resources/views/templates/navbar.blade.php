@@ -151,7 +151,7 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
                 </el-tooltip>
             </li>
         </ul>
-        <notification-bell class="sm-hide" polo_id="{{ $polo->id }}" :active='@json(currentClass([' /admin/notificacoes/*']))'></notification-bell>
+        <notification-bell :socket_settings='@json($socket_settings)' class="sm-hide" polo_code="{{ $polo->code }}" :active='@json(currentClass([' /admin/notificacoes/*']))'></notification-bell>
         <ul class="navbar-nav">
             <li class="nav-item dropdown hover-color ml-0">
                 <a class="nav-link dropdown-toggle py-0 d-flex flex-row align-items-center" href="#" id="navbarDropdown" role="button"

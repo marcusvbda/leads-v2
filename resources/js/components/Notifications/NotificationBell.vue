@@ -13,32 +13,35 @@
     </ul>
 </template>
 <script>
+import io from "socket.io-client";
 export default {
-    props: ["polo_id", "active"],
+    props: ["polo_code", "active", "socket_settings"],
     data() {
         return {
-            qty: 0
+            qty: 0,
         };
     },
     created() {
         this.getNotificationQty();
-        this.initiatPusherListenUser();
+        this.initSocket("Notification.Add.User", "user@" + laravel.user.code);
+        this.initSocket("Notification.Add.Polo", "polo@" + this.polo_code);
+        this.initSocket("Notification.Add.Tenant", "tenant@" + laravel.tenant.code);
     },
     methods: {
-        initiatPusherListenUser() {
-            if (laravel.user.id && laravel.chat.pusher_key) {
-                this.startChannel(`App.User.${laravel.user.id}`);
-            }
-            if (laravel.user.id && laravel.chat.pusher_key) {
-                this.startChannel(`App.Polo.${this.polo_id}`);
-            }
-            if (laravel.tenant.id && laravel.chat.pusher_key) {
-                this.startChannel(`App.Tenant.${laravel.tenant.id}`);
-            }
-        },
-        startChannel(channel) {
-            this.$echo.private(channel).listen(".notifications.user", n => {
-                this.qty = n.qty;
+        initSocket(event, uid) {
+            const socket = io(this.socket_settings.uri, {
+                query: {
+                    uid: `${this.socket_settings.uid}#${uid}`,
+                    username: this.socket_settings.username,
+                    password: this.socket_settings.password,
+                },
+                reconnection: true,
+                reconnectionDelay: 500,
+                reconnectionAttempts: 10,
+            });
+
+            socket.on(event, (data) => {
+                this.qty = data.qty;
             });
         },
         getNotificationQty() {
@@ -47,11 +50,11 @@ export default {
                 .then(({ data }) => {
                     this.qty = data.qty;
                 })
-                .catch(er => {
+                .catch((er) => {
                     console.log(er);
                 });
-        }
-    }
+        },
+    },
 };
 </script>
 <style lang="scss" scoped>

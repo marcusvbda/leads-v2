@@ -5,7 +5,6 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use marcusvbda\vstack\Events\WebSocketEvent;
 use App\User;
 
 class UserNotification extends Model
@@ -14,28 +13,6 @@ class UserNotification extends Model
 	protected $table = "user_notifications";
 	public $guarded = ["created_at"];
 	public $appends = ["f_created_at", "f_read_at"];
-
-	public static function boot()
-	{
-		parent::boot();
-		$socket_event = function ($model) {
-			broadcast(new WebSocketEvent("App.User." . $model->user_id, "notifications.user", [
-				"qty" => @$model->user ? $model->user->getQyNewNotifications() : 0
-			]));
-			broadcast(new WebSocketEvent("App.Polo." . $model->polo_id, "notifications.user", [
-				"qty" =>  @$model->polo ? $model->polo->getQyNewNotifications() : 0
-			]));
-			broadcast(new WebSocketEvent("App.Tenant." . $model->tenant_id, "notifications.user", [
-				"qty" =>  @$model->tenant ? $model->tenant->getQyNewNotifications() : 0
-			]));
-		};
-		static::created(function ($model) use ($socket_event) {
-			$socket_event($model);
-		});
-		static::updated(function ($model) use ($socket_event) {
-			$socket_event($model);
-		});
-	}
 
 	public static function hasTenant()
 	{

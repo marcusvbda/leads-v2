@@ -33,7 +33,7 @@
                         <div class="card mb-1 pointer-hover" @click="goTo(note.data.url)">
                             <div class="card-body row d-flex">
                                 <div class="col-sm-12 col-md-1 d-flex align-items-center justify-content-center">
-                                    <b><span :class="`${note.data.icon} mr-4`" style="font-size: 30px"/></b>
+                                    <b><span :class="`${note.data.icon} mr-4`" style="font-size: 30px" /></b>
                                 </div>
                                 <div class="col-sm-12 col-md-7 d-flex align-items-center justify-content-center">
                                     <span v-html="note.data.message" />
@@ -74,7 +74,7 @@ export default {
             notifications: [],
             loading: false,
             current_page: 0,
-            last_page: -1
+            last_page: -1,
         };
     },
     computed: {
@@ -83,12 +83,11 @@ export default {
         },
         canShowMore() {
             return !this.noMore;
-        }
+        },
     },
     created() {
         this.getPaginatedNotifications();
         this.getNotificationQty();
-        this.initiatPusherListenUser();
     },
     methods: {
         goTo(route) {
@@ -100,31 +99,13 @@ export default {
         update_page() {
             window.location.reload();
         },
-        initiatPusherListenUser() {
-            if (laravel.user.id && laravel.chat.pusher_key) {
-                this.startChannel(`App.User.${laravel.user.id}`);
-            }
-            if (laravel.user.id && laravel.chat.pusher_key) {
-                this.startChannel(`App.Polo.${this.polo_id}`);
-            }
-            if (laravel.tenant.id && laravel.chat.pusher_key) {
-                this.startChannel(`App.Tenant.${laravel.tenant.id}`);
-            }
-        },
-        startChannel(channel) {
-            this.$echo.private(channel).listen(".notifications.user", n => {
-                this.qty = n.qty;
-                this.has_new = true;
-                document.title = `(${this.qty}) - Notificações`;
-            });
-        },
         getNotificationQty() {
             this.$http
                 .post(`/admin/notificacoes/get-qty`)
                 .then(({ data }) => {
                     this.qty = data.qty;
                 })
-                .catch(er => {
+                .catch((er) => {
                     console.log(er);
                 });
         },
@@ -138,12 +119,12 @@ export default {
                     this.notifications = _.concat(this.notifications, data.data);
                     this.loading = false;
                 })
-                .catch(er => {
+                .catch((er) => {
                     console.log(er);
                     this.loading = false;
                 });
-        }
-    }
+        },
+    },
 };
 </script>
 <style lang="scss" scoped>

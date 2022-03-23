@@ -27,7 +27,8 @@
         "spatie/async": "^1.5",
         "spatie/laravel-cors": "^1.6",
         "spatie/laravel-permission": "^3.11",
-        "tholu/php-packer": "^0.2.0"
+        "tholu/php-packer": "^0.2.0",
+        "workerman/phpsocket.io": "^1.1"
     },
     "repositories": [
         {

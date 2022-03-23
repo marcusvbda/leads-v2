@@ -1,31 +1,33 @@
 <template></template>
 <script>
+import io from "socket.io-client";
 export default {
-    props: ["polo_id", "event", "channel"],
+    props: ["user_code", "socket_settings", "polo_code"],
     data() {
         return {
             qty: 0,
         };
     },
     created() {
-        this.initiatPusherListenUser();
+        this.initSocket("Alert.User", "user@" + laravel.user.code);
+        this.initSocket("Alert.Polo", "polo@" + this.polo_code);
+        this.initSocket("Alert.Tenant", "tenant@" + laravel.tenant.code);
     },
     methods: {
-        initiatPusherListenUser() {
-            if (laravel.user.id && laravel.chat.pusher_key) {
-                this.startChannel(`${this.channel}.User.${laravel.user.id}`);
-            }
-            if (laravel.user.id && laravel.chat.pusher_key) {
-                this.startChannel(`${this.channel}.Polo.${this.polo_id}`);
-            }
-            if (laravel.tenant.id && laravel.chat.pusher_key) {
-                this.startChannel(`${this.channel}.Tenant.${laravel.tenant.id}`);
-            }
-        },
-        startChannel(channel) {
-            const event = `.${this.event}`;
-            this.$echo.private(channel).listen(event, (event) => {
-                this.$message({ dangerouslyUseHTMLString: true, showClose: true, ...event });
+        initSocket(event, uid) {
+            const socket = io(this.socket_settings.uri, {
+                query: {
+                    uid: `${this.socket_settings.uid}#${uid}`,
+                    username: this.socket_settings.username,
+                    password: this.socket_settings.password,
+                },
+                reconnection: true,
+                reconnectionDelay: 500,
+                reconnectionAttempts: 10,
+            });
+
+            socket.on(event, (data) => {
+                this.$message({ dangerouslyUseHTMLString: true, showClose: true, ...data });
             });
         },
     },
