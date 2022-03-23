@@ -1,6 +1,5 @@
 <template></template>
 <script>
-import io from "socket.io-client";
 export default {
     props: ["user_code", "socket_settings", "polo_code"],
     data() {
@@ -15,7 +14,7 @@ export default {
     },
     methods: {
         initSocket(event, uid) {
-            const socket = io(this.socket_settings.uri, {
+            const socket = this.$io(this.socket_settings.uri, {
                 query: {
                     uid: `${this.socket_settings.uid}#${uid}`,
                     username: this.socket_settings.username,

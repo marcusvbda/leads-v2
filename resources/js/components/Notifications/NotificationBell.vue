@@ -13,9 +13,8 @@
     </ul>
 </template>
 <script>
-import io from "socket.io-client";
 export default {
-    props: ["polo_code", "active", "socket_settings"],
+    props: ["active"],
     data() {
         return {
             qty: 0,
@@ -23,27 +22,8 @@ export default {
     },
     created() {
         this.getNotificationQty();
-        this.initSocket("Notification.Add.User", "user@" + laravel.user.code);
-        this.initSocket("Notification.Add.Polo", "polo@" + this.polo_code);
-        this.initSocket("Notification.Add.Tenant", "tenant@" + laravel.tenant.code);
     },
     methods: {
-        initSocket(event, uid) {
-            const socket = io(this.socket_settings.uri, {
-                query: {
-                    uid: `${this.socket_settings.uid}#${uid}`,
-                    username: this.socket_settings.username,
-                    password: this.socket_settings.password,
-                },
-                reconnection: true,
-                reconnectionDelay: 500,
-                reconnectionAttempts: 10,
-            });
-
-            socket.on(event, (data) => {
-                this.qty = data.qty;
-            });
-        },
         getNotificationQty() {
             this.$http
                 .post(`/admin/notificacoes/get-qty`)
