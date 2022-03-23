@@ -26,7 +26,6 @@ use marcusvbda\vstack\Fields\{
 	TextArea,
 };
 use Auth;
-use marcusvbda\vstack\Vstack;
 
 class Leads extends Resource
 {
@@ -145,10 +144,6 @@ class Leads extends Resource
 		return hasPermissionTo("create-leads");
 	}
 
-	public function importerColumns()
-	{
-		return ["name", "email"];
-	}
 
 	public function canExport()
 	{
@@ -222,6 +217,24 @@ class Leads extends Resource
 			"index" => "source"
 		]);
 		return $filters;
+	}
+
+	public function importerColumns()
+	{
+		return ["nome", "email", "celular"];
+	}
+
+	public function importRowMethod($new, $extra_data)
+	{
+		$fill_data = array_merge($new, $extra_data ? $extra_data : []);
+		$new_model = @$new["id"] ? $this->getModelInstance()->findOrFail($new["id"]) : $this->getModelInstance();
+
+		$new_model->name = data_get($fill_data, "name", "");
+		$new_model->email = data_get($fill_data, "email", "");
+		$new_model->cellphone_number = data_get($fill_data, "celular", "");
+		$new_model->save();
+
+		return $new_model;
 	}
 
 	public function fields()

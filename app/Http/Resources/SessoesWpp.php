@@ -58,7 +58,7 @@ class SessoesWpp extends Resource
 		$columns = [];
 		$columns["code"] = ["label" => "Código", "sortable_index" => "id"];
 		$columns["label"] = ["label" => "Nome"];
-		$columns["status_check"] = ["label" => "Status da Sessão", "sortable" => false];
+		// $columns["status_check"] = ["label" => "Status da Sessão", "sortable" => false];
 		$columns["qty_messages"] = ["label" => "Qtde de mensagens", "sortable" => false];
 		$columns["f_created_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
 		return $columns;
