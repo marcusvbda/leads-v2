@@ -12,7 +12,7 @@ class sendWppMessages extends Command
 {
     protected $signature = 'command:wpp-messages';
     protected $bar = null;
-    protected $limit = 50;
+    protected $limit = 200;
 
     public function __construct()
     {
@@ -58,7 +58,7 @@ class sendWppMessages extends Command
         }, $messages);
 
         $event = "WppMessage.StatusChange";
-        $channel = "WppMessages@Tenant:" . $session->code;
+        $channel = "WppMessages@Tenant:" . $session->tenant->code;
         Vstack::SocketEmit($event, $channel, [
             "ids" => $ids,
             "status" => WppMessage::makeStatusHTML("sending")
@@ -66,7 +66,7 @@ class sendWppMessages extends Command
 
         $sending_data = [
             "session_token" => data_get($session, "data.token"),
-            "postback" => config("app.url") . "/api/mensagens-wpp/postback",
+            "postback" => config("app.url") . "/api/mensagens-wpp/postback/" . $session->tenant->code,
             "messages" => $messages
         ];
         $client = new GuzzleCLient();

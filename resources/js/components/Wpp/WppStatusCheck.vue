@@ -12,7 +12,7 @@ export default {
         };
     },
     created() {
-        if (["sent", "error"].includes(this.current_status)) {
+        if (!["sent", "error"].includes(this.current_status)) {
             this.initSocket("WppMessage.StatusChange", `WppMessages@Tenant:${laravel.tenant.code}`);
         }
     },

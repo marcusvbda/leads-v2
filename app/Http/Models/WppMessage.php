@@ -93,17 +93,21 @@ class WppMessage extends DefaultModel
 
 	public function getFPhoneAttribute()
 	{
-		$phone = $this->phone;
-		$phoneUtil = PhoneNumberUtil::getInstance();
-		$parsed = $phoneUtil->parse($phone, "BR");
-		if ($phoneUtil->isValidNumberForRegion($parsed, 'BR')) {
-			$lineA = $phoneUtil->format($parsed, PhoneNumberFormat::INTERNATIONAL);
-			$lineB = getEnabledIcon(true) . " Número Válido";
-		} else {
-			$lineA = $phone;
-			$lineB = getEnabledIcon(false) . " Número Inválido ou não reconhecido";
-		}
+		try {
+			$phone = $this->phone;
+			$phoneUtil = PhoneNumberUtil::getInstance();
+			$parsed = $phoneUtil->parse($phone, "BR");
+			if ($phoneUtil->isValidNumberForRegion($parsed, 'BR')) {
+				$lineA = $phoneUtil->format($parsed, PhoneNumberFormat::INTERNATIONAL);
+				$lineB = getEnabledIcon(true) . " Número Válido";
+			} else {
+				$lineA = $phone;
+				$lineB = getEnabledIcon(false) . " Número Inválido ou não reconhecido";
+			}
 
-		return Vstack::makeLinesHtmlAppend($lineA, $lineB);
+			return Vstack::makeLinesHtmlAppend($lineA, $lineB);
+		} catch (\Exception $e) {
+			return Vstack::makeLinesHtmlAppend($this->phone ? $this->phone :  " - ", getEnabledIcon(false) . " Número Inválido ou não reconhecido");
+		}
 	}
 }

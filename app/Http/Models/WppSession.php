@@ -48,4 +48,9 @@ class WppSession extends DefaultModel
 	{
 		return Vstack::makeLinesHtmlAppend($this->name, $this->token);
 	}
+
+	public function tenant()
+	{
+		return $this->belongsTo(Tenant::class);
+	}
 }
