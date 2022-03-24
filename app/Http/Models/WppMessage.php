@@ -48,6 +48,9 @@ class WppMessage extends DefaultModel
 	{
 		$options = [
 			"waiting" => getEnabledIcon(null) . ' ' . "Aguardando",
+			"error" => getEnabledIcon(false) . ' ' . "Erro",
+			"sent" => getEnabledIcon(true) . ' ' . "Enviado",
+			"sending" => '<div class="d-flex flex-row align-items-center small-loading-balls">' . getEnabledIcon('loading') . ' ' . "Processando" . '</div>',
 		];
 		return @$options[$this->status] ?? $this->status;
 	}

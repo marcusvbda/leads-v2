@@ -9,6 +9,8 @@ const state = {
     connection_id: null,
     config: {
         uri: laravel.config.wpp_service.uri,
+        password: laravel.config.wpp_service.password,
+        username: laravel.config.wpp_service.username,
     },
     token: "",
 };
@@ -57,6 +59,10 @@ const actions = {
         commit("setToken", code);
 
         const socket = io(state.config.uri, {
+            query: {
+                username: state.config.username,
+                password: state.config.password,
+            },
             reconnection: true,
             reconnectionDelay: 500,
             reconnectionAttempts: 10,
@@ -73,9 +79,9 @@ const actions = {
                     actionEvents[event] && actionEvents[event](commit, data, cx);
                 });
             });
-        });
 
-        socket.emit("start-engine", code);
+            socket.emit("start-engine", code);
+        });
 
         return socket;
     },

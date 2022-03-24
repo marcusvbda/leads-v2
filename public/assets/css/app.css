@@ -11756,6 +11756,11 @@ ol.breadcrumb {
   margin-top: 10px !important;
 }
 
+.small-loading-balls .spinner-grow {
+  height: 14px !important;
+  width: 14px !important;
+}
+
 @media screen and (max-width: 767px) {
   #auth {
     margin: 0;

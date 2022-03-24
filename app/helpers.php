@@ -139,6 +139,19 @@ if (!function_exists('getEnabledIcon')) {
 		$icons = [
 			true => '🟢',
 			false => '🔴',
+			'loading' => '
+			<div class="loading-ballls d-flex flex-row align-items-center justify-content-center mr-2">
+				<div class="spinner-grow spinner-grow-sm text-muted mr-1" role="status">
+					<span class="sr-only">Loading...</span>
+				</div>
+				<div class="spinner-grow spinner-grow-sm text-muted mr-1" role="status">
+					<span class="sr-only">Loading...</span>
+				</div>
+				<div class="spinner-grow spinner-grow-sm text-muted mr-1" role="status">
+					<span class="sr-only">Loading...</span>
+				</div>
+			</div>
+			'
 		];
 		return @$icons[$enabled] ?? '🟡';
 	}
@@ -175,5 +188,13 @@ if (!function_exists('abort')) {
 	function abort($value)
 	{
 		return preg_replace(array("/(á|à|ã|â|ä)/", "/(Á|À|Ã|Â|Ä)/", "/(é|è|ê|ë)/", "/(É|È|Ê|Ë)/", "/(í|ì|î|ï)/", "/(Í|Ì|Î|Ï)/", "/(ó|ò|õ|ô|ö)/", "/(Ó|Ò|Õ|Ô|Ö)/", "/(ú|ù|û|ü)/", "/(Ú|Ù|Û|Ü)/", "/(ñ)/", "/(Ñ)/"), explode(" ", "a A e E i I o O u U n N"), $value);
+	}
+}
+
+if (!function_exists('debug_log')) {
+	function debug_log(string $path, string $message, $context = [])
+	{
+		@mkdir(storage_path("logs/" . $path, 0755, true));
+		\Log::channel('debug')->debug("\{$path} $message", $context);
 	}
 }

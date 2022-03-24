@@ -285,19 +285,19 @@ class MensagensWpp extends Resource
 	{
 		$items[] = [
 			"label" => "AGUARDANDO",
-			"value" => $query->where("status", "waiting")->count(),
+			"value" => (clone $query)->where("status", "waiting")->count(),
 			"class" => "col-md-2 col-sm-12"
 		];
 
 		$items[] = [
 			"label" => "PROCESSANDO",
-			"value" => $query->where("status", "processing")->count() ?? 0,
+			"value" => (clone $query)->where("status", "processing")->count() ?? 0,
 			"class" => "col-md-2 col-sm-12"
 		];
 
 		$items[] = [
 			"label" => "ENVIADAS",
-			"value" => $query->where("status", "sent")->count() ?? 0,
+			"value" => (clone $query)->where("status", "sent")->count() ?? 0,
 			"class" => "col-md-2 col-sm-12"
 		];
 		return $items;

@@ -91,6 +91,7 @@ class SessoesWpp extends Resource
 
 	public function canUpdate()
 	{
+		return true;
 		return  false;
 	}
 
@@ -101,7 +102,7 @@ class SessoesWpp extends Resource
 
 	public function canDeleteRow($row)
 	{
-		return $row->qty_messages <= 0;
+		return  $row->qty_messages <= 0 && hasPermissionTo('destroy-wppsession');
 	}
 
 	public function canImport()
@@ -126,18 +127,18 @@ class SessoesWpp extends Resource
 		$cards[] = new Card("Identificação", $fields);
 
 		$fields = [];
-		$is_creating = $this->isCreating();
-		if ($is_creating) {
-			$fields[] = new CustomComponent("<InputQrCode :form='form' :data='data' :errors='errors' field_index='auth' />", [
-				"label" => "Código QR",
-				"field" => "auth",
-				"description" => "Escaneie o código QR",
-				"_uid" => "qrcode",
-			]);
-		}
+		// $is_creating = $this->isCreating();
+		// // if ($is_creating) {
+		$fields[] = new CustomComponent("<InputQrCode :form='form' :data='data' :errors='errors' field_index='auth' />", [
+			"label" => "Código QR",
+			"field" => "auth",
+			"description" => "Escaneie o código QR",
+			"_uid" => "qrcode",
+		]);
+		// }
 		$fields[] = new Text([
 			"label" => "Token",
-			"description" =>  $is_creating ? "Escaneie o código QR para obter o token" : "",
+			"description" =>  "Escaneie o código QR para obter o token",
 			"field" => "string_token",
 			"rules" => ["required"],
 			"disabled" => true,
