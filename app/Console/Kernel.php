@@ -13,21 +13,20 @@ class Kernel extends ConsoleKernel
 
 	protected function schedule(Schedule $schedule)
 	{
-		// $schedule
-		// 	->command('logs:clear')
-		// 	->days(2)
-		// 	->withoutOverlapping(5);
+		$schedule
+			->command('logs:clear')
+			->days(2)
+			->withoutOverlapping(5);
 
 		$schedule
 			->command('command:wpp-messages')
-			// ->everyFiveMinutes()
-			->everyMinute()
+			->everyFiveMinutes()
 			->withoutOverlapping(5);
 
-		// 	$schedule
-		// 		->command('queue:work --queue=resource-import,resource-export,alert-broadcasts,event-broadcasts')
-		// 		->everyMinute()
-		// 		->withoutOverlapping(5);
+		$schedule
+			->command('queue:work --queue=resource-import,resource-export')
+			->everyMinute()
+			->withoutOverlapping(5);
 	}
 
 	protected function commands()
