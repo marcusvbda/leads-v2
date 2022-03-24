@@ -42,14 +42,6 @@ class MensagensWpp extends Resource
 		return View("admin.wpp_messages.before_list")->render();
 	}
 
-	// public function lenses()
-	// {
-	// 	return [
-	// 		"Aguardando" => ["field" => "status", "value" => 'waiting'],
-	// 		"Enviadas" => ["field" => "status", "value" => 'sent'],
-	// 	];
-	// }
-
 	public function filters()
 	{
 		$filters[] = new MessagesByStatus();

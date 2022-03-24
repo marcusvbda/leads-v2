@@ -29,9 +29,7 @@ use Auth;
 
 class Leads extends Resource
 {
-
 	public $model = Lead::class;
-
 
 	public function label()
 	{

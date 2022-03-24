@@ -81,12 +81,24 @@ class Lead extends DefaultModel
 		$rating_rules = array_merge($default, (array)@$tenant->data->rating_rules ?? $default);
 		$total = array_sum($rating_rules);
 		$points = 0;
-		if (count(explode(" ", $this->name)) > 1) $points += floatval($rating_rules['Possui Nome Completo']);
-		if ($this->email) $points += floatval($rating_rules['Possui Email']);
-		if ($this->phone_number) $points += floatval($rating_rules['Possui Telefone Fixo']);
-		if ($this->cellphone_number) $points += floatval($rating_rules['Possui Telefone Celular']);
-		if ($this->interest) $points += floatval($rating_rules['Possui Interesse']);
-		if (count($this->conversions) > 0) $points += floatval($rating_rules['Convertido Anteriormente']);
+		if (count(explode(" ", $this->name)) > 1) {
+			$points += floatval($rating_rules['Possui Nome Completo']);
+		}
+		if ($this->email) {
+			$points += floatval($rating_rules['Possui Email']);
+		}
+		if ($this->phone_number) {
+			$points += floatval($rating_rules['Possui Telefone Fixo']);
+		}
+		if ($this->cellphone_number) {
+			$points += floatval($rating_rules['Possui Telefone Celular']);
+		}
+		if ($this->interest) {
+			$points += floatval($rating_rules['Possui Interesse']);
+		}
+		if (count($this->conversions) > 0) {
+			$points += floatval($rating_rules['Convertido Anteriormente']);
+		}
 		$rating = round((($points * 5) / $total), 2);
 		return $rating;
 	}
@@ -153,8 +165,12 @@ class Lead extends DefaultModel
 		$html = [];
 		$cell = $this->cellphone_number;
 		$phone = $this->phone_number;
-		if (@$phone) $html[] = "<span>{$phone}</span>";
-		if (@$cell) $html[] = "<email-url type='wpp'  value='{$cell}'>{$cell}</email-url>";
+		if (@$phone) {
+			$html[] = "<span>{$phone}</span>";
+		}
+		if (@$cell) {
+			$html[] = "<email-url type='wpp'  value='{$cell}'>{$cell}</email-url>";
+		}
 		$html = implode('  ', $html);
 		return "<div class='d-flex flex-column text-center'>{$html}</div>";
 	}

@@ -23,7 +23,6 @@ class sendWppMessages extends Command
     public function handle()
     {
         $queryMessages = WppMessage::whereIn("status", ["waiting", "sending"])->limit($this->limit);
-        $ids = [];
         $this->bar = $this->output->createProgressBar(count((clone $queryMessages)->get()));
 
         foreach (WppSession::get() as $session) {
@@ -31,7 +30,7 @@ class sendWppMessages extends Command
             $batch = [];
             $query = (clone $queryMessages)->where("wpp_session_id", $session->id);
             (clone $query)->update(["status" => "sending"]);
-            foreach ((clone $query)->get() as $message) {
+            foreach ((clone $query)->orderBy("id", "asc")->get() as $message) {
                 $batch = $this->pushToBatch($message, $batch);
                 $this->bar->advance();
             }

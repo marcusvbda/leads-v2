@@ -15,7 +15,9 @@ class UsersByTenant extends Filter
 
 	public function __construct()
 	{
-		foreach (Tenant::get() as $row) $this->options[] = (object) ["value" => $row->id, "label" => $row->name];
+		foreach (Tenant::get() as $row) {
+			$this->options[] = (object) ["value" => $row->id, "label" => $row->name];
+		}
 		parent::__construct();
 	}
 

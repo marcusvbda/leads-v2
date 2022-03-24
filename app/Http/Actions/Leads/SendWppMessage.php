@@ -2,42 +2,66 @@
 
 namespace App\Http\Actions\Leads;
 
+use App\Http\Models\Lead;
+use App\Http\Models\WppMessage;
+use App\Http\Models\WppSession;
 use  marcusvbda\vstack\Action;
 use Illuminate\Http\Request;
-// use App\Http\Models\{Polo, lead};
-// use Auth;
-// use marcusvbda\vstack\Services\Messages;
-use Illuminate\Foundation\Validation\ValidatesRequests;
+use Auth;
+use marcusvbda\vstack\Services\Messages;
 
 class SendWppMessage extends Action
 {
-	use ValidatesRequests;
-
 	public $id = "wpp-message";
-	public $run_btn = "Enviar";
-	public $title = "Envio de mensagem via WhatsApp";
-	public $message = "Preencha o formulário corretamente para enviar a mensagem";
-
+	public $run_btn = "Adicionar a fila de disparos";
+	public $title = "Enviar mensagem via WhatsApp";
+	public $message = "Preencha o formulário corretamente para criar uma mensagem a mensagem";
 
 	public function inputs()
 	{
+		$options = [];
+		foreach (WppSession::get() as $item) {
+			$options[] = ["value" => $item->id, "label" => $item->name];
+		}
+
 		return [
 			[
-				"type" => "custom",
-				"template" => "<h1>Teste 123</h1>"
+				"title" => 'Sessão',
+				"id" => "session_id",
+				"type" => "select",
+				"required" => true,
+				"options" =>  $options
+			],
+			[
+				"title" => 'Mensagem',
+				"id" => "mensagem",
+				"type" => "textarea",
+				"required" => true,
+				"rows" => 10
 			],
 		];
 	}
 
 	public function handler(Request $request)
 	{
-		$this->validate($request, [
-			'telefone' => 'required'
-		]);
-		dd("tste");
-		// $status = Status::findOrFail($request["status_id"]);
-		// Lead::whereIn("id", $request["ids"])->update(["status_id" => $status->id]);
-		// Messages::send("success", "Status dos Leads selecionados alterados para " . $status->name);
+		$user = Auth::user();
+		$ids = $request->ids;
+		foreach ($ids as $id) {
+			$lead = Lead::find($id);
+			$phone = $lead->primary_phone_number;
+			if ($phone) {
+				$data = (array)$request->all();
+				$data["telefone"] = "+55" . $phone;
+				$new_message = new WppMessage();
+				$new_message->wpp_session_id = $request->session_id;
+				$new_message->polo_id = $user->polo_id;
+				$new_message->user_id = $user->id;
+				unset($data["ids"]);
+				$new_message->data = $data;
+				$new_message->save();
+			}
+		}
+		Messages::send("success", "Mensagens adicionadas a fila de disparo !");
 		return ['success' => true];
 	}
 }
