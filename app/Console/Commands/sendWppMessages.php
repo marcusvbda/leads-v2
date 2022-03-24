@@ -9,9 +9,9 @@ use \GuzzleHttp\Client as GuzzleCLient;
 
 class sendWppMessages extends Command
 {
-    protected $signature = 'command:wpp-mesages';
-    protected $description = 'Command description';
+    protected $signature = 'command:wpp-messages';
     protected $bar = null;
+    protected $limit = 50;
 
     public function __construct()
     {
@@ -21,16 +21,15 @@ class sendWppMessages extends Command
 
     public function handle()
     {
-        $sessions = WppSession::get();
-        $this->setToSendingStatus();
+        $queryMessages = WppMessage::whereIn("status", ["waiting", "sending"])->limit($this->limit);
+        $this->bar = $this->output->createProgressBar(count((clone $queryMessages)->get()));
 
-        $queryMessages = WppMessage::where("status", "sending");
-        $this->bar = $this->output->createProgressBar($queryMessages->count());
-        foreach ($sessions as $session) {
-            $messages = $queryMessages->where("data->wpp_session_id", $session->id)->get();
+        foreach (WppSession::get() as $session) {
             $this->bar->start();
             $batch = [];
+            $messages = (clone $queryMessages)->where("wpp_session_id", $session->id)->get();
             foreach ($messages as $message) {
+                $this->setToSendingStatus($message);
                 if (count($batch) >= 10) {
                     $this->sendBatch($batch, $session);
                     $batch = [];
@@ -43,9 +42,10 @@ class sendWppMessages extends Command
         }
     }
 
-    private function setToSendingStatus()
+    private function setToSendingStatus($message)
     {
-        WppMessage::where("status", "waiting")->update(["status" => "sending"]);
+        $message->status = "sending";
+        $message->save();
     }
 
     private function pushToBatch($message, $batch)

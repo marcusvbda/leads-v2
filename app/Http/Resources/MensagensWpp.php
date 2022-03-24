@@ -42,13 +42,13 @@ class MensagensWpp extends Resource
 		return View("admin.wpp_messages.before_list")->render();
 	}
 
-	public function lenses()
-	{
-		return [
-			"Aguardando" => ["field" => "status", "value" => 'waiting'],
-			"Enviadas" => ["field" => "status", "value" => 'sent'],
-		];
-	}
+	// public function lenses()
+	// {
+	// 	return [
+	// 		"Aguardando" => ["field" => "status", "value" => 'waiting'],
+	// 		"Enviadas" => ["field" => "status", "value" => 'sent'],
+	// 	];
+	// }
 
 	public function filters()
 	{
@@ -63,7 +63,7 @@ class MensagensWpp extends Resource
 		$columns["f_phone"] = ["label" => "Telefone", "sortable_index" => "data->phone"];
 		$columns["message_cuted"] = ["label" => "Mensagem", "sortable_index" => "data->telefone"];
 		$columns["wpp_session->name"] = ["label" => "Sessão", "sortable_index" => "wpp_session_id"];
-		$columns["f_status"] = ["label" => "Status", "sortable_index" => "status"];
+		$columns["socket_f_status"] = ["label" => "Status", "sortable_index" => "status"];
 		$columns["user->name"] = ["label" => "Autor", "sortable_index" => "user_id"];
 		$columns["user->name"] = ["label" => "Autor", "sortable_index" => "user_id"];
 		$columns["f_created_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
@@ -219,6 +219,9 @@ class MensagensWpp extends Resource
 		$new_model->user_id = data_get($extra_data, "user_id");
 		$new_model->wpp_session_id = data_get($extra_data, "session_id");
 		unset($data["tenant_id"]);
+		if (data_get($data, "telefone")) {
+			$data["telefone"]  = "+" . preg_replace("/[^0-9]/", "", data_get($data, "telefone"));
+		}
 		$new_model->data = $data;
 		$new_model->save();
 		return $new_model;
@@ -279,27 +282,5 @@ class MensagensWpp extends Resource
 		Messages::send("success", "Registro salvo com sucesso !!");
 		$route = route('resource.index', ["resource" => $this->id]);
 		return ["success" => true, "route" => $route, "model" => $target];
-	}
-
-	public function listItemsContent($query)
-	{
-		$items[] = [
-			"label" => "AGUARDANDO",
-			"value" => (clone $query)->where("status", "waiting")->count(),
-			"class" => "col-md-2 col-sm-12"
-		];
-
-		$items[] = [
-			"label" => "PROCESSANDO",
-			"value" => (clone $query)->where("status", "processing")->count() ?? 0,
-			"class" => "col-md-2 col-sm-12"
-		];
-
-		$items[] = [
-			"label" => "ENVIADAS",
-			"value" => (clone $query)->where("status", "sent")->count() ?? 0,
-			"class" => "col-md-2 col-sm-12"
-		];
-		return $items;
 	}
 }

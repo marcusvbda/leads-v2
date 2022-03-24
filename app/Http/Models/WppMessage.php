@@ -22,6 +22,9 @@ class WppMessage extends DefaultModel
 		$table = with(new static)->getTable();
 		static::addGlobalScope(new PoloScope($table, true));
 		static::addGlobalScope(new OrderByScope($table));
+		static::saved(function ($model) {
+			Vstack::SocketEmit("WppMessage.StatusChange", "WppMessage@" . $model->code, $model->f_status);
+		});
 	}
 
 	public function polo()
@@ -53,6 +56,11 @@ class WppMessage extends DefaultModel
 			"sending" => '<div class="d-flex flex-row align-items-center small-loading-balls">' . getEnabledIcon('loading') . ' ' . "Processando" . '</div>',
 		];
 		return @$options[$this->status] ?? $this->status;
+	}
+
+	public function getSocketFStatusAttribute()
+	{
+		return "<wpp-status-check status='{$this->f_status}' code='{$this->code}'></wpp-status-check>";
 	}
 
 	public function getFormatedMessageAttribute()

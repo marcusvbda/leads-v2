@@ -1,7 +1,7 @@
 <template></template>
 <script>
 export default {
-    props: ["user_code", "socket_settings", "polo_code"],
+    props: ["user_code", "polo_code"],
     data() {
         return {
             qty: 0,
@@ -14,11 +14,11 @@ export default {
     },
     methods: {
         initSocket(event, uid) {
-            const socket = this.$io(this.socket_settings.uri, {
+            const socket = this.$io(laravel.config.socket_service.uri, {
                 query: {
-                    uid: `${this.socket_settings.uid}#${uid}`,
-                    username: this.socket_settings.username,
-                    password: this.socket_settings.password,
+                    uid: `${laravel.config.socket_service.uid}#${uid}`,
+                    username: laravel.config.socket_service.username,
+                    password: laravel.config.socket_service.password,
                 },
                 reconnection: true,
                 reconnectionDelay: 500,

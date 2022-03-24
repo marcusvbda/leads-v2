@@ -3,11 +3,9 @@
     @php 
         $user = \Auth::user();
         $polo_code = $user->polo->code;
-        $socket_settings = config("vstack.socket_service");
     @endphp
     <socket-alert 
         polo_code="{{ $polo_code }}" 
-        :socket_settings='@json($socket_settings)' 
         user_code="{{ $user->code }}"
     >
     </socket-alert>
