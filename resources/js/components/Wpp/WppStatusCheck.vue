@@ -5,14 +5,16 @@
 </template>
 <script>
 export default {
-    props: ["status", "code"],
+    props: ["status", "id", "current_status"],
     data() {
         return {
             content_status: this.status,
         };
     },
     created() {
-        this.initSocket("WppMessage.StatusChange", `WppMessage@${this.code}`);
+        if (["sent", "error"].includes(this.current_status)) {
+            this.initSocket("WppMessage.StatusChange", `WppMessages@Tenant:${laravel.tenant.code}`);
+        }
     },
     methods: {
         initSocket(event, uid) {
@@ -27,8 +29,10 @@ export default {
                 reconnectionAttempts: 10,
             });
 
-            socket.on(event, (data) => {
-                this.content_status = data;
+            socket.on(event, ({ ids, status }) => {
+                if (ids.includes(this.id)) {
+                    this.content_status = status;
+                }
             });
         },
     },
