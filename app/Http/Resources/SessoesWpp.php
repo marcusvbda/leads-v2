@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Controllers\WppMessagesController;
 use marcusvbda\vstack\Resource;
 use marcusvbda\vstack\Fields\{
 	Card,
@@ -15,7 +16,6 @@ use marcusvbda\vstack\Services\Messages;
 class SessoesWpp extends Resource
 {
 	public $model = WppSession::class;
-
 	public function globallySearchable()
 	{
 		return false;
@@ -102,7 +102,14 @@ class SessoesWpp extends Resource
 
 	public function canDeleteRow($row)
 	{
-		return  $row->qty_messages <= 0 && hasPermissionTo('destroy-wppsession');
+		return  $row->wpp_waiting_messages()->count() <= 0 && hasPermissionTo('destroy-wppsession');
+	}
+
+	public function destroyMethod($content)
+	{
+		$result = Parent::destroyMethod($content);
+		(new WppMessagesController())->deleteSession($content);
+		return $result;
 	}
 
 	public function canImport()

@@ -74,4 +74,15 @@ class WppMessagesController extends Controller
             'json' => $sending_data,
         ]);
     }
+
+    public function deleteSession($session)
+    {
+        $client = new GuzzleCLient();
+        $uri = config("wpp.service.uri") . "/sessions/" . $session->token;
+        $username = config("wpp.service.username");
+        $password = config("wpp.service.password");
+        $client->delete($uri, [
+            'auth' => [$username, $password]
+        ]);
+    }
 }

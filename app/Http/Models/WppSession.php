@@ -9,7 +9,7 @@ use marcusvbda\vstack\Vstack;
 class WppSession extends DefaultModel
 {
 	protected $table = "wpp_sessions";
-	public $restrictDeletes = ["wpp_messages"];
+	public $restrictDeletes = ["wpp_waiting_messages"];
 
 
 	public $casts = [
@@ -26,6 +26,11 @@ class WppSession extends DefaultModel
 	public function getTokenAttribute()
 	{
 		return @$this->data->token ?? "";
+	}
+
+	public function wpp_waiting_messages()
+	{
+		return $this->hasMany(WppMessage::class)->where("status", "waiting");
 	}
 
 	public function wpp_messages()
