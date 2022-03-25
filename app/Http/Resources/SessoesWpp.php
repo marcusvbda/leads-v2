@@ -107,8 +107,8 @@ class SessoesWpp extends Resource
 
 	public function destroyMethod($content)
 	{
-		$result = Parent::destroyMethod($content);
 		(new WppMessagesController())->deleteSession($content);
+		$result = Parent::destroyMethod($content);
 		return $result;
 	}
 
