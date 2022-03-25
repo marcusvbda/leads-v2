@@ -123,11 +123,6 @@ class MensagensWpp extends Resource
 		return  $this->canAccessModule()  && hasPermissionTo('destroy-wppmessage');
 	}
 
-	public function canDeleteRow($row)
-	{
-		return $row->status == "waiting";
-	}
-
 	public function canExport()
 	{
 		return false;
