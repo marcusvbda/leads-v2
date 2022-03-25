@@ -8,6 +8,7 @@ use App\Http\Models\WppSession;
 use  marcusvbda\vstack\Action;
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Artisan;
 use marcusvbda\vstack\Services\Messages;
 
 class SendWppMessage extends Action
@@ -46,6 +47,7 @@ class SendWppMessage extends Action
 	{
 		$user = Auth::user();
 		$ids = $request->ids;
+		$created_ids = [];
 		foreach ($ids as $id) {
 			$lead = Lead::find($id);
 			$phone = $lead->primary_phone_number;
@@ -59,8 +61,10 @@ class SendWppMessage extends Action
 				unset($data["ids"]);
 				$new_message->data = $data;
 				$new_message->save();
+				$created_ids[] = $new_message->id;
 			}
 		}
+		Artisan::queue("command:send-wpp-message", ["ids" => $created_ids, "session_id" => $request->session_id]);
 		Messages::send("success", "Mensagens adicionadas a fila de disparo !");
 		return ['success' => true];
 	}
