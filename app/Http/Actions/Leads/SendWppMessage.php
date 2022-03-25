@@ -48,20 +48,21 @@ class SendWppMessage extends Action
 		$user = Auth::user();
 		$ids = $request->ids;
 		$created_ids = [];
+		$data = (array)$request->all();
 		foreach ($ids as $id) {
 			$lead = Lead::find($id);
 			$phone = $lead->primary_phone_number;
 			if ($phone) {
-				$data = (array)$request->all();
-				$data["telefone"] = "+55" . $phone;
-				$new_message = new WppMessage();
-				$new_message->wpp_session_id = $request->session_id;
-				$new_message->polo_id = $user->polo_id;
-				$new_message->user_id = $user->id;
-				unset($data["ids"]);
-				$new_message->data = $data;
-				$new_message->save();
-				$created_ids[] = $new_message->id;
+				$_data = $data;
+				$_data["telefone"] = "+55" . $phone;
+				unset($_data["ids"]);
+				$created = WppMessage::create([
+					"wpp_session_id" => $request->session_id,
+					"polo_id" => $user->polo_id,
+					"user_id" => $user->id,
+					"data" => $_data
+				]);
+				$created_ids[] = $created->id;
 			}
 		}
 		Artisan::queue("command:send-wpp-message", ["ids" => $created_ids, "session_id" => $request->session_id]);
