@@ -11,9 +11,9 @@ class MessagesByStatus extends Filter
     public $label       = "Status";
     public $index = "status";
     public $multiple = true;
-    public $_options = ['Aguardando', 'Erro', 'Enviado', 'Enviando'];
+    public $_options = ['Aguardando', 'Processando', 'Enviado', 'Enviando', 'Erro'];
     public $ids_values = [
-        "waiting", "error", "sent", "sending",
+        "waiting", "processing", "sending", "sent", "error"
     ];
 
     public function __construct()

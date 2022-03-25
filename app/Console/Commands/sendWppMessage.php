@@ -28,8 +28,10 @@ class sendWppMessage extends Command
 
         $this->bar->start();
         $batch = [];
-        (clone $queryMessages)->update(["status" => "sending"]);
-        foreach ((clone $queryMessages)->orderBy("id", "asc")->get() as $message) {
+        (clone $queryMessages)->update(["status" => "processing"]);
+        $messages = (clone $queryMessages)->orderBy("id", "asc")->get();
+        $controller->sendSocket($messages, $session);
+        foreach ($messages as $message) {
             $batch = $controller->pushToBatch($message, $batch);
             $this->bar->advance();
         }

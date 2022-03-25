@@ -13,13 +13,11 @@ class WppMessagesController extends Controller
     {
         try {
             $data = $request->all();
-            $id = data_get($data, "_uid");
+            $ids = data_get($data, "_uids");
             $postback_status = data_get($data, "postback_status");
-            $message = WppMessage::find($id);
-            $message->status = $postback_status;
-            $message->save();
-            // debug_log('Wpp/Sender/Postback', 'Postback Recebido', ['data' => $data]);
-            $this->postSocketEvent($tenant_code, $id, $postback_status);
+            WppMessage::whereIn("id", $ids)->update(["status" => $postback_status]);
+            debug_log('Wpp/Sender/Postback', 'Postback Recebido', ['data' => $data]);
+            $this->postSocketEvent($tenant_code, $ids, $postback_status);
             return response()->json(['status' => 'ok']);
         } catch (\Exception $e) {
             $message = $e->getMessage();
@@ -28,12 +26,12 @@ class WppMessagesController extends Controller
         }
     }
 
-    private function postSocketEvent($tenant_code, $id, $status)
+    private function postSocketEvent($tenant_code, $ids, $status)
     {
         $event = "WppMessage.StatusChange";
         $channel = "WppMessages@Tenant:" . $tenant_code;
         Vstack::SocketEmit($event, $channel, [
-            "ids" => [$id],
+            "ids" => $ids,
             "status" => WppMessage::makeStatusHTML($status)
         ]);
     }
@@ -49,19 +47,19 @@ class WppMessagesController extends Controller
         return $batch;
     }
 
-    public function sendBatch($messages, $session)
+    public function sendSocket($messages, $session)
     {
-        $ids = array_map(function ($message) {
-            return data_get($message, "_uid");
-        }, $messages);
-
+        $ids = $messages->pluck("id")->toArray();
         $event = "WppMessage.StatusChange";
         $channel = "WppMessages@Tenant:" . $session->tenant->code;
         Vstack::SocketEmit($event, $channel, [
             "ids" => $ids,
-            "status" => WppMessage::makeStatusHTML("sending")
+            "status" => WppMessage::makeStatusHTML("processing")
         ]);
+    }
 
+    public function sendBatch($messages, $session)
+    {
         $sending_data = [
             "session_token" => data_get($session, "data.token"),
             "postback" => config("app.url") . "/api/mensagens-wpp/postback/" . $session->tenant->code,

@@ -11,6 +11,7 @@ class processWppMessages extends Command
 {
     protected $signature = 'command:process-wpp-messages';
     protected $bar = null;
+    // protected $limit = 1;
     protected $limit = 200;
 
     public function __construct()
@@ -20,15 +21,15 @@ class processWppMessages extends Command
 
     public function handle()
     {
-        $queryMessages = WppMessage::whereIn("status", ["waiting", "sending"])->limit($this->limit);
+        $queryMessages = WppMessage::whereIn("status", ["waiting", "processing"])->limit($this->limit);
         $this->bar = $this->output->createProgressBar(count((clone $queryMessages)->get()));
         $controller = new WppMessagesController;
-
         foreach (WppSession::get() as $session) {
             $this->bar->start();
             $batch = [];
-            $query = (clone $queryMessages)->where("wpp_session_id", $session->id);
-            (clone $query)->update(["status" => "sending"]);
+            $query = (clone $queryMessages)->orderBy("id", "asc")->where("wpp_session_id", $session->id);
+            (clone $query)->update(["status" => "processing"]);
+            $controller->sendSocket((clone $query)->get(), $session);
             foreach ((clone $query)->orderBy("id", "asc")->get() as $message) {
                 $batch = $controller->pushToBatch($message, $batch);
                 $this->bar->advance();
