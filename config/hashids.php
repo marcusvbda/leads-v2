@@ -38,29 +38,9 @@ return [
 
     'connections' => [
         'main' => [
-            'salt' => 'otimizemeadmin',
+            'salt' => 'ezcore-leads',
             'alphabet' => '01234567890ABCDEFGHIJKLMNOPQRSTWUVXYZ',
             'length' => '6',
         ],
-        'product' => [
-            'salt' => 'happy-product',
-            'alphabet' => '01234567890ABCDEFGHIJKLMNOPQRSTWUVXYZ',
-            'length' => '8'
-        ],
-        'payment' => [
-            'salt' => 'fast-payment',
-            'alphabet' => '01234567890ABCDEFGHIJKLMNOPQRSTWUVXYZ',
-            'length' => '8'
-        ],
-        'CH' => [
-            'salt' => 'light-checkout',
-            'alphabet' => '01234567890ABCDEFGHIJKLMNOPQRSTWUVXYZ',
-            'length' => '8'
-        ],
-        'shortlink' => [
-            'salt' => 'surprising-upsell',
-            'alphabet' => '01234567890ABCDEFGHIJKLMNOPQRSTWUVXYZabcdefghijklmnopqrstuvwxyz',
-            'length' => '7'
-        ]
     ],
 ];

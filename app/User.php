@@ -13,6 +13,7 @@ use marcusvbda\vstack\Models\Observers\TenantObserver;
 use App\Http\Models\Pivots\{UserPolo};
 use App\Http\Models\{Department, Module, UserNotification, Polo};
 use App\Http\Models\Scopes\{OrderByScope};
+use marcusvbda\vstack\Hashids;
 
 class User extends Authenticatable
 {
@@ -53,7 +54,7 @@ class User extends Authenticatable
 
 	public function getCodeAttribute()
 	{
-		return \Hashids::encode($this->id);
+		return Hashids::encode($this->id);
 	}
 
 	public function receivesBroadcastNotificationsOn()
