@@ -49,14 +49,15 @@ export default {
         },
     },
     created() {
-        if (!this.form.string_token) {
-            clearTimeout(window.qr_timeout);
-            window.qr_timeout = setTimeout(async () => {
-                this.initFields();
-            }, 2000);
-        } else {
-            this.loading = false;
-        }
+        setTimeout(() => {
+            if (!this._isDestroyed) {
+                if (!this.form.string_token) {
+                    this.initFields();
+                } else {
+                    this.loading = false;
+                }
+            }
+        });
     },
     methods: {
         ...mapActions("wpp", ["initSocket", "sendMessage"]),
