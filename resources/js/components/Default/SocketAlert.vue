@@ -14,11 +14,10 @@ export default {
     },
     methods: {
         initSocket(event, uid) {
-            const socket = this.$io(laravel.config.socket_service.uri, {
+            const socket = this.$io(laravel.chat.uri, {
                 query: {
-                    uid: `${laravel.config.socket_service.uid}#${uid}`,
-                    username: laravel.config.socket_service.username,
-                    password: laravel.config.socket_service.password,
+                    uid: `${laravel.chat.uid}#${uid}`,
+                    token: laravel.chat.token,
                 },
                 reconnection: true,
                 reconnectionDelay: 500,
