@@ -322,6 +322,10 @@ ul.pagination {
   font-weight: 500;
 }
 
+.el-upload-list--picture-card .el-upload-list__item {
+  width: auto;
+}
+
 a {
   display: inline-block;
   position: relative;

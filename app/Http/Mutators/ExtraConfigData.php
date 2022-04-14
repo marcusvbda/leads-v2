@@ -13,8 +13,10 @@ class ExtraConfigData extends BaseMutator
 			"description" => config("app.description"),
 			"wpp_service" => [
 				"uri" => config("wpp.service.uri"),
-				"username" => config("wpp.service.username"),
-				"password" => config("wpp.service.password"),
+				"token" => base64_encode(json_encode([
+					"username" => config("wpp.service.username"),
+					"password" => config("wpp.service.password"),
+				]))
 			]
 		]);
 		return $content;

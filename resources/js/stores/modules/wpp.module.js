@@ -9,8 +9,7 @@ const state = {
     connection_id: null,
     config: {
         uri: laravel.config.wpp_service.uri,
-        password: laravel.config.wpp_service.password,
-        username: laravel.config.wpp_service.username,
+        token: laravel.config.wpp_service.token,
     },
     token: "",
 };
@@ -60,8 +59,7 @@ const actions = {
 
         const socket = io(state.config.uri, {
             query: {
-                username: state.config.username,
-                password: state.config.password,
+                token: state.config.token,
             },
             reconnection: true,
             reconnectionDelay: 500,
