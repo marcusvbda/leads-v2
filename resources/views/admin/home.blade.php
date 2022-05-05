@@ -20,7 +20,7 @@
 			<div class="col-12">
 				<h1 class="name">Olá, {{$user->first_name}}!</h1>
 				@if(!$user->last_logged_at)
-					<p>Este é seu primeiro login</p>
+					<p>Este é seu primeiro acesso</p>
 				@else
 					<p>Último acesso: {{ $user->last_logged_at->format('d/m/Y H:i')  }} - {{ $user->last_logged_at->diffForHumans()}}</p>
 				@endif
