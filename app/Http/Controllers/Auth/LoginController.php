@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
 use App\User;
-
+use Carbon\Carbon;
 
 class LoginController extends Controller
 {
@@ -45,6 +45,9 @@ class LoginController extends Controller
 			if (Auth::attempt($credentials, (@$request['remember'] ? true : false))) {
 				$user = Auth::user();
 				$user->polo_id = $request["polo_id"];
+				$now = Carbon::now();
+				$user->last_logged_at = $user->logged_at;
+				$user->logged_at = $now;
 				$user->save();
 				$user->tenant->clearStores();
 				return ["success" => true, "route" => '/admin'];

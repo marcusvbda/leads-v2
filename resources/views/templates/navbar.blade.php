@@ -55,7 +55,11 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item {{ currentClass(['/admin']) }}">
-                <a class="nav-link" href="/admin"><i class="el-icon-data-line mr-2"></i>Dashboard<span
+                <a class="nav-link" href="/"><i class="el-icon-s-home mr-2"></i>Página Inicial<span
+                        class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item {{ currentClass(['/admin/dashboard']) }}">
+                <a class="nav-link" href="/admin/dashboard"><i class="el-icon-data-line mr-2"></i>Dashboard<span
                         class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item dropdown {{ currentClass(['/admin/leads/*', '/admin/atendimento/*']) }}">

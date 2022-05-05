@@ -108,3 +108,35 @@ ol.breadcrumb {
         width: 14px!important;
     }
 }
+
+
+
+.welcome-page {
+    color: #333;
+    font-weight: 400;
+    .name {
+        font-weight: 600;
+        font-size: 70px;
+        @media screen and (max-width: 991px) {
+            font-size: 30px!important;
+        }
+    }
+
+    p {
+        font-size: 16px;
+
+       
+    }
+
+    .sm-center {
+        @media screen and (max-width: 991px) {
+            text-align: center!important;
+        }
+    }
+
+    .sm-mt-4 {
+        @media screen and (max-width: 991px) {
+            margin-top:20px!important;
+        }
+    }
+}

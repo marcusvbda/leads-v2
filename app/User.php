@@ -25,6 +25,8 @@ class User extends Authenticatable
 	protected $hashPassword = false;
 	public  $casts = [
 		"data" => "json",
+		"logged_at" => "datetime",
+		"last_logged_at" => "datetime"
 	];
 	public $relations = [];
 
@@ -134,5 +136,10 @@ class User extends Authenticatable
 			}
 		}
 		return false;
+	}
+
+	public function getFirstNameAttribute()
+	{
+		return data_get(explode(" ", $this->name), "0", $this->name);
 	}
 }

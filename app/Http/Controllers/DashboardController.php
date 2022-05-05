@@ -12,7 +12,7 @@ class DashboardController extends Controller
 	private $time_to_cache = 2; // minutos
 	public function index()
 	{
-		return view('admin.index');
+		return view('admin.dashboard');
 	}
 
 	protected function getCacheTime()
