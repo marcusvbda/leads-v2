@@ -19,14 +19,19 @@ class Kernel extends ConsoleKernel
 			->withoutOverlapping(5);
 
 		$schedule
-			->command('queue:work --queue=resource-import,resource-export,alert-broadcasts,event-broadcasts')
+			->command('command:process-wpp-messages')
+			->everyFiveMinutes()
+			->withoutOverlapping(5);
+
+		$schedule
+			->command('queue:work --queue=resource-import,resource-export,default')
 			->everyMinute()
 			->withoutOverlapping(5);
 	}
 
 	protected function commands()
 	{
-		// $this->load(__DIR__ . '/Commands');
+		$this->load(__DIR__ . '/Commands');
 		require base_path('routes/console.php');
 	}
 }

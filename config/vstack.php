@@ -10,6 +10,18 @@ return [
 	"extra_javascript_global_variables" => [
 		ExtraConfigData::class
 	],
+	"socket_service" => [
+		"uri" => env("SOCKET_SERVER"),
+		"username" => env("SOCKET_USERNAME"),
+		"password" => env("SOCKET_PASSWORD"),
+		"uid" => env("SOCKET_UID"),
+	],
+	"api" => [
+		"token_expiration" => "1 hour",
+	],
+	"animation" => [
+		"enabled" => false,
+	],
 	// "timezone" => "+00:00",
 	"timezones" => [
 		'Pacific/Midway'       => "-11:00",
@@ -125,5 +137,5 @@ return [
 		'Asia/Magadan'         => "+12:00",
 		'Pacific/Auckland'     => "+12:00",
 		'Pacific/Fiji'         => "+12:00",
-	]
+	],
 ];

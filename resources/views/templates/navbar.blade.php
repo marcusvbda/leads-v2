@@ -21,6 +21,7 @@ function currentClass($routes)
     }
     return '';
 }
+
 $is_super_admin = $user->isSuperAdmin();
 $is_admin = $user->hasRole(['admin']);
 $is_admin_or_super_admin = $user->hasRole(['admin', 'super-admin']);
@@ -41,6 +42,7 @@ if(!$is_super_admin) {
     $wiki_url = '/admin/wiki/?order_by=id&order_type=asc';
 }
 
+$whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
 @endphp
 <nav class="navbar navbar-expand-lg navbar-light bg-light py-0">
     <a class="navbar-brand py-0" href="/admin">
@@ -53,7 +55,11 @@ if(!$is_super_admin) {
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item {{ currentClass(['/admin']) }}">
-                <a class="nav-link" href="/admin"><i class="el-icon-data-line mr-2"></i>CRM Dashboard <span
+                <a class="nav-link" href="/"><i class="el-icon-s-home mr-2"></i>Página Inicial<span
+                        class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item {{ currentClass(['/admin/dashboard']) }}">
+                <a class="nav-link" href="/admin/dashboard"><i class="el-icon-data-line mr-2"></i>Dashboard<span
                         class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item dropdown {{ currentClass(['/admin/leads/*', '/admin/atendimento/*']) }}">
@@ -73,15 +79,34 @@ if(!$is_super_admin) {
                     <i class="el-icon-data-analysis mr-2"></i>Relatórios
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="{{ getMenuClass('view-leads-report', ['/admin/relatorios/leads/*']) }}" href="/admin/relatorios/leads"
+                    <a class="{{ getMenuClass('viewlist-leads', ['/admin/relatorios/leads/*']) }}" href="/admin/relatorios/leads"
                         data-label="Relatório de Leads">Leads</a>
                 </div>
-            </li>
+            </li>            
+            @if($is_admin_or_super_admin)
+                <li
+                    class="nav-item dropdown {{ currentClass(['/admin/webhooks/*','/admin/integracoes/*']) }}">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="el-icon-s-claim mr-2"></i>Captação
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/admin/webhooks"
+                            data-label="Rotas de Entrada de Lead">
+                            Webhook
+                        </a>
+                        <a class="dropdown-item" href="/admin/integradores"
+                            data-label="Usuários de Acesso a API">
+                            Integradores
+                        </a>
+                    </div>
+                </li>
+            @endif
             <li
-                class="nav-item dropdown {{ currentClass(['/admin/resposta-contatos/*', '/admin/tipos-contato/*', '/admin/respostas-contato/*', '/admin/regra-classificacao/*', '/admin/objecoes/*']) }}">
+                class="nav-item dropdown {{ currentClass(['/admin/resposta-contatos/*', '/admin/tipos-contato/*', '/admin/respostas-contato/*', '/admin/regra-classificacao/*', '/admin/objecoes/*','/admin/sessoes-wpp/*']) }}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
-                    <i class="el-icon-bangzhu mr-2"></i>Tabelas Auxiliares
+                    <i class="el-icon-s-tools mr-2"></i>Configurações
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="{{ getMenuClass('viewlist-objections', ['/admin/objecoes/*']) }}" href="/admin/objecoes"
@@ -92,28 +117,36 @@ if(!$is_super_admin) {
                         data-label="Contatos com Lead">Respostas de Contato</a>
                     <a class="{{ getMenuClass('config-rating-behavior', ['/admin/regra-classificacao/*']) }}" href="/admin/regra-classificacao"
                         data-label="Regra de Rating de Lead">Regra de Classificação</a>
+                    @if(@$whatsapp_module->id && $is_super_admin)
+                        <a class="dropdown-item  {{ getMenuClass('viewlist-wppsession',['/admin/sessoes-wpp/*']) }}" href="/admin/sessoes-wpp"
+                            data-label="Perfis autenticados"
+                        >
+                            @if(@$whatsapp_module->new_badge) <el-badge value="Novo" class="badge-new"  type="primary"> @endif
+                                Sessões WhatsApp
+                            @if(@$whatsapp_module->new_badge) </el-badge> @endif
+                        </a>
+                    @endif
                 </div>
             </li>
             <li
-                class="nav-item dropdown {{ currentClass(['/admin/webhooks/*','/admin/integracoes/*']) }}">
+                class="nav-item dropdown {{ currentClass(['/admin/mensagens-wpp/*']) }}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
-                    <i class="el-icon-s-claim mr-2"></i>Captação
+                    <i class="el-icon-chat-dot-round mr-2"></i>Comunicação
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item {{  getMenuClass($is_admin_or_super_admin, ['/admin/webhooks/*']) }}" href="/admin/webhooks"
-                        data-label="Rotas de Entrada de Lead">
-                        Webhook
-                    </a>
-                    <a class="dropdown-item {{ getMenuClass($is_admin_or_super_admin, ['/admin/integracoes/*']) }}" href="/admin/integradores"
-                        data-label="Usuários de Acesso a API">
-                        Integradores
-                    </a>
+                    @if(@$whatsapp_module->id)
+                        <a class="dropdown-item {{ getMenuClass('viewlist-wppmessage',['/admin/mensagens-wpp/*']) }}" href="/admin/mensagens-wpp">
+                            @if(@$whatsapp_module->new_badge) <el-badge value="Novo" class="badge-new"  type="primary"> @endif
+                                Mensagens WhatsApp
+                            @if(@$whatsapp_module->new_badge) </el-badge> @endif
+                        </a>
+                    @endif
                 </div>
             </li>
         </ul>        
         <select-polo polo_name="{{ $polo->name }}" user_id="{{ $user->id }}" :logged_id='@json($polo->id)'></select-polo>
-        <ul class="navbar-nav ml-3">
+        <ul class="navbar-nav ml-3 sm-hide">
             <li class="nav-item bell-note mx-0">
                 <el-tooltip class="item" effect="dark" content="Clique aqui caso precise de ajuda" placement="bottom">
                     <a class="nav-link text-center bell-notification" href="{{ $wiki_url }}">
@@ -122,7 +155,7 @@ if(!$is_super_admin) {
                 </el-tooltip>
             </li>
         </ul>
-        <notification-bell polo_id="{{ $polo->id }}" :active='@json(currentClass([' /admin/notificacoes/*']))'></notification-bell>
+        <notification-bell  class="sm-hide" :active='@json(currentClass([' /admin/notificacoes/*']))'></notification-bell>
         <ul class="navbar-nav">
             <li class="nav-item dropdown hover-color ml-0">
                 <a class="nav-link dropdown-toggle py-0 d-flex flex-row align-items-center" href="#" id="navbarDropdown" role="button"
@@ -133,19 +166,18 @@ if(!$is_super_admin) {
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    @if ($is_super_admin)
-                        <a class="dropdown-item" href="/admin/permissoes">Permissões</a>
-                    @endif
-                    <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/grupos-de-acesso">Grupos de Acesso</a>
                     <a class="dropdown-item" href="/admin/usuarios/{{ $user->code }}/edit">
                         <div class="d-flex justify-content-between">
                             <span>Conta</span>
                             <span class="badge badge-default ml-5 pt-1 px-2">ID.: {{ $user->code }}</span>
                         </div>
                     </a>
-                    <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/usuarios">Usuários</a>
-                    <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/polos">Polos</a>
-                    <a class="dropdown-item @if (!$is_admin_or_super_admin) disabled @endif" href="/admin/departamentos">Departamentos</a>
+                    <a class="dropdown-item {{ getMenuClass('viewlist-users',['/admin/usuarios/*'])  }}" href="/admin/usuarios">Usuários</a>
+                    @if ($is_admin_or_super_admin)
+                        <a class="dropdown-item" href="/admin/polos">Polos</a>
+                        <a class="dropdown-item" href="/admin/departamentos">Departamentos</a>
+                        <a class="dropdown-item" href="/admin/modulos">Modulos</a>
+                    @endif
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/login">Sair</a>
                 </div>

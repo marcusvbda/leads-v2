@@ -1,0 +1,59 @@
+@media screen and (max-width: 767px) {
+    #auth {
+      margin: 0;
+      .right-side {
+
+        .container {
+          max-width : unset!important;
+      }
+    }
+      
+    .el-dialog__wrapper {
+      padding : 10px;
+
+      .el-dialog {
+
+        &.el-dialog--center {
+          width: 100%!important;
+          max-width: unset;
+        }
+
+        .el-dialog__footer {
+          button {
+            width: 100%;
+          }
+        }
+      }
+    }    
+  }  
+
+
+  .dashboard-content {
+    .dash-filter {
+      display: none!important;
+    }
+  }
+
+  .navbar {
+    padding: 0.5rem 1rem!important;
+
+    .nav-link {
+      padding : 8px 10px!important;
+    }
+  }
+
+  .sm-hide {
+    display: none!important;
+  }
+
+  .table-responsive-sm {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .sm-flex-wrap {
+    flex-wrap: wrap!important;
+  }
+}
+  
+  

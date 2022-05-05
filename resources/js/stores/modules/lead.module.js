@@ -13,25 +13,25 @@ const state = {
             current_page: 0,
             data: [],
             total: 0,
-            has_more: true
+            has_more: true,
         },
         active: {
             current_page: 0,
             data: [],
             total: 0,
-            has_more: true
+            has_more: true,
         },
         potential: {
             current_page: 0,
             data: [],
             total: 0,
-            has_more: true
-        }
+            has_more: true,
+        },
     },
     loading: {
         active: true,
         pending: true,
-        potential: true
+        potential: true,
     },
     resource_id: null,
     use_tags: false,
@@ -39,26 +39,28 @@ const state = {
         text: "",
         status_ids: [],
         schedule: [],
-        date_index : "DATE(created_at)"
+        date_index: "DATE(created_at)",
     },
-    preset_dates : null
+    preset_dates: null,
 };
 
 const getters = {
-    showScheduleFilter: state => {
-        let results = state.statuses.filter(x => state.filter.status_ids.includes(String(x.id)) && x.value.includes("schedule"));
+    showScheduleFilter: (state) => {
+        let results = state.statuses.filter(
+            (x) => state.filter.status_ids.includes(String(x.id)) && x.value.includes("schedule")
+        );
         return results.length > 0;
     },
-    loading: state => state.loading,
-    active: state => state.leads.active,
-    pending: state => state.leads.pending,
-    potential: state => state.leads.potential,
-    user: state => state.user,
-    statuses: state => state.statuses,
-    lead: state => state.lead,
-    objections: state => state.objections,
-    types: state => state.types,
-    answers: state => state.answers
+    loading: (state) => state.loading,
+    active: (state) => state.leads.active,
+    pending: (state) => state.leads.pending,
+    potential: (state) => state.leads.potential,
+    user: (state) => state.user,
+    statuses: (state) => state.statuses,
+    lead: (state) => state.lead,
+    objections: (state) => state.objections,
+    types: (state) => state.types,
+    answers: (state) => state.answers,
 };
 
 const mutations = {
@@ -108,7 +110,7 @@ const makeLeadsFilter = (cx, payload) => {
     let filters = {
         where: [],
         where_in: [],
-        raw_where: []
+        raw_where: [],
     };
     let filter_types = {
         potential(filters) {
@@ -124,14 +126,14 @@ const makeLeadsFilter = (cx, payload) => {
         active(filters) {
             filters.where.push(["responsible_id", "=", state.user.id]);
             return filters;
-        }
+        },
     };
     if (state.filter.text) {
-        let only_numbers = state.filter.text.replace(/[^0-9]/g, '');
+        let only_numbers = state.filter.text.replace(/[^0-9]/g, "");
         let raw_where = `((lower(json_unquote(json_extract(data,'$.name'))) like '%${state.filter.text.toLowerCase()}%')`;
         raw_where += ` or (lower(json_unquote(json_extract(data,'$.email'))) like '%${state.filter.text.toLowerCase()}%')`;
         raw_where += ` or (lower(json_unquote(json_extract(data,'$.source'))) like '%${state.filter.text.toLowerCase()}%')`;
-        if(only_numbers) {
+        if (only_numbers) {
             raw_where += ` or (lower(json_unquote(json_extract(data,'$.phones'))) like '%${only_numbers}%')`;
             raw_where += ` or (lower(json_unquote(json_extract(data,'$.phones'))) like '%${state.filter.text.toLowerCase()}%')`;
         }
@@ -140,14 +142,10 @@ const makeLeadsFilter = (cx, payload) => {
     }
     if (state.filter.schedule?.length && getters.showScheduleFilter) {
         if (state.filter.schedule[0]) {
-            filters.raw_where.push(
-                `${state.filter.date_index} >= DATE('${state.filter.schedule[0]}')`
-            );
+            filters.raw_where.push(`${state.filter.date_index} >= DATE('${state.filter.schedule[0]}')`);
         }
         if (state.filter.schedule[1]) {
-            filters.raw_where.push(
-                `${state.filter.date_index} <= DATE('${state.filter.schedule[1]}')`
-            );
+            filters.raw_where.push(`${state.filter.date_index} <= DATE('${state.filter.schedule[1]}')`);
         }
     }
     filters.where_in.push(["status_id", state.filter.status_ids]);
@@ -158,28 +156,28 @@ const makeLeadsFilter = (cx, payload) => {
 const actions = {
     getTypes: ({ commit }) => {
         api.post("/vstack/json-api", {
-            model: "\\App\\Http\\Models\\ContactType"
+            model: "\\App\\Http\\Models\\ContactType",
         }).then(({ data }) => {
             commit("setTypes", data);
         });
     },
     getAnswers: ({ commit }) => {
         api.post("/vstack/json-api", {
-            model: "\\App\\Http\\Models\\LeadAnswer"
+            model: "\\App\\Http\\Models\\LeadAnswer",
         }).then(({ data }) => {
             commit("setAnswers", data);
         });
     },
     getObjections: ({ commit }) => {
         api.post("/vstack/json-api", {
-            model: "\\App\\Http\\Models\\Objection"
+            model: "\\App\\Http\\Models\\Objection",
         }).then(({ data }) => {
             commit("setObjections", data);
         });
     },
     getDepartments: async ({ commit }) => {
         let { data } = await api.post("/vstack/json-api", {
-            model: "\\App\\Http\\Models\\Department"
+            model: "\\App\\Http\\Models\\Department",
         });
         commit("setDepartments", data);
         return data;
@@ -196,7 +194,7 @@ const actions = {
             filters,
             per_page: 20,
             page: new_page,
-            order_by: ["data->name", "desc"]
+            order_by: ["data->name", "desc"],
         });
         let new_state = Object.assign({}, state.leads);
         new_state[payload.type].current_page = data.current_page;
@@ -216,8 +214,8 @@ const actions = {
             model: "\\App\\Http\\Models\\Status",
             order_by: ["name", "asc"],
             filters: {
-                or_where_not_in: [["value", ["finished", "canceled"]]]
-            }
+                or_where_not_in: [["value", ["finished", "canceled"]]],
+            },
         });
         commit("setStatuses", data);
         return data;
@@ -241,7 +239,7 @@ const actions = {
         await Promise.all([
             dispatch("loadLeads", { refresh: true, type: "active" }),
             dispatch("loadLeads", { refresh: true, type: "pending" }),
-            dispatch("loadLeads", { refresh: true, type: "potential" })
+            dispatch("loadLeads", { refresh: true, type: "potential" }),
         ]);
     },
     transferLead: async ({ state }, department_id) => {
@@ -251,7 +249,7 @@ const actions = {
     finishLead: async ({ state }, payload) => {
         let { data } = await api.post(`/admin/atendimento/${state.lead.code}/finish`, payload);
         return data;
-    }
+    },
 };
 
 export default {
@@ -259,5 +257,5 @@ export default {
     state,
     getters,
     mutations,
-    actions
+    actions,
 };

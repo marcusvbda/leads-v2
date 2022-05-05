@@ -23,6 +23,6 @@
 @section('content')
 <lead-attendance
 	:user='@json($logged_user)'
-	:preset_date='@json( \App\Http\Filters\FilterByPresetData::getAllDates())'
+	:preset_date='@json( \App\Http\Filters\FilterByPresetDate::getAllDates())'
 ></lead-attendance>
 @endsection

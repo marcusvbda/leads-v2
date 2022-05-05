@@ -2,15 +2,10 @@
     <div class="d-flex flex-column">
         <el-select v-model="type" filterable class="w-100" clearable>
             <el-option label="Customizado" value="custom" />
-            <el-option label="Todos" value="todos" />
-            <el-option label="Hoje" value="hoje" />
-            <el-option label="Ontem" value="ontem" />
-            <el-option label="Últimos 7 Dias" value="ultimos 7 dias" />
-            <el-option label="Últimos 14 Dias" value="ultimos 14 dias" />
-            <el-option label="Últimos 30 Dias" value="ultimos 30 dias" />
-            <el-option label="Esta Semana" value="esta semana" />
-            <el-option label="Este Mês" value="este mes" />
-            <el-option label="Este Ano" value="este ano" />
+            <!-- <el-option label="Todos" value="todos" /> -->
+            <template v-for="(key, i) in Object.keys(options)">
+                <el-option :label="options[key][0]" :value="key" :key="i" />
+            </template>
         </el-select>
         <el-date-picker
             v-if="type === 'custom'"
@@ -28,11 +23,11 @@
 </template>
 <script>
 export default {
-    props: ["filter", "index", "submit"],
+    props: ["filter", "index", "submit", "options"],
     data() {
         return {
             type: this.getParams().type,
-            custom_dates: this.getParams().custom_dates
+            custom_dates: this.getParams().custom_dates,
         };
     },
     watch: {
@@ -44,7 +39,7 @@ export default {
         custom_dates(val) {
             if (val.length < 2) return;
             return this.appendFilter(val.join(","));
-        }
+        },
     },
     methods: {
         getParams() {
@@ -68,7 +63,7 @@ export default {
             if (!this.code) return;
             this.$set(this.filter, this.index, `${this.type},${this.code}`);
             this.$nextTick(() => this.$emit("on-submit"));
-        }
-    }
+        },
+    },
 };
 </script>

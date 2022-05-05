@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Auth\UsersController;
-use App\Http\Controllers\LogViewerController;
 
 Route::get('', function () {
 	return redirect("/admin"); //temporário até termos uma landing page
@@ -10,6 +9,7 @@ Route::get('', function () {
 require "partials/auth.php";
 Route::group(['middleware' => ['auth']], function () {
 	Route::group(['prefix' => "admin"], function () {
+		require "partials/home.php";
 		require "partials/dashboard.php";
 		require "partials/wiki.php";
 		require "partials/users.php";
@@ -25,5 +25,3 @@ Route::group(['middleware' => ['auth']], function () {
 
 Route::get('user_invite/{tenant_id}/{invite_md5}', [UsersController::class, 'userCreate'])->middleware(['hashids:tenant_id'])->name("user.create");
 Route::post('user_invite/{tenant_id}/{invite_md5}', [UsersController::class, 'userConfirm'])->middleware(['hashids:tenant_id'])->name("user.confirm");
-
-if (config('app.env') == 'homologation') require "partials/debug.php";

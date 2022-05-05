@@ -8,7 +8,7 @@
 			<nav aria-label="breadcrumb">
 				<ol class="breadcrumb mb-0">
 					<li class="breadcrumb-item">
-						<a href="/admin" class="link">Dashboard</a>
+						<a href="/" class="link">Página Inicial</a>
 					</li>
 		 			<li class="breadcrumb-item active" aria-current="page">Mostradores e Desempenho</li>					
 				</ol>
@@ -25,7 +25,6 @@
 	$is_head = $user->polo->data->head
 @endphp
 <dashboard-content
-	data-aos="fade-down"
 	title="Mostradores e Desempenho"
 	user_id="{{ $user->id }}"
 	:is_head='@json($is_head)'

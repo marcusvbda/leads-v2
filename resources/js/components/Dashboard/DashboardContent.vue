@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="dashboard-content">
         <div class="row" v-if="is_head">
             <qty-leads-today class="mb-3" />
             <qty-polos class="mb-3" />
@@ -19,7 +19,7 @@
                     </div>
                     <div class="card-body pt-0">
                         <div class="row mt-3 d-flex flex-wrap">
-                            <div class="col-6">
+                            <div class="col-md-6 col-sm-12">
                                 <div class="row">
                                     <qty-leads class="mb-3" />
                                     <qty-leads-finished class="mb-3" />
@@ -29,7 +29,7 @@
                                     <chart-objection class="mb-3" />
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-md-6 col-sm-12">
                                 <div class="row">
                                     <top-departments class="mb-3" />
                                     <top-users class="mb-3" />
@@ -58,7 +58,7 @@ export default {
         "qty-canceled-tax": require("./-qty-canceled-tax.vue").default,
         "qty-finished-tax": require("./-qty-finished-tax.vue").default,
         "chart-status": require("./-chart-status.vue").default,
-        "chart-objection": require("./-chart-objection.vue").default
-    }
+        "chart-objection": require("./-chart-objection.vue").default,
+    },
 };
 </script>

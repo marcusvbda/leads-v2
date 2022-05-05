@@ -7,12 +7,13 @@ use App\Http\Models\Lead;
 use App\Http\Actions\Leads\{
 	LeadStatusChange,
 	LeadDelete,
-	LeadRemoveDuplicates,
-	LeadReprocess,
-	LeadSourceReprocess,
+	// LeadRemoveDuplicates,
+	// LeadReprocess,
+	// LeadSourceReprocess,
 	LeadTransfer,
+	SendWppMessage,
 };
-use App\Http\Filters\FilterByPresetData;
+use App\Http\Filters\FilterByPresetDate;
 use App\Http\Filters\FilterByTags;
 use App\Http\Filters\FilterByText;
 use App\Http\Filters\Leads\LeadsByPhone;
@@ -28,9 +29,7 @@ use Auth;
 
 class Leads extends Resource
 {
-
 	public $model = Lead::class;
-
 
 	public function label()
 	{
@@ -49,7 +48,7 @@ class Leads extends Resource
 
 	public function canClone()
 	{
-		return true;
+		return false;
 	}
 
 	public function singularLabel()
@@ -72,7 +71,7 @@ class Leads extends Resource
 		$columns = [];
 		$columns["code"] = ["label" => "Código", "sortable_index" => "id", "size" => "100px"];
 		$columns["label"] = ["label" => "Nome", "sortable_index" => "data->name"];
-		$columns["contact"] = ["label" => "Email", "sortable_index" => "data->email"];
+		$columns["contact"] = ["label" => "Contato", "sortable_index" => "data->email"];
 		$columns["f_status_badge"] = ["label" => "Status", "sortable_index" => "status_id"];
 		$columns["responsible->name"] = ["label" => "Responsável", "sortable_index" => "responsible_id"];
 		$columns["f_updated_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
@@ -86,8 +85,8 @@ class Leads extends Resource
 
 	public function actions()
 	{
-		$user = Auth::user();
-		$is_super_admin_or_admin = $user->hasRole(["super-admin", "admin"]);
+		// $user = Auth::user();
+		// $is_super_admin_or_admin = $user->hasRole(["super-admin", "admin"]);
 		$actions = [];
 		if (hasPermissionTo("edit-leads")) {
 			$actions[] = new LeadStatusChange();
@@ -96,10 +95,13 @@ class Leads extends Resource
 		if (hasPermissionTo("destroy-leads")) {
 			$actions[] = new LeadDelete();
 		}
-		if ($is_super_admin_or_admin) {
-			$actions[] = new LeadSourceReprocess();
-			$actions[] = new LeadReprocess();
-			$actions[] = new LeadRemoveDuplicates();
+		// if ($is_super_admin_or_admin) {
+		// 	$actions[] = new LeadSourceReprocess();
+		// 	$actions[] = new LeadReprocess();
+		// 	$actions[] = new LeadRemoveDuplicates();
+		// }
+		if (Auth::user()->canAccessModule("whatsapp")) {
+			$actions[] = new SendWppMessage();
 		}
 		return $actions;
 	}
@@ -132,45 +134,56 @@ class Leads extends Resource
 
 	public function canViewReport()
 	{
-		return hasPermissionTo("view-leads-report");
+		return hasPermissionTo("viewlist-leads");
 	}
 
 	public function canImport()
 	{
-		return false;
+		return hasPermissionTo("create-leads");
 	}
+
 
 	public function canExport()
 	{
-		return hasPermissionTo("view-leads-report");
+		return hasPermissionTo("viewlist-leads");
 	}
 
-
-	public function export_columns($cx)
+	public function exportColumns()
 	{
-		// dd(request()->page_type);
-		$fields["code"] = ["label" => "Código"];
-		$fields["name"] = ["label" => "Nome"];
-		$fields["origins"] = ["label" => "Origens", "handler" => function ($row) {
-			return implode(", ", @$row->data->source ?? []);
+		$fields[] = ["label" => "Código", "handler" => function ($item) {
+			return $item->code;
 		}];
-		$fields["status->name"] = ["label" => "Status"];
-		$fields["profession"] = ["label" => "Profissão"];
-		$fields["email"] = ["label" => "Email"];
-		$fields["primary_phone"] = ["label" => "Telefone", "handler" => function ($row) {
-			return $row->primary_phone_number;
+		$fields[] = ["label" => "Nome", "handler" => function ($item) {
+			return $item->name;
 		}];
-		$fields["primary_phone_clean"] = ["label" => "Telefone Limpo", "handler" => function ($row) {
+		$fields[] = ["label" => "Origens", "handler" => function ($row) {
+			return @implode(", ", data_get($row, "data.source", []));
+		}];
+		$fields[] = ["label" => "Status", "handler" => function ($row) {
+			return @$row->status->name;
+		}];
+		$fields[] = ["label" => "Profissão", "handler" => function ($row) {
+			return @$row->profession;
+		}];
+		$fields[] = ["label" => "Email", "handler" => function ($row) {
+			return @$row->email;
+		}];
+		$fields[] = ["label" => "Telefone", "handler" => function ($row) {
+			return @$row->primary_phone;
+		}];
+		$fields[] = ["label" => "Telefone Limpo", "handler" => function ($row) {
 			return preg_replace("/[^0-9]/", "", $row->primary_phone_number);
 		}];
-		$fields["secondary_phone"] =  ["label" => "Tel. Secundário", "handler" => function ($row) {
+		$fields[] =  ["label" => "Tel. Secundário", "handler" => function ($row) {
 			return $row->secondary_phone_number;
 		}];
-		$fields["secondary_phone_clean"] =  ["label" => "Tel. Secundário Limpo", "handler" => function ($row) {
+		$fields[] =  ["label" => "Tel. Secundário Limpo", "handler" => function ($row) {
 			return  preg_replace("/[^0-9]/", "", $row->secondary_phone_number);
 		}];
-		$fields["interest"] = ["label" => "Interesse"];
-		$fields["data"] = ["label" => "Data", "handler" => function ($row) {
+		$fields[] = ["label" => "Interesse", "handler" => function ($row) {
+			return @$row->interest;
+		}];
+		$fields[] = ["label" => "Data", "handler" => function ($row) {
 			return formatDate($row->created_at);
 		}];
 		return $fields;
@@ -179,7 +192,10 @@ class Leads extends Resource
 	public function filters()
 	{
 		$filters = [];
-		$filters[] = new FilterByPresetData("Data de Criação");
+		$filters[] = new FilterByPresetDate([
+			"label" => "Data de Criação",
+			"field" => "leads.created_at"
+		]);
 		$filters[] = new FilterByText([
 			"column" => "data->name",
 			"label" => "Nome",
@@ -199,6 +215,24 @@ class Leads extends Resource
 			"index" => "source"
 		]);
 		return $filters;
+	}
+
+	public function importerColumns()
+	{
+		return ["nome", "email", "celular"];
+	}
+
+	public function importRowMethod($new, $extra_data)
+	{
+		$fill_data = array_merge($new, $extra_data ? $extra_data : []);
+		$new_model = @$new["id"] ? $this->getModelInstance()->findOrFail($new["id"]) : $this->getModelInstance();
+
+		$new_model->name = data_get($fill_data, "name", "");
+		$new_model->email = data_get($fill_data, "email", "");
+		$new_model->cellphone_number = data_get($fill_data, "celular", "");
+		$new_model->save();
+
+		return $new_model;
 	}
 
 	public function fields()
@@ -313,4 +347,27 @@ class Leads extends Resource
 	{
 		return view("admin.leads.after_row", compact("row"))->render();
 	}
+
+	public function prepareImportData($data)
+	{
+		return ["success" => true, "data" => [
+			"polo_id" => Auth::user()->polo_id,
+		]];
+	}
+
+	// public function listItemsContent($data)
+	// {
+	// 	$items[] = [
+	// 		"label" => "TOTAL DE ITENS",
+	// 		"value" => $data->count(),
+	// 		"class" => "col-md-2 col-sm-12"
+	// 	];
+	// 	$items[] = [
+	// 		"label" => "TOTAL",
+	// 		"value" => 'R$ 551.533,00',
+	// 		"class" => "col-md-3 col-sm-12"
+	// 	];
+
+	// 	return $items;
+	// }
 }

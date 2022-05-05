@@ -36,8 +36,8 @@ export default {
             loading: false,
             form: {
                 email: "",
-                password: ""
-            }
+                password: "",
+            },
         };
     },
     methods: {
@@ -51,7 +51,7 @@ export default {
         },
         showPolosList(polos) {
             let select_polo = this.$refs["select-polo"];
-            select_polo.options = polos.map(x => ({ key: x.id, label: x.name }));
+            select_polo.options = polos.map((x) => ({ key: x.id, label: x.name }));
             select_polo.open();
         },
         checkUser() {
@@ -69,13 +69,13 @@ export default {
                         }
                     }
                 })
-                .catch(er => {
+                .catch((er) => {
                     this.loading = false;
                     this.errors = er.response.data.errors;
                     this.$validationErrorMessage(er);
                 });
-        }
-    }
+        },
+    },
 };
 </script>
 <style lang="scss" scoped>

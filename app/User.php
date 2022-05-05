@@ -6,24 +6,27 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use marcusvbda\vstack\Models\Traits\hasCode;
-use Spatie\Permission\Traits\HasRoles;
 use Auth;
 use App\Http\Models\Tenant;
 use marcusvbda\vstack\Models\Scopes\TenantScope;
 use marcusvbda\vstack\Models\Observers\TenantObserver;
 use App\Http\Models\Pivots\{UserPolo};
-use App\Http\Models\{Department, UserNotification, Polo};
+use App\Http\Models\{Department, Module, UserNotification, Polo};
 use App\Http\Models\Scopes\{OrderByScope};
+use marcusvbda\vstack\Hashids;
 
 class User extends Authenticatable
 {
-	use SoftDeletes, Notifiable, hasCode, HasRoles;
+	use SoftDeletes, Notifiable, hasCode;
+	// , HasRoles;
 	public $guarded = ['created_at'];
 	protected $dates = ['deleted_at'];
-	protected $appends = ['code', 'role_id'];
+	protected $appends = ['code'];
 	protected $hashPassword = false;
 	public  $casts = [
 		"data" => "json",
+		"logged_at" => "datetime",
+		"last_logged_at" => "datetime"
 	];
 	public $relations = [];
 
@@ -31,6 +34,12 @@ class User extends Authenticatable
 	{
 		parent::boot();
 		$this->hashPassword = $hashPassword;
+	}
+
+	public function getRoleNameAttribute()
+	{
+		$role = data_get(config("roles", []), $this->role . ".title", "");
+		return $role;
 	}
 
 	public static function boot()
@@ -47,7 +56,7 @@ class User extends Authenticatable
 
 	public function getCodeAttribute()
 	{
-		return \Hashids::encode($this->id);
+		return Hashids::encode($this->id);
 	}
 
 	public function receivesBroadcastNotificationsOn()
@@ -83,13 +92,10 @@ class User extends Authenticatable
 
 	public function getRoleDescriptionAttribute()
 	{
-		return @$this->roles()->first()->description;
+		$role = data_get(config("roles", []), $this->role, []);
+		return data_get($role, "title", "");
 	}
 
-	public function getRoleNameAttribute()
-	{
-		return @$this->roles()->first()->name;
-	}
 
 	public function isSuperAdmin()
 	{
@@ -106,8 +112,34 @@ class User extends Authenticatable
 		return $this->userNotifications()->isNew()->count();
 	}
 
-	public function getRoleIdAttribute()
+	public function canAccessModule($module)
 	{
-		return @$this->roles()->first()->id;
+		$tenant = $this->tenant;
+		return $tenant->storeRemember(__CLASS__ . "@" . __FUNCTION__ . "_" . $module, 60 * 10, function () use ($module) {
+			return Module::where("slug", $module)->count() > 0;
+		});
+	}
+
+	public function hasRole($role)
+	{
+		$roles = is_array($role) ? $role : [$role];
+		return in_array($this->role, $roles);
+	}
+
+	public function can($ability, $arguments = [])
+	{
+		$roles = config("roles", []);
+		$permissions = data_get($roles, $this->role . ".permissions", []);
+		foreach ($permissions as $permission) {
+			if (data_get($permission, 0) === $ability) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function getFirstNameAttribute()
+	{
+		return data_get(explode(" ", $this->name), "0", $this->name);
 	}
 }

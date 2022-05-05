@@ -37,7 +37,6 @@ class Kernel extends HttpKernel
 			\App\Http\Middleware\VerifyCsrfToken::class,
 			// \Illuminate\Routing\Middleware\SubstituteBindings::class,
 			\marcusvbda\vstack\Middleware\SendJSVarsToView::class,
-			\Spatie\Cors\Cors::class,
 			// \App\Http\Middleware\setTimezone::class
 		],
 
