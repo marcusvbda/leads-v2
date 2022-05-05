@@ -128,22 +128,24 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
                     @endif
                 </div>
             </li>
-            <li
-                class="nav-item dropdown {{ currentClass(['/admin/mensagens-wpp/*']) }}">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                    <i class="el-icon-chat-dot-round mr-2"></i>Comunicação
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    @if(@$whatsapp_module->id)
-                        <a class="dropdown-item {{ getMenuClass('viewlist-wppmessage',['/admin/mensagens-wpp/*']) }}" href="/admin/mensagens-wpp">
-                            @if(@$whatsapp_module->new_badge) <el-badge value="Novo" class="badge-new"  type="primary"> @endif
-                                Mensagens WhatsApp
-                            @if(@$whatsapp_module->new_badge) </el-badge> @endif
-                        </a>
-                    @endif
-                </div>
-            </li>
+            @if(@$whatsapp_module->id && $is_super_admin)
+                <li
+                    class="nav-item dropdown {{ currentClass(['/admin/mensagens-wpp/*']) }}">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="el-icon-chat-dot-round mr-2"></i>Comunicação
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        @if(@$whatsapp_module->id)
+                            <a class="dropdown-item {{ getMenuClass('viewlist-wppmessage',['/admin/mensagens-wpp/*']) }}" href="/admin/mensagens-wpp">
+                                @if(@$whatsapp_module->new_badge) <el-badge value="Novo" class="badge-new"  type="primary"> @endif
+                                    Mensagens WhatsApp
+                                @if(@$whatsapp_module->new_badge) </el-badge> @endif
+                            </a>
+                        @endif
+                    </div>
+                </li>
+            @endif
         </ul>        
         <select-polo polo_name="{{ $polo->name }}" user_id="{{ $user->id }}" :logged_id='@json($polo->id)'></select-polo>
         <ul class="navbar-nav ml-3 sm-hide">
