@@ -19,6 +19,16 @@ class Kernel extends ConsoleKernel
 			->withoutOverlapping(5);
 
 		$schedule
+			->command('optimize:clear')
+			->days(2)
+			->withoutOverlapping(5);
+
+		$schedule
+			->command('config:cache')
+			->days(2)
+			->withoutOverlapping(5);
+
+		$schedule
 			->command('command:process-wpp-messages')
 			->everyFiveMinutes()
 			->withoutOverlapping(5);
