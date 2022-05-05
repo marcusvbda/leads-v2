@@ -10,6 +10,10 @@ return [
 	"extra_javascript_global_variables" => [
 		ExtraConfigData::class
 	],
+	"prepend_breadcrumb" => [
+		"Página Inicial" => "/admin",
+		"Dashboard" => "/admin/dashboard",
+	],
 	"socket_service" => [
 		"uri" => env("SOCKET_SERVER"),
 		"username" => env("SOCKET_USERNAME"),

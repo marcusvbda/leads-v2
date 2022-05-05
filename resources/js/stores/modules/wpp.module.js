@@ -78,6 +78,7 @@ const actions = {
             pingInterval: 3600000,
             pingTimeout: 3600000,
             transports: ["polling", "websocket"],
+            secure: true,
         });
 
         socket.on("connected", (data) => {

@@ -8,9 +8,9 @@
 			<nav aria-label="breadcrumb">
 				<ol class="breadcrumb mb-0">
 					<li class="breadcrumb-item">
-						<a href="/" class="link">Página Inicial</a>
+						<a href="/admin" class="link">Página Inicial</a>
 					</li>
-		 			<li class="breadcrumb-item active" aria-current="page">Mostradores e Desempenho</li>					
+		 			<li class="breadcrumb-item active" aria-current="page">Dashboard</li>					
 				</ol>
 			</nav>
 		</nav>
