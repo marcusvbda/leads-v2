@@ -6,7 +6,8 @@
         <nav aria-label="breadcrumb">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/admin" class="link">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/" class="link">Página Inicial</a></li>
+                    <li class="breadcrumb-item"><a href="/admin/dashboard" class="link">Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="/admin/usuarios" class="link">Usuários</a></li>
                     <li class="breadcrumb-item"><a href="/admin/usuarios/create" class="link">Enviar convite de usuário</a></li>
                 </ol>

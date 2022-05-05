@@ -15,9 +15,8 @@ if(!$is_super_admin) {
 		<nav aria-label="breadcrumb">
 			<nav aria-label="breadcrumb">
 				<ol class="breadcrumb mb-0">
-					<li class="breadcrumb-item">
-						<a href="/admin" class="link">Dashboard</a>
-					</li>
+					<li class="breadcrumb-item"><a href="/" class="link">Página Inicial</a></li>
+                    <li class="breadcrumb-item"><a href="/admin/dashboard" class="link">Dashboard</a></li>
                     <li class="breadcrumb-item">
 						<a href="{{ $wiki_url }}" class="link">Wiki</a>
 					</li>		

@@ -6,7 +6,8 @@
         <nav aria-label="breadcrumb">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/admin" class="link">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/" class="link">Página Inicial</a></li>
+                    <li class="breadcrumb-item"><a href="/admin/dashboard" class="link">Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="/admin/regra-classificacao" class="link">Regra de Classificaçao</a></li>
                 </ol>
             </nav>
