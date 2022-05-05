@@ -117,7 +117,7 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
                         data-label="Contatos com Lead">Respostas de Contato</a>
                     <a class="{{ getMenuClass('config-rating-behavior', ['/admin/regra-classificacao/*']) }}" href="/admin/regra-classificacao"
                         data-label="Regra de Rating de Lead">Regra de Classificação</a>
-                    @if(@$whatsapp_module->id)
+                    @if(@$whatsapp_module->id && $is_super_admin)
                         <a class="dropdown-item  {{ getMenuClass('viewlist-wppsession',['/admin/sessoes-wpp/*']) }}" href="/admin/sessoes-wpp"
                             data-label="Perfis autenticados"
                         >
