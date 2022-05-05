@@ -64,10 +64,6 @@ const actions = {
             reconnection: true,
             reconnectionDelay: 500,
             reconnectionAttempts: 10,
-            withCredentials: true,
-            pingInterval: 3600000,
-            pingTimeout: 3600000,
-            transports: ["websocket"],
         });
 
         socket.on("connected", (data) => {

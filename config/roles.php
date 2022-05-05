@@ -22,11 +22,11 @@ return [
 
             ["viewlist-leadanswer", "Ver lista de Respostas de Contato"],
 
-            ["viewlist-wppsession", "Ver Lista de Sessões de WhatsApp"],
+            // ["viewlist-wppsession", "Ver Lista de Sessões de WhatsApp"],
 
-            ["viewlist-wppmessage", "Ver Lista de Mensagens de WhatsApp"],
-            ["create-wppmessage", "Criar Sessões de WhatsApp"],
-            ["destroy-wppmessage", "Excluir Sessões de WhatsApp"],
+            // ["viewlist-wppmessage", "Ver Lista de Mensagens de WhatsApp"],
+            // ["create-wppmessage", "Criar Sessões de WhatsApp"],
+            // ["destroy-wppmessage", "Excluir Sessões de WhatsApp"],
         ]
     ],
     "admin" => [
@@ -59,13 +59,13 @@ return [
 
             ["config-rating-behavior", "Comportamento de Rating"],
 
-            ["viewlist-wppsession", "Ver Lista de Sessões de WhatsApp"],
-            ["create-wppsession", "Criar Sessões de WhatsApp"],
-            ["destroy-wppsession", "Excluir Sessões de WhatsApp"],
+            // ["viewlist-wppsession", "Ver Lista de Sessões de WhatsApp"],
+            // ["create-wppsession", "Criar Sessões de WhatsApp"],
+            // ["destroy-wppsession", "Excluir Sessões de WhatsApp"],
 
-            ["viewlist-wppmessage", "Ver Lista de Mensagens de WhatsApp"],
-            ["create-wppmessage", "Criar Sessões de WhatsApp"],
-            ["destroy-wppmessage", "Excluir Sessões de WhatsApp"],
+            // ["viewlist-wppmessage", "Ver Lista de Mensagens de WhatsApp"],
+            // ["create-wppmessage", "Criar Sessões de WhatsApp"],
+            // ["destroy-wppmessage", "Excluir Sessões de WhatsApp"],
         ]
     ]
 ];
