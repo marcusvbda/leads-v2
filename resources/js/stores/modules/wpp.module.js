@@ -29,7 +29,17 @@ const mutations = {
     setToken: (state, payload) => (state.token = payload),
 };
 
-const serviceEvents = ["auth_failure", "disconnected", "qr", "authenticated", "auth_failure", "ready", "message", "sent_message"];
+const serviceEvents = [
+    "auth_failure",
+    "error",
+    "disconnected",
+    "qr",
+    "authenticated",
+    "auth_failure",
+    "ready",
+    "message",
+    "sent_message",
+];
 
 const actionEvents = {
     qr: (commit, data) => {
@@ -67,7 +77,7 @@ const actions = {
             withCredentials: true,
             pingInterval: 3600000,
             pingTimeout: 3600000,
-            transports: ["polling"],
+            transports: ["polling", "websocket"],
         });
 
         socket.on("connected", (data) => {
