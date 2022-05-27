@@ -13,9 +13,6 @@ use App\Http\Actions\Leads\{
 	LeadTransfer,
 	SendWppMessage,
 };
-use App\Http\Filters\FilterByPresetDate;
-use App\Http\Filters\FilterByTags;
-use App\Http\Filters\FilterByText;
 use App\Http\Filters\Leads\LeadsByPhone;
 use App\Http\Filters\Leads\LeadsByStatus;
 use App\Http\Models\Status;
@@ -26,6 +23,9 @@ use marcusvbda\vstack\Fields\{
 	TextArea,
 };
 use Auth;
+use marcusvbda\vstack\Filters\FilterByPresetDate;
+use marcusvbda\vstack\Filters\FilterByTag;
+use marcusvbda\vstack\Filters\FilterByText;
 
 class Leads extends Resource
 {
@@ -208,7 +208,7 @@ class Leads extends Resource
 		]);
 		$filters[] = new LeadsByPhone();
 		$filters[] = new LeadsByStatus();
-		$filters[] = new FilterByTags(Lead::class);
+		$filters[] = new FilterByTag(Lead::class);
 		$filters[] = new FilterByText([
 			"column" => "data->source",
 			"label" => "Origem",
