@@ -12,13 +12,11 @@ return [
 	],
 	"prepend_breadcrumb" => [
 		"Página Inicial" => "/admin",
-		"Dashboard" => "/admin/dashboard",
 	],
 	"socket_service" => [
-		"uri" => env("SOCKET_SERVER"),
-		"username" => env("SOCKET_USERNAME"),
-		"password" => env("SOCKET_PASSWORD"),
-		"uid" => env("SOCKET_UID"),
+		"port" => env('SOCKET_PORT_SERVER_PORT', "3003"),
+		"uri" => env("APP_URL"),
+		"enabled" => env('SOCKET_SERVER_ENABLED', false),
 	],
 	"api" => [
 		"token_expiration" => "1 hour",
