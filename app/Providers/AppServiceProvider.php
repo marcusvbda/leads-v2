@@ -4,12 +4,11 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
-
+use App;
 
 use Illuminate\Notifications\Channels\DatabaseChannel as IlluminateDatabaseChannel;
-use Illuminate\Notifications\DatabaseNotification as BaseNotification;
 use App\Channels\DatabaseChannel;
-use Illuminate\Support\Facades\Blade;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,11 +27,12 @@ class AppServiceProvider extends ServiceProvider
 	 *
 	 * @return void
 	 */
+
 	public function boot()
 	{
 		Schema::defaultStringLength(191);
+		Paginator::useBootstrap();
 		$this->app->instance(IlluminateDatabaseChannel::class, new DatabaseChannel());
-		// $this->app->instance(BaseNotification::class, new ExampleNotification());
 
 		$this->loadMigrationsFrom(base_path('database/migrations'), 'migrations');
 	}

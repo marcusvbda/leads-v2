@@ -21,7 +21,7 @@ class User extends Authenticatable
 	// , HasRoles;
 	public $guarded = ['created_at'];
 	protected $dates = ['deleted_at'];
-	protected $appends = ['code'];
+	protected $appends = ['code', 'polo_ids'];
 	protected $hashPassword = false;
 	public  $casts = [
 		"data" => "json",
@@ -78,6 +78,11 @@ class User extends Authenticatable
 	{
 		if ($this->isSuperAdmin()) return  Polo::where("id", ">", "0");
 		return $this->belongsToMany(Polo::class, UserPolo::class, "user_id", "polo_id");
+	}
+
+	public function getPoloIdsAttribute()
+	{
+		return $this->polos->pluck("id")->toArray();
 	}
 
 	public function polo()

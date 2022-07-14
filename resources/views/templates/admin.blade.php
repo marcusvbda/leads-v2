@@ -4,11 +4,11 @@
         $user = \Auth::user();
         $polo_code = $user->polo->code;
     @endphp
-    <socket-alert 
+    {{-- <socket-alert 
         polo_code="{{ $polo_code }}" 
         user_code="{{ $user->code }}"
     >
-    </socket-alert>
+    </socket-alert> --}}
     @include("templates.navbar")
     <div class="my-2 container-fluid">
 		@yield("breadcrumb")
