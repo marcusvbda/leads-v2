@@ -76,7 +76,6 @@ class User extends Authenticatable
 
 	public function polos()
 	{
-		if ($this->isSuperAdmin()) return  Polo::where("id", ">", "0");
 		return $this->belongsToMany(Polo::class, UserPolo::class, "user_id", "polo_id");
 	}
 
