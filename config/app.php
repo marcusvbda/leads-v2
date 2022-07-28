@@ -170,6 +170,7 @@ return [
         marcusvbda\vstack\vStackServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class
     ],
 
     /*

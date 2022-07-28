@@ -157,7 +157,7 @@ class Leads extends Resource
 			return $item->name;
 		}];
 		$fields[] = ["label" => "Origens", "handler" => function ($row) {
-			return @implode(", ", data_get($row, "data.source", []));
+			return @implode(", ", (array)data_get($row, "data.source", []));
 		}];
 		$fields[] = ["label" => "Status", "handler" => function ($row) {
 			return @$row->status->name;

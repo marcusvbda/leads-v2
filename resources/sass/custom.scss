@@ -140,3 +140,21 @@ ol.breadcrumb {
         }
     }
 }
+
+
+#table-log_filter label {
+    width: 100% !important;
+}
+
+#table-log_length label {
+    width: 50% !important;
+}
+
+#table-log_paginate {
+    display: flex;
+
+    .pagination {
+        margin-left: auto;
+    }
+
+}

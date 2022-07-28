@@ -68,6 +68,7 @@ class Kernel extends HttpKernel
 		'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
 		'cors' => \App\Http\Middleware\Cors::class,
 		'api.basic_auth' => \App\Http\Middleware\BasicAuthIntegrators::class,
+		'root-auth' => \App\Http\Middleware\RootAuth::class,
 	];
 
 	/**
