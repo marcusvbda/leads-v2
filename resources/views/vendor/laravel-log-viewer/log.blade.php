@@ -151,7 +151,7 @@ use Illuminate\Support\Facades\Crypt;
 			},
 			"language": {
 				"sProcessing":    "Procesando...",
-				"sLengthMenu":    "Mostrar _MENU_ registros",
+				"sLengthMenu":    "Mostrar _MENU_",
 				"sZeroRecords":   "Nenhum registro encontrado",
 				"sEmptyTable":    "Nenhum registro encontrado",
 				"sInfo":          "Mostrando registros de _START_ ate _END_ de um total de _TOTAL_ registros",
