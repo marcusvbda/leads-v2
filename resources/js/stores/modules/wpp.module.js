@@ -1,16 +1,12 @@
 import api from "~/config/libs/axios";
 import io from "socket.io-client";
-const debug = require("console-development");
+// const debug = require("console-development");
 
 const state = {
     socket: {},
     status: "qr",
     qr: "",
     connection_id: null,
-    config: {
-        uri: laravel.config.wpp_service.uri,
-        token: laravel.config.wpp_service.token,
-    },
     token: "",
 };
 
@@ -42,15 +38,15 @@ const serviceEvents = [
 ];
 
 const actionEvents = {
-    qr: (commit, data) => {
+    qr: (commit, resp) => {
         commit("setStatus", "qr");
-        commit("setQr", data);
+        commit("setQr", resp.data);
     },
-    authenticated: (commit, data, cx) => {
+    authenticated: (commit, resp, cx) => {
         commit("setStatus", "authenticated");
         commit("setToken", cx.state.token);
     },
-    ready: (commit, data, cx) => {
+    ready: (commit, resp, cx) => {
         commit("setStatus", "ready");
         commit("setToken", cx.state.token);
     },
@@ -63,41 +59,35 @@ const actions = {
     },
     initSocket(cx, payload) {
         const { commit } = cx;
-        const { code } = payload;
+        const {code} = payload;
         commit("setStatus", "qr");
         commit("setToken", code);
+        const channel = `WppSocket@Session:${code}`;
 
-        const socket = io(state.config.uri, {
-            query: {
-                token: state.config.token,
-            },
-            reconnection: true,
-            reconnectionDelay: 500,
-            reconnectionAttempts: 10,
-            withCredentials: true,
-            pingInterval: 3600000,
-            pingTimeout: 3600000,
-            transports: ["polling", "websocket"],
-            secure: true,
-        });
+        const route = `${laravel.chat.uri}:${laravel.chat.port}`;
+        const socket = io(route);
 
         socket.on("connected", (data) => {
-            debug.log("connected", data);
-            commit("setConnectionId", data.id);
-            commit("setSocket", socket);
+            socket.emit("join", channel);                
 
-            serviceEvents.forEach((event) => {
-                socket.on(event, (data) => {
-                    debug.log(event, data);
-                    actionEvents[event] && actionEvents[event](commit, data, cx);
-                });
+            socket.on('WppSocket.Postback', (response) => {
+                if(serviceEvents.includes(response.event)){
+                    actionEvents[response.event] && actionEvents[response.event](commit, response, cx);
+                    if(payload[`callback_${response.event}`]){
+                        payload[`callback_${response.event}`](response);
+                    }
+                }
             });
 
-            socket.emit("start-engine", code);
+            commit("setConnectionId", data.id);
+            commit("setSocket", socket);
         });
 
         return socket;
     },
+    createSession(cx,payload) {
+        return api.post(`/admin/sessoes-wpp/login`, payload);
+    }
 };
 
 export default {

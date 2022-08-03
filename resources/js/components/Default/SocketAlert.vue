@@ -22,10 +22,6 @@ export default {
                     socket.emit("join", channel);
                 });
 
-                // socket.on("joined", (data) => {
-                //     // console.log("joined", data);
-                // });
-
                 socket.on(event, (data) => {
                     this.$message({ dangerouslyUseHTMLString: true, showClose: true, ...data });
                 });

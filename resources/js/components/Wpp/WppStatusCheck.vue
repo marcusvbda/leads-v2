@@ -4,6 +4,7 @@
     </div>
 </template>
 <script>
+import io from "socket.io-client";
 export default {
     props: ["status", "id", "current_status"],
     data() {
@@ -13,28 +14,25 @@ export default {
     },
     created() {
         if (!["sent", "error"].includes(this.current_status)) {
-            this.initSocket("WppMessage.StatusChange", `WppMessages@Tenant:${laravel.tenant.code}`);
+            this.initSocket(`WppMessages@Tenant:${laravel.tenant.code}`,"WppMessage.StatusChange");
         }
     },
     methods: {
-        initSocket(event, uid) {
-            const socket = this.$io(laravel.chat.uri, {
-                query: {
-                    uid: `${laravel.chat.uid}#${uid}`,
-                    token: laravel.chat.token,
-                },
-                reconnection: true,
-                reconnectionDelay: 500,
-                reconnectionAttempts: 10,
-            });
+        initSocket(channel, event) {
+            const route = `${laravel.chat.uri}:${laravel.chat.port}`;
+            const socket = io(route);
 
-            socket.on(event, ({ ids, status }) => {
-                if (ids.includes(this.id)) {
-                    this.content_status = status;
-                }
-            });
+            socket.on("connected", () => {
+                socket.emit("join", channel);    
+                socket.on(event, (response) => {
+                    if(response.ids.includes(this.id)) {
+                        this.content_status = response.status;
+                    }
+                });
+            });           
+
         },
-    },
+    }
 };
 </script>
 

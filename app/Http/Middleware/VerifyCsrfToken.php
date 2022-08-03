@@ -23,5 +23,6 @@ class VerifyCsrfToken extends Middleware
 		"webhook",
 		"vstack/*",
 		"admin/dashboard/get-data/*",
+		"sessoes-wpp/postback",
 	];
 }

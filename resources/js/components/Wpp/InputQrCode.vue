@@ -8,7 +8,7 @@
     </CustomResourceComponent>
 </template>
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 import VueQr from "vue-qr/src/packages/vue-qr.vue";
 
 export default {
@@ -19,7 +19,7 @@ export default {
     data() {
         return {
             loading: true,
-            scoket: null,
+            uid :this.$uid()
         };
     },
     computed: {
@@ -36,9 +36,6 @@ export default {
         field() {
             return this.card.inputs.find((x) => x.options._uid == "qrcode");
         },
-        uid() {
-            return this.$uid();
-        },
         isLoading() {
             return this.loading || !this.qr;
         },
@@ -47,6 +44,11 @@ export default {
         token(val) {
             this.$set(this.form, "string_token", val);
         },
+        status(val) {
+            if(val == "authenticated") {
+                this.setActionBtnLoading(false);
+            }
+        }
     },
     created() {
         setTimeout(() => {
@@ -60,20 +62,22 @@ export default {
         });
     },
     methods: {
-        ...mapActions("wpp", ["initSocket", "sendMessage"]),
-        async initFields() {
-            this.socket = await this.initSocket({
-                code: this.uid,
-            });
+        ...mapActions("wpp", ["createSession","initSocket"]),
+        ...mapMutations("wpp", ["setStatus","setQr"]),
+        ...mapMutations("resource", ["setActionBtnLoading"]),
+        async initFields() {    
+            this.loading = true;    
+            this.setActionBtnLoading(true);
+            this.createSession({code: this.uid});
+            const onQr = ()=> {
+                this.loading = false;
+            }
+            this.socket = await this.initSocket({code:this.uid,callback_qr:onQr});
 
-            this.socket.on("ready", () => {
-                this.$set(this.form, "string_token", this.uid);
-            });
             if (this.form[this.field.options.field] === undefined) {
                 this.$set(this.form, this.field.options.field, null);
                 this.$set(this.form, "string_token", "");
             }
-            this.loading = false;
         },
     },
 };

@@ -29,7 +29,8 @@ class processWppMessages extends Command
             $batch = [];
             $query = (clone $queryMessages)->orderBy("id", "asc")->where("wpp_session_id", $session->id);
             (clone $query)->update(["status" => "processing"]);
-            $controller->sendSocket((clone $query)->get(), $session);
+            $ids = (clone $query)->get()->pluck("id")->toArray();
+            $controller->sendSocket($ids, $session->tenant->code, "processing");
             foreach ((clone $query)->orderBy("id", "asc")->get() as $message) {
                 $batch = $controller->pushToBatch($message, $batch);
                 $this->bar->advance();

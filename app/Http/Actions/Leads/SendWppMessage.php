@@ -65,7 +65,6 @@ class SendWppMessage extends Action
 				$created_ids[] = $created->id;
 			}
 		}
-		Artisan::queue("command:send-wpp-message", ["ids" => $created_ids, "session_id" => $request->session_id]);
 		Messages::send("success", "Mensagens adicionadas a fila de disparo !");
 		return ['success' => true];
 	}

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\UsersController;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
+use App\Http\Controllers\WppSessionController;
 
 Route::get('', function () {
 	return redirect("/admin"); //temporário até termos uma landing page
@@ -20,6 +21,7 @@ Route::group(['middleware' => ['auth']], function () {
 		require "partials/rating.php";
 		require "partials/attendance.php";
 		require "partials/webhook.php";
+		require "partials/wpp_sessions.php";
 		Route::group(['middleware' => ['root-auth']], function () {
 			Route::get('log-viewer', [LogViewerController::class, 'index']);
 		});

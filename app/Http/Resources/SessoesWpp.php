@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Controllers\WppMessagesController;
+use App\Http\Controllers\WppSessionController;
 use App\Http\Models\WppMessage;
 use marcusvbda\vstack\Resource;
 use marcusvbda\vstack\Fields\{
@@ -92,7 +92,6 @@ class SessoesWpp extends Resource
 
 	public function canUpdate()
 	{
-		return true;
 		return  false;
 	}
 
@@ -108,7 +107,7 @@ class SessoesWpp extends Resource
 
 	public function destroyMethod($content)
 	{
-		(new WppMessagesController())->deleteSession($content);
+		(new WppSessionController())->deleteSession($content);
 		WppMessage::where("id", $content->wpp_messages->where("status", "!=", "sent")->pluck("id")->toArray())->delete();
 		$result = Parent::destroyMethod($content);
 		return $result;
@@ -136,15 +135,12 @@ class SessoesWpp extends Resource
 		$cards[] = new Card("Identificação", $fields);
 
 		$fields = [];
-		// $is_creating = $this->isCreating();
-		// // if ($is_creating) {
 		$fields[] = new CustomComponent("<InputQrCode :form='form' :data='data' :errors='errors' field_index='auth' />", [
 			"label" => "Código QR",
 			"field" => "auth",
 			"description" => "Escaneie o código QR",
 			"_uid" => "qrcode",
 		]);
-		// }
 		$fields[] = new Text([
 			"label" => "Token",
 			"description" =>  "Escaneie o código QR para obter o token",
@@ -157,11 +153,6 @@ class SessoesWpp extends Resource
 			"_uid" => "auth_card"
 		]);
 		return $cards;
-	}
-
-	private function isCreating()
-	{
-		return request()->page_type == 'create';
 	}
 
 	public function secondCrudBtn()
