@@ -339,6 +339,10 @@ ul.pagination {
   border: unset !important;
 }
 
+.form-control {
+  height: 38px;
+}
+
 a {
   display: inline-block;
   position: relative;
