@@ -19,7 +19,7 @@
         "laravel/framework": "^9.19",
         "laravel/tinker": "^2.0",
         "league/flysystem": "^3.0",
-        "league/flysystem-sftp": "^3.0",
+        "league/flysystem-sftp-v3": "^3.2",
         "maatwebsite/excel": "^3.1",
         "marcusvbda/validador-cpf-cnpj": "dev-master",
         "marcusvbda/vstack": "dev-master",

@@ -230,6 +230,7 @@ class Leads extends Resource
 		$new_model->name = data_get($fill_data, "name", "");
 		$new_model->email = data_get($fill_data, "email", "");
 		$new_model->cellphone_number = data_get($fill_data, "celular", "");
+
 		$new_model->save();
 
 		return $new_model;
