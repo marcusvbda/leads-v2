@@ -227,9 +227,11 @@ class Leads extends Resource
 		$fill_data = array_merge($new, $extra_data ? $extra_data : []);
 		$new_model = @$new["id"] ? $this->getModelInstance()->findOrFail($new["id"]) : $this->getModelInstance();
 
-		$new_model->name = data_get($fill_data, "name", "");
+		$new_model->name = data_get($fill_data, "nome", "");
 		$new_model->email = data_get($fill_data, "email", "");
 		$new_model->cellphone_number = data_get($fill_data, "celular", "");
+		$new_model->tenant_id = data_get($fill_data, "tenant_id", null);
+		$new_model->polo_id = data_get($fill_data, "polo_id", null);
 
 		$new_model->save();
 

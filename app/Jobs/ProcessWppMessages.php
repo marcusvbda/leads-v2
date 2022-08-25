@@ -1,22 +1,26 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Jobs;
 
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use App\Http\Controllers\WppMessagesController;
 use App\Http\Models\WppMessage;
 use App\Http\Models\WppSession;
-use Illuminate\Console\Command;
 
-class processWppMessages extends Command
+class ProcessWppMessages implements ShouldQueue
 {
-    protected $signature = 'command:process-wpp-messages';
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
     protected $bar = null;
-    // protected $limit = 1;
     protected $limit = 200;
 
     public function __construct()
     {
-        parent::__construct();
+        $this->onQueue('process-wpp-messages');
     }
 
     public function handle()

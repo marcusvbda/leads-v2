@@ -29,11 +29,6 @@ class Kernel extends ConsoleKernel
 			->withoutOverlapping(5);
 
 		$schedule
-			->command('command:process-wpp-messages')
-			->everyFiveMinutes()
-			->withoutOverlapping(5);
-
-		$schedule
 			->command('queue:work --queue=resource-import,resource-export,default')
 			->everyMinute()
 			->withoutOverlapping(5);
