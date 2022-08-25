@@ -1,15 +1,14 @@
 {
   "private": true,
   "scripts": {
-    "lint": "vue-cli-service lint",
-    "client": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --env.mixfile=webpack.client.mix.js --config=node_modules/laravel-mix/setup/webpack.config.js",
     "dev": "npm run development",
-    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "development": "mix",
+    "watch": "mix watch",
+    "watch-poll": "mix watch -- --watch-options-poll=1000",
+    "hot": "mix watch --hot",
+    "production": "mix --production",
     "prod": "npm run production",
-    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch": "npm run development -- --watch",
-    "watch-poll": "npm run watch -- --watch-poll"
+    "client": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --env.mixfile=webpack.client.mix.js --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
@@ -58,6 +57,7 @@
     "summernote": "^0.8.12",
     "v-runtime-template": "^1.10.0",
     "vue": "^2.6.11",
+    "vue-api-query": "^1.10.0",
     "vue-chartkick": "^0.6.0",
     "vue-codemirror": "^4.0.6",
     "vue-currency-input": "^1.19.0",
@@ -81,11 +81,12 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
-    "laravel-mix": "^5.0.1",
+    "laravel-mix": "^6.0.12",
     "lodash": "^4",
     "resolve-url-loader": "^3.1.0",
     "sass": "1.32.*",
     "sass-loader": "^8.0.0",
+    "vue-loader": "^15.9.8",
     "vue-template-compiler": "^2.6.11"
   }
 }
