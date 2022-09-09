@@ -125,6 +125,10 @@ $whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
                             @if(@$whatsapp_module->new_badge) </el-badge> @endif
                     </a>
                     @endif
+                    <a class="dropdown-item  {{ getMenuClass('viewlist-email-integrators',['/admin/integradores-de-email/*']) }}"
+                        href="/admin/integradores-de-email">
+                        Integradores de Email
+                    </a>
                 </div>
             </li>
             @if(@$whatsapp_module->id)

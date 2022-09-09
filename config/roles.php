@@ -21,12 +21,6 @@ return [
             ["viewlist-contacttype", "Ver lista de Tipos de Contato"],
 
             ["viewlist-leadanswer", "Ver lista de Respostas de Contato"],
-
-            // ["viewlist-wppsession", "Ver Lista de Sessões de WhatsApp"],
-
-            // ["viewlist-wppmessage", "Ver Lista de Mensagens de WhatsApp"],
-            // ["create-wppmessage", "Criar Sessões de WhatsApp"],
-            // ["destroy-wppmessage", "Excluir Sessões de WhatsApp"],
         ]
     ],
     "admin" => [
@@ -58,6 +52,11 @@ return [
             ["destroy-leadanswer", "Excluir Respostas de Contato"],
 
             ["config-rating-behavior", "Comportamento de Rating"],
+
+            ["viewlist-email-integrators", "Ver Lista de Integradores de Emails"],
+            ["create-email-integrators", "Criar Integradores de Emails"],
+            ["edit-email-integrators", "Editar Integradores de Emails"],
+            ["destroy-email-integrators", "Excluir Integradores de Emails"],
 
             // ["viewlist-wppsession", "Ver Lista de Sessões de WhatsApp"],
             // ["create-wppsession", "Criar Sessões de WhatsApp"],
