@@ -30,6 +30,23 @@ use marcusvbda\vstack\Filters\FilterByText;
 class Leads extends Resource
 {
 	public $model = Lead::class;
+	public $importColumnIndexes = [
+		"nome" => "name",
+		"email" => "email",
+		"nascimento" => "birthdate",
+		"telefone" => "phone_number",
+		"celular" => "cellphone_number",
+		"profissão" => "profession",
+
+		"cep" => "zipcode",
+		"cidade" => "city",
+		"bairro" => "district",
+		"número" => "address_number",
+		"complemente" => "complementary",
+		"interesse" => "interest",
+		"comentários" => "comment",
+		"observações" => "obs",
+	];
 
 	public function label()
 	{
@@ -219,22 +236,22 @@ class Leads extends Resource
 
 	public function importerColumns()
 	{
-		return ["nome", "email", "celular"];
+		return array_keys($this->importColumnIndexes);
 	}
 
 	public function importRowMethod($new, $extra_data)
 	{
 		$fill_data = array_merge($new, $extra_data ? $extra_data : []);
 		$new_model = @$new["id"] ? $this->getModelInstance()->findOrFail($new["id"]) : $this->getModelInstance();
+		$columns = $this->importColumnIndexes;
 
-		$new_model->name = data_get($fill_data, "nome", "");
-		$new_model->email = data_get($fill_data, "email", "");
-		$new_model->cellphone_number = data_get($fill_data, "celular", "");
+		foreach ($columns as $key => $value) {
+			$new_model->{$value} = data_get($fill_data, $key, "");
+		}
+
 		$new_model->tenant_id = data_get($fill_data, "tenant_id", null);
 		$new_model->polo_id = data_get($fill_data, "polo_id", null);
-
 		$new_model->save();
-
 		return $new_model;
 	}
 
@@ -357,20 +374,4 @@ class Leads extends Resource
 			"polo_id" => Auth::user()->polo_id,
 		]];
 	}
-
-	// public function listItemsContent($data)
-	// {
-	// 	$items[] = [
-	// 		"label" => "TOTAL DE ITENS",
-	// 		"value" => $data->count(),
-	// 		"class" => "col-md-2 col-sm-12"
-	// 	];
-	// 	$items[] = [
-	// 		"label" => "TOTAL",
-	// 		"value" => 'R$ 551.533,00',
-	// 		"class" => "col-md-3 col-sm-12"
-	// 	];
-
-	// 	return $items;
-	// }
 }
