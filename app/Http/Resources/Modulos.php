@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Models\Polo;
 use marcusvbda\vstack\Resource;
 use Auth;
 use marcusvbda\vstack\Fields\{
+	BelongsTo,
 	Card,
 	Text,
 	Check,
@@ -114,6 +116,12 @@ class Modulos extends Resource
 			"field" => "new_badge",
 			"default" => true,
 			"required" => true
+		]);
+		$fields[] = new BelongsTo([
+			"label" => "Polos Habilitados",
+			"field" => "polo_ids",
+			"model" => Polo::class,
+			"multiple" => true,
 		]);
 		$cards[] = new Card("Configurações", $fields);
 

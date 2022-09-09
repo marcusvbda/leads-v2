@@ -11,6 +11,7 @@ class Module extends DefaultModel
 
 	public $casts = [
 		"new_badge" => "boolean",
+		"polo_ids" => "array"
 	];
 
 	public static function boot()
@@ -22,10 +23,5 @@ class Module extends DefaultModel
 	public function getFNewBadgeAttribute()
 	{
 		return getEnabledIcon(@$this->new_badge);
-	}
-
-	public static function hasTenant() //default true
-	{
-		return false;
 	}
 }

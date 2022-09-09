@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Models\Tenant;
 use Illuminate\Foundation\Inspiring;
 
 Artisan::command('inspire', function () {
@@ -18,3 +19,11 @@ Artisan::command('jobs:clear', function () {
 	DB::table("jobs")->truncate();
 	$this->comment('Jobs have been cleared!');
 })->describe('Clear jobs');
+
+
+Artisan::command('tenantStores:clear', function () {
+	$tenants = Tenant::get();
+	foreach ($tenants as $tenant) {
+		$tenant->clearStores();
+	}
+})->describe('Clear Tenant Stores');
