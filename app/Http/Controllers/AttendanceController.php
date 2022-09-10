@@ -25,9 +25,12 @@ class AttendanceController extends Controller
 	public function transferDepartment($code, Request $request)
 	{
 		$resource = ResourcesHelpers::find("leads");
-		if (!$resource->canUpdate()) abort(403);
+		if (!$resource->canUpdate()) {
+			abort(403);
+		}
 		$lead = Lead::findByCodeOrFail($code);
 		$lead->department_id = $request["department_id"];
+		$lead->responsible_id = null;
 		$lead->save();
 		return ["sucess" => true];
 	}

@@ -243,7 +243,7 @@ const actions = {
         ]);
     },
     transferLead: async ({ state }, department_id) => {
-        let { data } = await api.post(`/admin/atendimento/${state.lead.code}/transfer-department`, { department_id });
+        let { data } = await api.post(`/admin/atendimento/${state.lead.code}/transfer-department`, { department_id :department_id});
         return data;
     },
     finishLead: async ({ state }, payload) => {

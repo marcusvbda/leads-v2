@@ -41,10 +41,8 @@ $wiki_url = '/admin/wiki';
 if(!$is_super_admin) {
 $wiki_url = '/admin/wiki/?order_by=id&order_type=asc';
 }
-$whatsapp_module = \App\Http\Models\Module::where("slug", "whatsapp")->first();
-$has_access_wpp = @$whatsapp_module->id && in_array($polo->id,$whatsapp_module->polo_ids);
-$email_integrator = \App\Http\Models\Module::where("slug", "email-integrator")->first();
-$has_access_email = @$email_integrator->id && in_array($polo->id,$email_integrator->polo_ids);
+$whatsapp_module = getEnabledModuleToUser("whatsapp");
+$email_integrator = getEnabledModuleToUser("email-integrator");
 
 @endphp
 <nav class="navbar navbar-expand-lg navbar-light bg-light py-0">
@@ -119,7 +117,7 @@ $has_access_email = @$email_integrator->id && in_array($polo->id,$email_integrat
                     <a class="{{ getMenuClass('config-rating-behavior', ['/admin/regra-classificacao/*']) }}"
                         href="/admin/regra-classificacao" data-label="Regra de Rating de Lead">Regra de
                         Classificação</a>
-                    @if($has_access_wpp)
+                    @if($whatsapp_module)
                     <a class="dropdown-item  {{ getMenuClass('viewlist-wppsession',['/admin/sessoes-wpp/*']) }}"
                         href="/admin/sessoes-wpp" data-label="Perfis autenticados">
                         @if(@$whatsapp_module->new_badge) <el-badge value="Novo" class="badge-new" type="primary">
@@ -128,7 +126,7 @@ $has_access_email = @$email_integrator->id && in_array($polo->id,$email_integrat
                             @if(@$whatsapp_module->new_badge) </el-badge> @endif
                     </a>
                     @endif
-                    @if(@$has_access_email)
+                    @if(@$email_integrator)
                         <a class="dropdown-item  {{ getMenuClass('viewlist-email-integrators',['/admin/integradores-de-email/*']) }}"
                             href="/admin/integradores-de-email">
                             @if(@$email_integrator->new_badge) <el-badge value="Novo" class="badge-new" type="primary">@endif
@@ -138,20 +136,29 @@ $has_access_email = @$email_integrator->id && in_array($polo->id,$email_integrat
                     @endif
                 </div>
             </li>
-            @if(@$has_access_wpp)
-            <li class="nav-item dropdown {{ currentClass(['/admin/mensagens-wpp/*']) }}">
+            @if(@$whatsapp_module)
+            <li class="nav-item dropdown {{ currentClass(['/admin/mensagens-wpp/*','/admin/modelos-de-email/*']) }}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                     <i class="el-icon-chat-dot-round mr-2"></i>Comunicação
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    @if(@$whatsapp_module->id)
+                    @if(@$whatsapp_module)
                     <a class="dropdown-item {{ getMenuClass('viewlist-wppmessage',['/admin/mensagens-wpp/*']) }}"
                         href="/admin/mensagens-wpp">
                         @if(@$whatsapp_module->new_badge) <el-badge value="Novo" class="badge-new" type="primary">
                             @endif
                             Mensagens WhatsApp
                             @if(@$whatsapp_module->new_badge) </el-badge> @endif
+                    </a>
+                    @endif
+                    @if(@$email_integrator)
+                    <a class="dropdown-item {{ getMenuClass('viewlist-email-templates',['/admin/modelos-de-email/*']) }}"
+                        href="/admin/mensagens-wpp">
+                        @if(@$email_integrator->new_badge) <el-badge value="Novo" class="badge-new" type="primary">
+                            @endif
+                            Modelos de Email
+                            @if(@$email_integrator->new_badge) </el-badge> @endif
                     </a>
                     @endif
                 </div>

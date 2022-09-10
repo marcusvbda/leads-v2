@@ -64,7 +64,22 @@ class Lead extends DefaultModel
 		$vstack_tags = "<resource-tags-input class='f-12 mt-1' :default_tags='row.content.tags' only_view />";
 		$tags_origin = $this->getOriginSourcesBadge();
 		$name = $this->name ?? "Nome não informado";
-		return Vstack::makeLinesHtmlAppend($name, $this->f_rating, $tags_origin, $vstack_tags);
+		$department = $this->department;
+		if ($department) {
+			$department = "<b class='mr-1'>Departamento :</b>" . $department->name;
+		}
+
+		$responsible = $this->responsible;
+		if ($responsible) {
+			$responsible = "<b class='mr-1'>Responsável :</b>" . $responsible->name;
+		}
+
+		return Vstack::makeLinesHtmlAppend($name, $this->f_rating, $tags_origin, $responsible, $department, $vstack_tags);
+	}
+
+	public function department()
+	{
+		return $this->belongsTo(Department::class);
 	}
 
 	// getters

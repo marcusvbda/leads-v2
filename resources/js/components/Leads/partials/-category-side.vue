@@ -10,46 +10,36 @@
                     </b>
                     <el-input placeholder="Pesquisar..." suffix-icon="el-icon-search" v-model="filter.text" clearable />
                     <small class="text-muted f-12 mb-2">Filtro por nome, email, telefone ou origem</small>
-                    <el-select-all
-                        v-if="!loading.statuses"
-                        v-model="filter.status_ids"
-                        class="mt-2"
-                        filterable
-                        multiple
-                        collapse-tags
-                        placeholder="Selecione o status"
-                        label="Todos os Status"
-                        clearable
-                        :options="statuses.map(x => ({ label: x.name, value: String(x.id) }))"
-                    />
+                    <el-select-all v-if="!loading.statuses" v-model="filter.status_ids" class="mt-2" filterable multiple
+                        collapse-tags placeholder="Selecione o status" label="Todos os Status" clearable
+                        :options="statuses.map(x => ({ label: x.name, value: String(x.id) }))" />
                     <template>
                         <el-select v-model="date_type" class="w-100 mt-2">
                             <el-option label="data customizada" value="custom" />
                             <el-option label="todas as datas" value="all" />
                             <el-option v-for="(key, i) in Object.keys(preset_date)" :label="key" :value="i" :key="i" />
                         </el-select>
-                        <el-date-picker
-                            class="w-100 mt-2"
-                            v-if="showScheduleFilter && date_type == 'custom'"
-                            v-model="filter.schedule"
-                            type="datetimerange"
-                            range-separator=" - "
-                            start-placeholder=""
-                            end-placeholder=""
-                            format="dd/MM/yyyy"
-                            value-format="yyyy-MM-dd"
-                        />
+                        <el-date-picker class="w-100 mt-2" v-if="showScheduleFilter && date_type == 'custom'"
+                            v-model="filter.schedule" type="datetimerange" range-separator=" - " start-placeholder=""
+                            end-placeholder="" format="dd/MM/yyyy" value-format="yyyy-MM-dd" />
                     </template>
                     <el-select v-model="filter.date_index" class="w-100 mt-2" v-if="date_type != 'all'">
                         <el-option label="Data de Criação" value="DATE(created_at)" />
-                        <el-option label="Data de Agendamento" value="DATE(json_unquote(json_extract(data,'$.schedule')))" />
+                        <el-option label="Data de Agendamento"
+                            value="DATE(json_unquote(json_extract(data,'$.schedule')))" />
                     </el-select>
 
                     <el-tabs class="mt-3" v-model="tab">
                         <el-tab-pane v-loading="!initialized" element-loading-text="Inicializando..." name="active">
                             <span slot="label">
-                                Ativos
-                                <template v-if="active_leads.total"> ({{ active_leads.total }}) </template>
+                                <el-tooltip class="item" effect="dark" content="Leads de sua responsabilidade"
+                                    placement="top-start">
+                                    <div>
+                                        Ativos
+                                        <template v-if="active_leads.total"> ({{ active_leads.total }})
+                                        </template>
+                                    </div>
+                                </el-tooltip>
                             </span>
                             <div class="row" v-if="!active_leads.data.length">
                                 <div class="col-12 d-flex align-items-center justify-content-center my-5">
@@ -59,32 +49,29 @@
                             <div class="row" v-else>
                                 <div class="col-12 d-flex align-items-center justify-content-center">
                                     <div class="w-100" style="overflow: auto; margin: 0">
-                                        <div
-                                            class="d-flex flex-column"
-                                            v-infinite-scroll="getLeads"
-                                            style="overflow: auto; height: 300px"
-                                        >
-                                            <lead-card v-for="(lead, i) in active_leads.data" :lead="lead" :key="`active_${i}`" />
-                                            <div
-                                                v-if="loading_leads.active && active_leads.has_more"
-                                                v-loading="loading_leads.active"
-                                                class="py-5 my-3"
-                                                element-loading-text="Loading ..."
-                                            />
+                                        <div class="d-flex flex-column" v-infinite-scroll="getLeads"
+                                            style="overflow: auto; height: 300px">
+                                            <lead-card v-for="(lead, i) in active_leads.data" :lead="lead"
+                                                :key="`active_${i}`" />
+                                            <div v-if="loading_leads.active && active_leads.has_more"
+                                                v-loading="loading_leads.active" class="py-5 my-3"
+                                                element-loading-text="Loading ..." />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </el-tab-pane>
-                        <el-tab-pane
-                            v-if="user.department_id"
-                            v-loading="!initialized"
-                            element-loading-text="Inicializando..."
-                            name="pending"
-                        >
+                        <el-tab-pane v-if="user.department_id" v-loading="!initialized"
+                            element-loading-text="Inicializando..." name="pending">
                             <span slot="label">
-                                Pendentes
-                                <template v-if="pending_leads.total"> ({{ pending_leads.total }}) </template>
+                                <el-tooltip class="item" effect="dark"
+                                    content="Leads sem responsável porém de responsabilidade de seu departamento"
+                                    placement="top-start">
+                                    <div>
+                                        Pendentes
+                                        <template v-if="pending_leads.total"> ({{ pending_leads.total }}) </template>
+                                    </div>
+                                </el-tooltip>
                             </span>
                             <div class="row" v-if="!pending_leads.data.length">
                                 <div class="col-12 d-flex align-items-center justify-content-center my-5">
@@ -94,22 +81,13 @@
                             <div class="row" v-else>
                                 <div class="col-12 d-flex align-items-center justify-content-center">
                                     <div class="w-100" style="overflow: auto; margin: 0">
-                                        <div
-                                            class="d-flex flex-column"
-                                            v-infinite-scroll="getLeads"
-                                            style="overflow: auto; height: 300px"
-                                        >
-                                            <lead-card
-                                                v-for="(lead, i) in pending_leads.data"
-                                                :lead="lead"
-                                                :key="`pending_${i}`"
-                                            />
-                                            <div
-                                                v-if="loading_leads.pending && pending_leads.has_more"
-                                                v-loading="loading_leads.pending"
-                                                class="py-5 my-3"
-                                                element-loading-text="Loading ..."
-                                            />
+                                        <div class="d-flex flex-column" v-infinite-scroll="getLeads"
+                                            style="overflow: auto; height: 300px">
+                                            <lead-card v-for="(lead, i) in pending_leads.data" :lead="lead"
+                                                :key="`pending_${i}`" />
+                                            <div v-if="loading_leads.pending && pending_leads.has_more"
+                                                v-loading="loading_leads.pending" class="py-5 my-3"
+                                                element-loading-text="Loading ..." />
                                         </div>
                                     </div>
                                 </div>
@@ -117,8 +95,14 @@
                         </el-tab-pane>
                         <el-tab-pane v-loading="!initialized" element-loading-text="Inicializando..." name="potential">
                             <span slot="label">
-                                Potenciais
-                                <template v-if="potential_leads.total"> ({{ potential_leads.total }}) </template>
+                                <el-tooltip class="item" effect="dark"
+                                    content="Leads sem responsável e sem departamento definido" placement="top-start">
+                                    <div>
+                                        Potenciais
+                                        <template v-if="potential_leads.total"> ({{ potential_leads.total }})
+                                        </template>
+                                    </div>
+                                </el-tooltip>
                             </span>
                             <div class="row" v-if="!potential_leads.data.length">
                                 <div class="col-12 d-flex align-items-center justify-content-center my-5">
@@ -128,22 +112,13 @@
                             <div class="row" v-else>
                                 <div class="col-12 d-flex align-items-center justify-content-center">
                                     <div class="w-100" style="overflow: auto; margin: 0">
-                                        <div
-                                            class="d-flex flex-column"
-                                            v-infinite-scroll="getLeads"
-                                            style="overflow: auto; height: 300px"
-                                        >
-                                            <lead-card
-                                                v-for="(lead, i) in potential_leads.data"
-                                                :lead="lead"
-                                                :key="`pending_${i}`"
-                                            />
-                                            <div
-                                                v-if="loading_leads.potential && potential_leads.has_more"
-                                                v-loading="loading_leads.potential"
-                                                class="py-5 my-3"
-                                                element-loading-text="Loading ..."
-                                            />
+                                        <div class="d-flex flex-column" v-infinite-scroll="getLeads"
+                                            style="overflow: auto; height: 300px">
+                                            <lead-card v-for="(lead, i) in potential_leads.data" :lead="lead"
+                                                :key="`pending_${i}`" />
+                                            <div v-if="loading_leads.potential && potential_leads.has_more"
+                                                v-loading="loading_leads.potential" class="py-5 my-3"
+                                                element-loading-text="Loading ..." />
                                         </div>
                                     </div>
                                 </div>

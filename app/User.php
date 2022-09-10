@@ -116,18 +116,6 @@ class User extends Authenticatable
 		return $this->userNotifications()->isNew()->count();
 	}
 
-	public function canAccessModule($module)
-	{
-		$tenant = $this->tenant;
-		$polo_id = $this->polo_id;
-		$section_id = __CLASS__ . "@" . __FUNCTION__ . "_" . $module . "_" . $polo_id;
-		return $tenant->storeRemember($section_id, 60 * 10, function () use ($module, $polo_id) {
-			$module = Module::where("slug", $module)->first();
-			$has_access_wpp = @$module->id && in_array($polo_id, $module->polo_ids);
-			return $has_access_wpp ? true : false;
-		});
-	}
-
 	public function hasRole($role)
 	{
 		$roles = is_array($role) ? $role : [$role];

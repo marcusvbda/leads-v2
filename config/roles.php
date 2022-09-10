@@ -58,13 +58,18 @@ return [
             ["edit-email-integrators", "Editar Integradores de Emails"],
             ["destroy-email-integrators", "Excluir Integradores de Emails"],
 
-            // ["viewlist-wppsession", "Ver Lista de Sessões de WhatsApp"],
-            // ["create-wppsession", "Criar Sessões de WhatsApp"],
-            // ["destroy-wppsession", "Excluir Sessões de WhatsApp"],
+            ["viewlist-email-templates", "Ver Lista de Modelos de Email"],
+            ["create-email-templates", "Criar Modelos de Email"],
+            ["edit-email-templates", "Editar Modelos de Email"],
+            ["destroy-email-templates", "Excluir Modelos de Email"],
 
-            // ["viewlist-wppmessage", "Ver Lista de Mensagens de WhatsApp"],
-            // ["create-wppmessage", "Criar Sessões de WhatsApp"],
-            // ["destroy-wppmessage", "Excluir Sessões de WhatsApp"],
+            ["viewlist-wppsession", "Ver Lista de Sessões de WhatsApp"],
+            ["create-wppsession", "Criar Sessões de WhatsApp"],
+            ["destroy-wppsession", "Excluir Sessões de WhatsApp"],
+
+            ["viewlist-wppmessage", "Ver Lista de Mensagens de WhatsApp"],
+            ["create-wppmessage", "Criar Sessões de WhatsApp"],
+            ["destroy-wppmessage", "Excluir Sessões de WhatsApp"],
         ]
     ]
 ];

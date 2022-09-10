@@ -64,7 +64,7 @@ class MensagensWpp extends Resource
 
 	private function canAccessModule()
 	{
-		return Auth::user()->canAccessModule("whatsapp");
+		return getEnabledModuleToUser("whatsapp");
 	}
 
 	public function canViewList()
@@ -94,9 +94,9 @@ class MensagensWpp extends Resource
 
 	public function nothingStoredSubText()
 	{
-		return "<span>
+		return "<small>
 			Caso queira, você pode importar mensagens do WhatsApp utilizando o importador de planilhas ou cadastrando uma nova mensagem.
-		</span>";
+		</small>";
 	}
 
 	public function getTableColumns()

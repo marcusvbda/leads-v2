@@ -19,7 +19,6 @@ class MailIntegrator extends DefaultModel
 		static::creating(function ($model) {
 			$user = Auth::user();
 			$model->polo_id = $user->polo_id;
-			$model->tenant_id = $user->tenant_id;
 		});
 	}
 

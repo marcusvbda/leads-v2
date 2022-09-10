@@ -15,7 +15,9 @@ use App\Http\Actions\Leads\{
 };
 use App\Http\Filters\Leads\LeadsByPhone;
 use App\Http\Filters\Leads\LeadsByStatus;
+use App\Http\Models\Department;
 use App\Http\Models\Status;
+use App\User;
 use marcusvbda\vstack\Fields\{
 	BelongsTo,
 	Card,
@@ -23,6 +25,7 @@ use marcusvbda\vstack\Fields\{
 	TextArea,
 };
 use Auth;
+use marcusvbda\vstack\Filters\FilterByOption;
 use marcusvbda\vstack\Filters\FilterByPresetDate;
 use marcusvbda\vstack\Filters\FilterByTag;
 use marcusvbda\vstack\Filters\FilterByText;
@@ -117,7 +120,7 @@ class Leads extends Resource
 		// 	$actions[] = new LeadReprocess();
 		// 	$actions[] = new LeadRemoveDuplicates();
 		// }
-		if (Auth::user()->canAccessModule("whatsapp")) {
+		if (getEnabledModuleToUser("whatsapp")) {
 			$actions[] = new SendWppMessage();
 		}
 		return $actions;
@@ -208,6 +211,7 @@ class Leads extends Resource
 
 	public function filters()
 	{
+		$user_options = User::selectRaw("id as value,name as label")->get();
 		$filters = [];
 		$filters[] = new FilterByPresetDate([
 			"label" => "Data de Criação",
@@ -231,6 +235,25 @@ class Leads extends Resource
 			"label" => "Origem",
 			"index" => "source"
 		]);
+		$filters[] = new FilterByOption([
+			"label" => "Departamentos",
+			"multiple" => true,
+			"options" => Department::selectRaw("id as value,name as label")->get(),
+			"column" => "department_id",
+		]);
+		$filters[] = new FilterByOption([
+			"label" => "Reponsáveis",
+			"multiple" => true,
+			"options" => $user_options,
+			"column" => "responsible_id",
+		]);
+		$filters[] = new FilterByOption([
+			"label" => "Cadastrado por ...",
+			"multiple" => true,
+			"options" => $user_options,
+			"column" => "user_id",
+		]);
+
 		return $filters;
 	}
 

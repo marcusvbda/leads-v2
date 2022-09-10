@@ -44,9 +44,14 @@ class IntegradoresDeEmail extends Resource
         return $columns;
     }
 
+    private function canAccessModule()
+    {
+        return getEnabledModuleToUser("email-integrator") ? true : false;
+    }
+
     public function canViewList()
     {
-        return hasPermissionTo("viewlist-email-integrators");
+        return $this->canAccessModule() && hasPermissionTo("viewlist-email-integrators");
     }
 
     public function canView()
@@ -56,7 +61,7 @@ class IntegradoresDeEmail extends Resource
 
     public function canCreate()
     {
-        return hasPermissionTo("create-email-integrators");
+        return $this->canAccessModule() && hasPermissionTo("create-email-integrators");
     }
 
     public function canClone()
@@ -66,12 +71,12 @@ class IntegradoresDeEmail extends Resource
 
     public function canUpdate()
     {
-        return hasPermissionTo("edit-email-integrators");
+        return $this->canAccessModule() && hasPermissionTo("edit-email-integrators");
     }
 
     public function canDelete()
     {
-        return hasPermissionTo("destroy-email-integrators");
+        return $this->canAccessModule() && hasPermissionTo("destroy-email-integrators");
     }
 
     public function canImport()

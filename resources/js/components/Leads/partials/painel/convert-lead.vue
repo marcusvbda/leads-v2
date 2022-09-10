@@ -7,17 +7,17 @@
                     <i class="el-icon-arrow-down el-icon--right" />
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="transferLead">Transferir para outro <b>departamento</b></el-dropdown-item>
+                    <el-dropdown-item command="makePotential">Voltar lead para <b>potencial</b> (sem responsável e sem
+                        departamento)
+                    </el-dropdown-item>
+                    <el-dropdown-item command="transferLead">Transferir para outro <b>departamento</b>
+                    </el-dropdown-item>
                     <el-dropdown-item command="finishLead"><b>Finalizar</b> lead</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <select-dialog
-                ref="select-department"
-                title="Departamentos"
-                description="Selecione o departamento que deseja transferir este lead"
-                btn_text="Selecionar"
-                @selected="transferToDerpartment"
-            />
+            <select-dialog ref="select-department" title="Departamentos"
+                description="Selecione o departamento que deseja transferir este lead" btn_text="Selecionar"
+                @selected="transferToDerpartment" />
         </identification-row>
         <div class="row">
             <div class="col-12">
@@ -33,16 +33,16 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
-    props: ['use_tags', 'resource_id', 'answers', 'objections', 'original_lead','after_row'],
+    props: ['use_tags', 'resource_id', 'answers', 'objections', 'original_lead', 'after_row'],
     components: {
         'info-obs-row': require('./-info-obs-row').default,
         'identification-row': require('./-identification-row').default,
     },
     computed: {
-        ...mapGetters("lead",["lead"])
+        ...mapGetters("lead", ["lead"])
     },
     created() {
-        if(this.original_lead) {
+        if (this.original_lead) {
             this.setLead(this.original_lead)
         }
         this.setUseTags(true)
@@ -52,11 +52,11 @@ export default {
         this.getObjections()
     },
     methods: {
-        ...mapMutations("lead",["setUseTags","setResourceId","setLead"]),        
-        ...mapActions("lead",["getTypes","getAnswers","getObjections","setleadActive","reloadAllLeads","getDepartments"]),
-        ...mapActions("lead",{
-            transferLeadAction : "transferLead",
-            finishLeadAction : "finishLead"
+        ...mapMutations("lead", ["setUseTags", "setResourceId", "setLead"]),
+        ...mapActions("lead", ["getTypes", "getAnswers", "getObjections", "setleadActive", "reloadAllLeads", "getDepartments"]),
+        ...mapActions("lead", {
+            transferLeadAction: "transferLead",
+            finishLeadAction: "finishLead"
         }),
         startAttendance() {
             this.$confirm('Deseja iniciar este atendimento ?', 'Confirmação').then(() => {
@@ -78,6 +78,16 @@ export default {
                 this.reloadAllLeads().then(() => {
                     this.setLead({})
                     this.$message.success('Lead Transferido !!')
+                })
+            })
+        },
+        makePotential() {
+            this.$confirm('Deseja voltar esse lead para potencial (sem responsável e sem departamento definido) ?', 'Confirmar').then(() => {
+                this.transferLeadAction(null).then(() => {
+                    this.reloadAllLeads().then(() => {
+                        this.setLead({})
+                        this.$message.success('Lead Retornado para potencial !!')
+                    })
                 })
             })
         },
@@ -105,6 +115,7 @@ export default {
             transition: 0.3s;
             font-weight: 600;
             line-height: 20px;
+
             &:hover {
                 text-decoration: unset;
                 opacity: 1;
