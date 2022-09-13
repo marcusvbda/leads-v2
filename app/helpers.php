@@ -211,3 +211,16 @@ if (!function_exists('debug_log')) {
 		\Log::channel('debug')->debug("\{$path} $message", $context);
 	}
 }
+
+
+if (!function_exists('process_template')) {
+	function process_template(string $template, array $context)
+	{
+		foreach ($context as $key => $value) {
+			if (is_string($value) || is_numeric($value)) {
+				$template = str_replace('{{' . $key . '}}', $value, $template);
+			}
+		}
+		return $template;
+	}
+}

@@ -6,6 +6,7 @@ use App\Http\Models\Scopes\OrderByScope;
 use App\Http\Models\Scopes\PoloScope;
 use Auth;
 use marcusvbda\vstack\Models\DefaultModel;
+use marcusvbda\vstack\Services\SendMail;
 
 class EmailTemplate extends DefaultModel
 {
@@ -30,5 +31,20 @@ class EmailTemplate extends DefaultModel
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    public function send($data)
+    {
+        $address = data_get($data, "address");
+        $template_process = data_get($data, "template_process");
+
+        $processed_template = $this->body;
+
+        if ($template_process) {
+            $process_context = data_get($data, "process_context");
+            $processed_template = process_template($processed_template, $process_context);
+        }
+
+        return SendMail::to($address, $this->subject, $processed_template);
     }
 }

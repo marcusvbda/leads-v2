@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
 			->withoutOverlapping(5);
 
 		$schedule
-			->command('queue:work --queue=resource-import,resource-export,default')
+			->command('queue:work --queue=resource-import,resource-export,mail-integrator,default')
 			->everyMinute()
 			->withoutOverlapping(5);
 	}

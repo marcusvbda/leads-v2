@@ -8,12 +8,10 @@ use App\Http\Models\WppSession;
 use  marcusvbda\vstack\Action;
 use Illuminate\Http\Request;
 use Auth;
-use Illuminate\Support\Facades\Artisan;
 use marcusvbda\vstack\Services\Messages;
 
 class SendWppMessage extends Action
 {
-	public $id = "wpp-message";
 	public $run_btn = "Adicionar a fila de disparos";
 	public $title = "Enviar mensagem via WhatsApp";
 	public $message = "Preencha o formulário corretamente para criar uma mensagem a mensagem";

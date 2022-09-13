@@ -31,4 +31,16 @@ class MailIntegrator extends DefaultModel
 	{
 		return $this->belongsTo(Tenant::class);
 	}
+
+	public function defineConfigs()
+	{
+		config(["mail.driver" => "smtp"]);
+		config(["mail.host" => "smtp.sendgrid.net"]);
+		config(["mail.port" => 587]);
+		config(["mail.username" => "apikey"]);
+		config(["mail.password" => $this->hash_password]);
+		config(["mail.encryption" => "tls"]);
+		config(["mail.from.address" => $this->email]);
+		config(["mail.from.name" => $this->from_name]);
+	}
 }

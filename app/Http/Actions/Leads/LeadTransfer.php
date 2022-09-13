@@ -10,7 +10,6 @@ use marcusvbda\vstack\Services\Messages;
 
 class LeadTransfer extends Action
 {
-	public $id = "lead-transfer";
 	public $run_btn = "Transferir";
 	public $title = "Transferência entre polos";
 	public $polo = null;

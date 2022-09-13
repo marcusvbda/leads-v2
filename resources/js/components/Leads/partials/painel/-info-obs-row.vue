@@ -1,12 +1,7 @@
 <template>
     <div class="mb-4 info-obs">
-        <el-dialog
-            title="Novo Contato / Atendimento"
-            :visible.sync="form_new_contact.visible"
-            width="85%"
-            :close-on-click-modal="false"
-            top="10"
-        >
+        <el-dialog title="Novo Contato / Atendimento" :visible.sync="form_new_contact.visible" width="85%"
+            :close-on-click-modal="false" top="10">
             <el-steps :active="form_new_contact.step" align-center finish-status="success" :space="500">
                 <el-step title="Step 1" description="Defina o tipo do contato" />
                 <el-step title="Step 2" description="Resposta do contato" />
@@ -17,53 +12,53 @@
             <div class="d-flex flex-column my-4 mt-5">
                 <template v-if="form_new_contact.step == 0">
                     <label>Selecione o tipo de contato</label>
-                    <el-select clearable v-model="form_new_contact.type_id" filterable placeholder="Selecione o tipo de contato">
-                        <el-option v-for="(type, i) in contact_types" :key="i" :label="type.description" :value="type.id" />
+                    <el-select clearable v-model="form_new_contact.type_id" filterable
+                        placeholder="Selecione o tipo de contato">
+                        <el-option v-for="(type, i) in contact_types" :key="i" :label="type.description"
+                            :value="type.id" />
                     </el-select>
-                    <small class="text-muted">Selecione o meio que o operador utilizará para efetuar o contato com o lead</small>
+                    <small class="text-muted">Selecione o meio que o operador utilizará para efetuar o contato com o
+                        lead</small>
                     <hr />
                     <span slot="footer" class="dialog-footer d-flex justify-content-end">
-                        <el-button type="primary" @click="finishStepOne"> Avançar<span class="el-icon-right ml-2" /> </el-button>
+                        <el-button type="primary" @click="finishStepOne"> Avançar<span class="el-icon-right ml-2" />
+                        </el-button>
                     </span>
                 </template>
                 <template v-if="form_new_contact.step == 1">
                     <label>Informe a resposta do contato</label>
                     <el-select v-model="form_new_contact.answer_id" placeholder="Informe a resposta do contato">
                         <el-option-group v-for="(group, g) in grouped_answer_types" :key="g" :label="group.type">
-                            <el-option
-                                v-for="(answer, x) in group.options"
-                                :key="x"
-                                :label="answer.description"
-                                :value="answer.id"
-                            />
+                            <el-option v-for="(answer, x) in group.options" :key="x" :label="answer.description"
+                                :value="answer.id" />
                         </el-option-group>
                     </el-select>
                     <small class="text-muted">Selecione a resposta do contato referente a proposta realizada</small>
                     <hr />
                     <span slot="footer" class="dialog-footer d-flex justify-content-end">
-                        <el-button @click="form_new_contact.step = 0"> <span class="el-icon-back mr-2" />Voltar </el-button>
-                        <el-button type="primary" @click="finishStepTwo"> Avançar<span class="el-icon-right ml-2" /> </el-button>
+                        <el-button @click="form_new_contact.step = 0"> <span class="el-icon-back mr-2" />Voltar
+                        </el-button>
+                        <el-button type="primary" @click="finishStepTwo"> Avançar<span class="el-icon-right ml-2" />
+                        </el-button>
                     </span>
                 </template>
                 <template v-if="form_new_contact.step == 2">
                     <label>Selecione a objeção informada pelo contato</label>
                     <el-select v-model="form_new_contact.objection_id" placeholder="Selecione a objeção do contato">
-                        <el-option v-for="(ob, i) in objection_options" :key="i" :label="ob.description" :value="ob.id" />
+                        <el-option v-for="(ob, i) in objection_options" :key="i" :label="ob.description"
+                            :value="ob.id" />
                     </el-select>
                     <small class="text-muted">Selecione a resposta do contato referente a proposta realizada</small>
                     <div class="mt-3 d-flex flex-column">
                         <label>Detalhes</label>
-                        <textarea
-                            v-model="form_new_contact.other_objection"
-                            class="form-control"
-                            :rows="3"
-                            style="resize: none"
-                        />
+                        <textarea v-model="form_new_contact.other_objection" class="form-control" :rows="3"
+                            style="resize: none" />
                         <small class="text-muted">Dependendo da objeção escolhida, o detalhamento é obrigatório</small>
                     </div>
                     <hr />
                     <span slot="footer" class="dialog-footer d-flex justify-content-end">
-                        <el-button @click="form_new_contact.step = 1"> <span class="el-icon-back mr-2" />Voltar </el-button>
+                        <el-button @click="form_new_contact.step = 1"> <span class="el-icon-back mr-2" />Voltar
+                        </el-button>
                         <el-button type="primary" @click="finishStepThree">
                             Avançar<span class="el-icon-right ml-2" />
                         </el-button>
@@ -74,13 +69,8 @@
                         Selecione informações para agendamento do vestibular
                     </label>
                     <label v-else>Selecione informações para reagendamento de contato</label>
-                    <el-date-picker
-                        v-model="form_new_contact.schedule"
-                        type="datetime"
-                        placeholder="Seleciona a data e hora"
-                        class="w-100"
-                        format="dd/MM/yyyy  HH:mm:ss"
-                    />
+                    <el-date-picker v-model="form_new_contact.schedule" type="datetime"
+                        placeholder="Seleciona a data e hora" class="w-100" format="dd/MM/yyyy  HH:mm:ss" />
                     <small class="text-muted" v-if="selected_answer.behavior == 'need_schedule_test'">
                         Nesta data e hora o lead deverá comparecer para realizar a prova
                     </small>
@@ -89,14 +79,16 @@
                     </small>
                     <hr />
                     <span slot="footer" class="dialog-footer d-flex justify-content-end">
-                        <el-button @click="form_new_contact.step = 1"> <span class="el-icon-back mr-2" />Voltar </el-button>
-                        <el-button type="primary" @click="finishStepFour"> Avançar<span class="el-icon-right ml-2" /> </el-button>
+                        <el-button @click="form_new_contact.step = 1"> <span class="el-icon-back mr-2" />Voltar
+                        </el-button>
+                        <el-button type="primary" @click="finishStepFour"> Avançar<span class="el-icon-right ml-2" />
+                        </el-button>
                     </span>
                 </template>
                 <template v-if="form_new_contact.step == 4">
                     <div class="jumbotron">
                         <div class="row">
-                            <div class="col-md-8 col-sm-12">
+                            <div class="col-md-6 col-sm-12">
                                 <h4 class="mb-4"><b>Resumo do Contato</b></h4>
                                 <p class="mb-0"><b>Tipo de Contato : </b>{{ selected_contact_type.description }}</p>
                                 <p class="mb-0" v-if="form_new_contact.schedule">
@@ -111,9 +103,15 @@
                                     <b>Descrição da Objeção : </b>{{ form_new_contact.other_objection }}
                                 </p>
                             </div>
-                            <div class="col-md-4 col-sm-12">
-                                <label>Observações<small class="text-muted ml-2">Informações adicionais do contato</small></label>
-                                <textarea v-model="form_new_contact.obs" class="form-control" :rows="4" style="resize: none" />
+                            <div class="col-md-6 col-sm-12">
+                                <template v-if="hasActionSendEmail">
+                                    <InputTemplateEmail v-model="form_new_contact.sending_email" />
+                                    <hr />
+                                </template>
+                                <label>Observações<small class="text-muted ml-2">Informações adicionais do
+                                        contato</small></label>
+                                <textarea v-model="form_new_contact.obs" class="form-control" :rows="4"
+                                    style="resize: none" />
                                 <small class="text-muted">
                                     Digite aqui caso queira adicionar alguma observação sobre este contato
                                 </small>
@@ -143,18 +141,17 @@
                                 </p>
                             </el-timeline-item>
                             <template v-if="lead.tries.length > 0">
-                                <el-timeline-item v-for="(t, i) in lead.tries" :key="i" :timestamp="`${t.date} - ${t.timestamp}`">
+                                <el-timeline-item v-for="(t, i) in lead.tries" :key="i"
+                                    :timestamp="`${t.date} - ${t.timestamp}`">
                                     <div class="f-12 text-muted">
                                         <p class="mr-1 mb-0 f-12" v-if="t.type">Tipo : <b v-html="t.type" /></p>
                                         <p class="mr-1 mb-0 f-12" v-if="t.user">Por : <b v-html="t.user" /></p>
                                         <p class="mr-1 mb-0 f-12" v-if="t.obs">Observações : <b v-html="t.obs" /></p>
-                                        <p class="mr-1 mb-0 f-12" v-if="t.comment">Comentário : <b v-html="t.comment" /></p>
+                                        <p class="mr-1 mb-0 f-12" v-if="t.comment">Comentário : <b v-html="t.comment" />
+                                        </p>
                                         <p class="mr-1 mb-0 f-12" v-if="t.objection">
-                                            Objeção : <b v-html="t.objection" /><span
-                                                class="ml-1"
-                                                v-if="t.other_objection"
-                                                v-html="`( ${t.other_objection} )`"
-                                            />
+                                            Objeção : <b v-html="t.objection" /><span class="ml-1"
+                                                v-if="t.other_objection" v-html="`( ${t.other_objection} )`" />
                                         </p>
                                     </div>
                                 </el-timeline-item>
@@ -164,15 +161,12 @@
                     </el-tab-pane>
                     <el-tab-pane label="Conversões Anteriores">
                         <el-timeline class="pt-3" v-if="lead.conversions.length > 0">
-                            <el-timeline-item
-                                v-for="(conversion, i) in lead.conversions"
-                                :key="i"
-                                :timestamp="`${conversion.date} - ${conversion.timestamp}`"
-                            >
+                            <el-timeline-item v-for="(conversion, i) in lead.conversions" :key="i"
+                                :timestamp="`${conversion.date} - ${conversion.timestamp}`">
                                 <p class="mb-0 f-12" v-html="conversion.desc" />
                                 <p class="mb-0 f-12" v-html="conversion.obs" />
                                 <p class="f-12 text-muted" v-if="conversion.user">
-                                    <span class="mr-1">Por : <b v-html="conversion.user"/></span>
+                                    <span class="mr-1">Por : <b v-html="conversion.user" /></span>
                                 </p>
                             </el-timeline-item>
                         </el-timeline>
@@ -197,14 +191,15 @@ const new_contact = () => {
         objection_id: null,
         other_objection: null,
         schedule: null,
-        obs: null
+        obs: null,
+        sending_email: {}
     };
 };
 import "vue-json-pretty/lib/styles.css";
 import VueJsonPretty from "vue-json-pretty";
 
 export default {
-    props:["after_row"],
+    props: ["after_row"],
     components: {
         VueJsonPretty
     },
@@ -241,17 +236,46 @@ export default {
                 .groupBy("f_type")
                 .map((options, type) => ({ options, type }))
                 .value();
+        },
+        hasActionSendEmail() {
+            return this.selected_contact_type.action == 'send-email' && this.lead.email
         }
     },
     methods: {
         ...mapActions("lead", ["registerContact", "reloadAllLeads"]),
         ...mapMutations("lead", ["setLead"]),
+        validEmailSend() {
+            if (this.hasActionSendEmail) {
+                if (this.form_new_contact.sending_email.type == "custom") {
+                    if (this.form_new_contact.sending_email.body && !this.form_new_contact.sending_email.subject) {
+                        throw this.$message.error("Para enviar email digite o assunto !!");
+                    }
+
+                    if (!this.form_new_contact.sending_email.body && this.form_new_contact.sending_email.subject) {
+                        throw this.$message.error("Para enviar email digite o corpo !!");
+                    }
+
+                    if (!this.form_new_contact.sending_email.body || !this.form_new_contact.sending_email.subject && !this.form_new_contact.sending_email.integrator_id) {
+                        throw this.$message.error("Para enviar email selecione o integrador !!");
+                    }
+                } else {
+                    if (this.form_new_contact.sending_email.integrator_id && !this.form_new_contact.sending_email.template_id) {
+                        throw this.$message.error("Para enviar email selecione o template !!");
+                    }
+
+                    if (!this.form_new_contact.sending_email.integrator_id && this.form_new_contact.sending_email.template_id) {
+                        throw this.$message.error("Para enviar email selecione o integrador !!");
+                    }
+                }
+            }
+        },
         confirmContact() {
+            this.validEmailSend();
             let loading = this.$loading({ text: "Finalizando contato ..." });
             this.registerContact(this.form_new_contact)
                 .then(() => {
-                    if(this.after_row != undefined) {
-                        return window.location.reload();    
+                    if (this.after_row != undefined) {
+                        return window.location.reload();
                     }
                     this.reloadAllLeads().then(() => {
                         this.form_new_contact = false;

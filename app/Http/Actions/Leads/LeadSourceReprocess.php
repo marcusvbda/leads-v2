@@ -10,7 +10,6 @@ use marcusvbda\vstack\Services\Messages;
 
 class LeadSourceReprocess extends Action
 {
-    public $id = "lead-reprocess-origin";
     public $run_btn = "Reprocessar Origens";
     public $title = "Reprocessar Origem dos Leads";
     public $message = "Essa ação irá reprocessar os sources dos leads selecionados";

@@ -7,11 +7,9 @@ use App\Http\Models\Lead;
 use App\Http\Actions\Leads\{
 	LeadStatusChange,
 	LeadDelete,
-	// LeadRemoveDuplicates,
-	// LeadReprocess,
-	// LeadSourceReprocess,
 	LeadTransfer,
 	SendWppMessage,
+	SendEmail,
 };
 use App\Http\Filters\Leads\LeadsByPhone;
 use App\Http\Filters\Leads\LeadsByStatus;
@@ -105,8 +103,6 @@ class Leads extends Resource
 
 	public function actions()
 	{
-		// $user = Auth::user();
-		// $is_super_admin_or_admin = $user->hasRole(["super-admin", "admin"]);
 		$actions = [];
 		if (hasPermissionTo("edit-leads")) {
 			$actions[] = new LeadStatusChange();
@@ -115,13 +111,11 @@ class Leads extends Resource
 		if (hasPermissionTo("destroy-leads")) {
 			$actions[] = new LeadDelete();
 		}
-		// if ($is_super_admin_or_admin) {
-		// 	$actions[] = new LeadSourceReprocess();
-		// 	$actions[] = new LeadReprocess();
-		// 	$actions[] = new LeadRemoveDuplicates();
-		// }
 		if (getEnabledModuleToUser("whatsapp")) {
 			$actions[] = new SendWppMessage();
+		}
+		if (getEnabledModuleToUser("email-integrator")) {
+			$actions[] = new SendEmail();
 		}
 		return $actions;
 	}

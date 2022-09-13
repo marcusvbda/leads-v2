@@ -9,7 +9,6 @@ use marcusvbda\vstack\Services\Messages;
 
 class LeadDelete extends Action
 {
-    public $id = "lead-delete";
     public $run_btn = "Excluir";
     public $title = "Excluir Leads";
     public $message = "Essa ação irá excluir os leads selecionados";

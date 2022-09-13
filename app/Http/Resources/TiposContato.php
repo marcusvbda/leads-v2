@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use marcusvbda\vstack\Resource;
 use marcusvbda\vstack\Fields\{
 	Card,
+	Radio,
 	Text,
 };
 
@@ -82,6 +83,11 @@ class TiposContato extends Resource
 
 	public function fields()
 	{
+		$actions = [];
+		if (getEnabledModuleToUser("email-integrator")) {
+			$actions[] = ["value" => "send-email", "label" => "Enviar Email"];
+		}
+
 		$fields = [
 			new Text([
 				"label" => "Descrição",
@@ -90,6 +96,15 @@ class TiposContato extends Resource
 				"rules" => "max:255"
 			]),
 		];
+
+		if (count($actions)) {
+			$fields[] = new Radio([
+				"label" => "Ação",
+				"description" => "Ação adicional da seleção desta resposta",
+				"field" => "action",
+				"options" => $actions
+			]);
+		}
 		$cards = [new Card("Informações Básicas", $fields)];
 		return $cards;
 	}

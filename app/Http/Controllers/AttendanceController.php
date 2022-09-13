@@ -51,6 +51,43 @@ class AttendanceController extends Controller
 		return ["success" => true];
 	}
 
+	public function dispatchEmailTemplate(Request $request)
+	{
+		$ids = $request->ids;
+		$sending_email = $request->sending_email;
+		$hide_message = $request->hide_message ? true : false;
+		$type = data_get($sending_email, "type");
+		$subject = data_get($sending_email, "subject");
+		$body = data_get($sending_email, "body");
+		$template_id = data_get($sending_email, "template_id");
+		$integrator_id = data_get($sending_email, "integrator_id");
+
+		dispatch(function () use ($ids, $type, $subject, $body, $integrator_id, $template_id) {
+			$leads = Lead::whereIn("id", $ids)->whereNotNull("data->email")->get();
+			$integrator = $integrator_id ? MailIntegrator::findOrFail($integrator_id) : null;
+			$template = $template_id ? EmailTemplate::findOrFail($template_id) : null;
+
+			$integrator->defineConfigs();
+
+			foreach ($leads as $lead) {
+				if ($type == "template") {
+					$template->send([
+						"address" => $lead->email,
+						"template_process" => true,
+						"process_context" => $lead->toArray()
+					]);
+				} else {
+					$processed_body =  process_template($body, $lead->toArray());
+					SendMail::to($lead->email, $subject, $processed_body);
+				}
+			}
+		})->onQueue("mail-integrator");
+
+		if (!$hide_message) {
+			Messages::send("success", "Email enviado com sucesso !");
+		}
+		return ['success' => true];
+	}
 
 	public function registerContact($code, Request $request)
 	{
@@ -89,6 +126,13 @@ class AttendanceController extends Controller
 
 		$lead->responsible_id = $user->id;
 		$lead->save();
+		if (getEnabledModuleToUser("email-integrator")) {
+			$this->dispatchEmailTemplate(new Request([
+				"ids" => [$lead->id],
+				"hide_message" => true,
+				"sending_email" => $request->sending_email
+			]));
+		}
 		Messages::send("success", "Contato Salvo");
 		return ["success" => true];
 	}

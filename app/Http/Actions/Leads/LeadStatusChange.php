@@ -9,7 +9,6 @@ use marcusvbda\vstack\Services\Messages;
 
 class LeadStatusChange extends Action
 {
-	public $id = "lead-status-change";
 	public $run_btn = "Alterar";
 	public $title = "Alteração de status";
 	public $message = "Essa ação irá alterar o status de todos os leads selecionados para o status selecionado";

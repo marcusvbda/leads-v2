@@ -154,7 +154,7 @@ $email_integrator = getEnabledModuleToUser("email-integrator");
                     @endif
                     @if(@$email_integrator)
                     <a class="dropdown-item {{ getMenuClass('viewlist-email-templates',['/admin/modelos-de-email/*']) }}"
-                        href="/admin/mensagens-wpp">
+                        href="/admin/modelos-de-email/">
                         @if(@$email_integrator->new_badge) <el-badge value="Novo" class="badge-new" type="primary">
                             @endif
                             Modelos de Email

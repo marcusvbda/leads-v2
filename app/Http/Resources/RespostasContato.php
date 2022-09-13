@@ -110,6 +110,7 @@ class RespostasContato extends Resource
 				"options" => LeadAnswer::_BEHAVIORS_
 			]),
 		];
+
 		$cards = [new Card("Informações Básicas", $fields)];
 		return $cards;
 	}

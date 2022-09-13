@@ -7,6 +7,7 @@ use App\Http\Models\EmailTemplate;
 use marcusvbda\vstack\Fields\Card;
 use marcusvbda\vstack\Fields\HtmlEditor;
 use marcusvbda\vstack\Fields\Text;
+use Auth;
 
 class ModelosDeEmail extends Resource
 {
