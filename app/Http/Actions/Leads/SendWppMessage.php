@@ -8,6 +8,9 @@ use App\Http\Models\WppSession;
 use  marcusvbda\vstack\Action;
 use Illuminate\Http\Request;
 use Auth;
+use marcusvbda\vstack\Fields\BelongsTo;
+use marcusvbda\vstack\Fields\Card;
+use marcusvbda\vstack\Fields\TextArea;
 use marcusvbda\vstack\Services\Messages;
 
 class SendWppMessage extends Action
@@ -18,27 +21,30 @@ class SendWppMessage extends Action
 
 	public function inputs()
 	{
-		$options = [];
-		foreach (WppSession::get() as $item) {
-			$options[] = ["value" => $item->id, "label" => $item->name];
-		}
+		$fields = [];
+		$fields[] = new BelongsTo([
+			"label" => "Sessão",
+			"description" => "Sessão do whatsApp que deseja utilizar",
+			"field" => "session_id",
+			"rules" => ["required"],
+			"model" => WppSession::class
+		]);
 
-		return [
-			[
-				"title" => 'Sessão',
-				"id" => "session_id",
-				"type" => "select",
-				"required" => true,
-				"options" =>  $options
-			],
-			[
-				"title" => 'Mensagem',
-				"id" => "mensagem",
-				"type" => "textarea",
-				"required" => true,
-				"rows" => 10
-			],
-		];
+		$cards = [];
+		$cards[] = new Card("Configurações", $fields);
+
+		$fields = [];
+		$fields[] = new TextArea([
+			"label" => "Mensagem",
+			"type" => "textarea",
+			"rows" => 10,
+			"description" => "Digite a mensagem",
+			"field" => "mensagem",
+			"rules" => ["required"]
+		]);
+		$cards[] = new Card("Email", $fields);
+
+		return $cards;
 	}
 
 	public function handler(Request $request)

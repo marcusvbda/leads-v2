@@ -2,11 +2,17 @@
 
 namespace App\Http\Actions\Leads;
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Models\EmailTemplate;
 use App\Http\Models\Lead;
 use App\Http\Models\MailIntegrator;
 use  marcusvbda\vstack\Action;
 use Illuminate\Http\Request;
+use marcusvbda\vstack\Fields\BelongsTo;
+use marcusvbda\vstack\Fields\Card;
+use marcusvbda\vstack\Fields\Radio;
+use marcusvbda\vstack\Fields\Text;
+use marcusvbda\vstack\Fields\TextArea;
 use marcusvbda\vstack\Services\Messages;
 
 class SendEmail extends Action
@@ -17,54 +23,63 @@ class SendEmail extends Action
 
 	public function inputs()
 	{
-		$options = [];
-		foreach (MailIntegrator::get() as $item) {
-			$options[] = ["value" => $item->id, "label" => $item->name];
-		}
-
-		$option_templates = [];
-		foreach (EmailTemplate::get() as $item) {
-			$option_templates[] = ["value" => $item->id, "label" => $item->name];
-		}
-
-		return [
-			[
-				"title" => 'Integrador de Email',
-				"id" => "integrator_id",
-				"type" => "select",
-				"required" => true,
-				"options" =>  $options
+		$fields = [];
+		$fields[] = new BelongsTo([
+			"label" => "Integrador",
+			"description" => "Integrador responsável pelo envio do email",
+			"field" => "integrator_id",
+			"rules" => ["required"],
+			"model" => MailIntegrator::class
+		]);
+		$fields[] = new Radio([
+			"label" => "Tipo de Mensagem",
+			"field" => "type",
+			"rules" => ["required"],
+			"options" => [
+				["label" => "Modelo Pré-Definido", "value" => "template"],
+				["label" => "Customizada", "value" => "custom"],
 			],
-			[
-				"title" => 'Modelo de Email',
-				"id" => "template_id",
-				"type" => "select",
-				"required" => true,
-				"options" =>  $option_templates
-			],
-		];
+			"default" => "template"
+		]);
+
+
+		$cards = [];
+		$cards[] = new Card("Configurações", $fields);
+
+		$fields = [];
+		$fields[] = new BelongsTo([
+			"label" => "Modelo de Email",
+			"description" => "Modelo pré-definido de Email que deseja enviar",
+			"field" => "template_id",
+			"rules" => ["required_if:type,template"],
+			"eval" => 'v-if="form.type == `template`"',
+			"model" => EmailTemplate::class
+		]);
+		$fields[] = new Text([
+			"label" => "Assunto",
+			"field" => "subject",
+			"eval" => 'v-if="form.type == `custom`"',
+			"rules" => ["required_if:type,custom"]
+		]);
+		$fields[] = new TextArea([
+			"label" => "Corpo do Email",
+			"rows" => 10,
+			"description" => "Digite a mensagem",
+			"field" => "body",
+			"eval" => 'v-if="form.type == `custom`"',
+			"rules" => ["required_if:type,custom"]
+		]);
+		$cards[] = new Card("Email", $fields);
+
+		return $cards;
 	}
 
 	public function handler(Request $request)
 	{
-		$ids = $request->ids;
-		$integrator_id = $request->integrator_id;
-		$template_id = $request->template_id;
-		dispatch(function () use ($ids, $integrator_id, $template_id) {
-			$leads = Lead::whereIn("id", $ids)->whereNotNull("data->email")->get();
-			$integrator = MailIntegrator::findOrFail($integrator_id);
-			$template = EmailTemplate::findOrFail($template_id);
-
-			foreach ($leads as $lead) {
-				$template->send([
-					"address" => $lead->email,
-					"integrator" => $integrator,
-					"template_process" => true,
-					"process_context" => $lead->toArray()
-				]);
-			}
-		})->onQueue("mail-integrator");
-		Messages::send("success", "Mensagens enviadas com sucesso !");
+		(new AttendanceController)->dispatchEmailTemplate(new Request([
+			"ids" => $request->ids,
+			"sending_email" => $request->all()
+		]));
 		return ['success' => true];
 	}
 }

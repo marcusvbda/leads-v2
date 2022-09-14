@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\ContactType;
+use App\Http\Models\EmailTemplate;
 use App\Http\Models\Lead;
 use App\Http\Models\LeadAnswer;
+use App\Http\Models\MailIntegrator;
 use App\Http\Models\Objection;
 use App\Http\Models\Status;
 use Illuminate\Http\Request;
@@ -12,6 +14,7 @@ use Auth;
 use ResourcesHelpers;
 use Carbon\Carbon;
 use marcusvbda\vstack\Services\Messages;
+use marcusvbda\vstack\Services\SendMail;
 
 class AttendanceController extends Controller
 {

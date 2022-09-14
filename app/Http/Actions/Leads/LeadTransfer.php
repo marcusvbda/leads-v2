@@ -6,6 +6,8 @@ use  marcusvbda\vstack\Action;
 use Illuminate\Http\Request;
 use App\Http\Models\{Polo, lead};
 use Auth;
+use marcusvbda\vstack\Fields\BelongsTo;
+use marcusvbda\vstack\Fields\Card;
 use marcusvbda\vstack\Services\Messages;
 
 class LeadTransfer extends Action
@@ -24,15 +26,18 @@ class LeadTransfer extends Action
 
 	public function inputs()
 	{
-		return [
-			[
-				"title" => 'Polo',
-				"id" => "polo_id",
-				"type" => "select",
-				"required" => true,
-				"options" =>  Polo::selectRaw("id as value, name as label")->where("id", "!=", $this->polo->id)->get()
-			],
-		];
+		$fields = [];
+		$fields[] = new BelongsTo([
+			"label" => "Polo",
+			"description" => "Polo o qual receberá este lead",
+			"field" => "polo_id",
+			"rules" => ["required"],
+			"model" => Polo::class
+		]);
+
+		$cards = [];
+		$cards[] = new Card("Informações", $fields);
+		return $cards;
 	}
 
 	public function handler(Request $request)

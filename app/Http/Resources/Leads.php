@@ -6,7 +6,6 @@ use marcusvbda\vstack\Resource;
 use App\Http\Models\Lead;
 use App\Http\Actions\Leads\{
 	LeadStatusChange,
-	LeadDelete,
 	LeadTransfer,
 	SendWppMessage,
 	SendEmail,
@@ -23,6 +22,7 @@ use marcusvbda\vstack\Fields\{
 	TextArea,
 };
 use Auth;
+use marcusvbda\vstack\Actions\MultipleDelete;
 use marcusvbda\vstack\Filters\FilterByOption;
 use marcusvbda\vstack\Filters\FilterByPresetDate;
 use marcusvbda\vstack\Filters\FilterByTag;
@@ -109,7 +109,11 @@ class Leads extends Resource
 			$actions[] = new LeadTransfer();
 		}
 		if (hasPermissionTo("destroy-leads")) {
-			$actions[] = new LeadDelete();
+			$actions[] = new MultipleDelete([
+				"title" => "Excluir Leads",
+				"message" => "Essa ação irá excluir os leads selecionados",
+				"success_message" => 'Leads excluídos com sucesso',
+			]);
 		}
 		if (getEnabledModuleToUser("whatsapp")) {
 			$actions[] = new SendWppMessage();
