@@ -78,7 +78,7 @@ if (!function_exists('getEnabledModuleToUser')) {
 		if (!$user) {
 			return false;
 		}
-		$module = Module::where("slug", "whatsapp")->whereJsonContains("polo_ids", (string)$user->polo_id)->first();
+		$module = Module::where("slug", $module)->whereJsonContains("polo_ids", (string)$user->polo_id)->first();
 		return $module;
 	}
 }
