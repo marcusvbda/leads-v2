@@ -65,12 +65,12 @@ class Lead extends DefaultModel
 		$tags_origin = $this->getOriginSourcesBadge();
 		$name = $this->name ?? "Nome não informado";
 		$department = $this->department;
-		if ($department) {
+		if ($department && @$department?->name) {
 			$department = "<b class='mr-1'>Departamento :</b>" . $department->name;
 		}
 
 		$responsible = $this->responsible;
-		if ($responsible &&  @$responsible?->name) {
+		if ($responsible && @$responsible?->name) {
 			$responsible = "<b class='mr-1'>Responsável :</b>" . $responsible->name;
 		}
 
