@@ -136,7 +136,7 @@ $email_integrator = getEnabledModuleToUser("email-integrator");
                     @endif
                 </div>
             </li>
-            @if(@$whatsapp_module)
+            @if(@$whatsapp_module || $email_integrator)
             <li class="nav-item dropdown {{ currentClass(['/admin/mensagens-wpp/*','/admin/modelos-de-email/*']) }}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
