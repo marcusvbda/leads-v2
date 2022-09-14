@@ -70,12 +70,12 @@ class Lead extends DefaultModel
 		}
 
 		$responsible = $this->responsible;
-		if ($responsible) {
+		if ($responsible &&  @$responsible?->name) {
 			$responsible = "<b class='mr-1'>Responsável :</b>" . $responsible->name;
 		}
 
 		$objection = $this->objection;
-		if ($objection) {
+		if ($objection && is_string($objection)) {
 			$objection = "<b class='mr-1'>Objeção :</b>" . $objection;
 		}
 
