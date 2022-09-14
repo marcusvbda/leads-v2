@@ -6,6 +6,7 @@ use App\Http\Models\Scopes\OrderByScope;
 use App\Http\Models\Scopes\PoloScope;
 use marcusvbda\vstack\Models\DefaultModel;
 use Auth;
+use Illuminate\Support\Facades\Config;
 
 class MailIntegrator extends DefaultModel
 {
@@ -34,13 +35,13 @@ class MailIntegrator extends DefaultModel
 
 	public function defineConfigs()
 	{
-		config(["mail.driver" => "smtp"]);
-		config(["mail.host" => "smtp.sendgrid.net"]);
-		config(["mail.port" => 587]);
-		config(["mail.username" => "apikey"]);
-		config(["mail.password" => $this->hash_password]);
-		config(["mail.encryption" => "tls"]);
-		config(["mail.from.address" => $this->email]);
-		config(["mail.from.name" => $this->from_name]);
+		Config::set('mail.driver', "teste");
+		Config::set("mail.host", "smtp.sendgrid.net");
+		Config::set("mail.port", 587);
+		Config::set("mail.username", "apikey");
+		Config::set("mail.password", $this->hash_password);
+		Config::set("mail.encryption", "tls");
+		Config::set("mail.from.address", $this->email);
+		Config::set("mail.from.name", $this->from_name);
 	}
 }
