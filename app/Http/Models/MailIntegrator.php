@@ -35,7 +35,7 @@ class MailIntegrator extends DefaultModel
 
 	public function defineConfigs()
 	{
-		Config::set('mail.driver', "teste");
+		Config::set('mail.driver', "smtp");
 		Config::set("mail.host", "smtp.sendgrid.net");
 		Config::set("mail.port", 587);
 		Config::set("mail.username", "apikey");
