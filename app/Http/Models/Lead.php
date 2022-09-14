@@ -64,27 +64,32 @@ class Lead extends DefaultModel
 		$vstack_tags = "<resource-tags-input class='f-12 mt-1' :default_tags='row.content.tags' only_view />";
 		$tags_origin = $this->getOriginSourcesBadge();
 		$name = $this->name ?? "Nome não informado";
+
 		$department = $this->department;
+		$department_text = "";
 		if ($department && @$department?->name) {
-			$department = "<b class='mr-1'>Departamento :</b>" . $department->name;
+			$department_text = "<b class='mr-1'>Departamento :</b>" . $department->name;
 		}
 
 		$responsible = $this->responsible;
+		$responsible_text = "";
 		if ($responsible && @$responsible?->name) {
-			$responsible = "<b class='mr-1'>Responsável :</b>" . $responsible->name;
+			$responsible_text = "<b class='mr-1'>Responsável :</b>" . $responsible->name;
 		}
 
 		$objection = $this->objection;
+		$objection_text = "";
 		if ($objection && is_string($objection)) {
-			$objection = "<b class='mr-1'>Objeção :</b>" . $objection;
+			$objection_text = "<b class='mr-1'>Objeção :</b>" . $objection;
 		}
 
 		$other_objection = $this->other_objection;
+		$other_objection_text = "";
 		if ($other_objection) {
-			$other_objection = "<b class='mr-1'>Descrição da objeção :</b>" . $other_objection;
+			$other_objection_text = "<b class='mr-1'>Descrição da objeção :</b>" . $other_objection;
 		}
 
-		return Vstack::makeLinesHtmlAppend($name, $this->f_rating, $tags_origin, $responsible, $department, $objection, $other_objection, $vstack_tags);
+		return Vstack::makeLinesHtmlAppend($name, $this->f_rating, $tags_origin, $responsible_text, $department_text, $objection_text, $other_objection_text, $vstack_tags);
 	}
 
 	public function department()
