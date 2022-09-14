@@ -74,7 +74,17 @@ class Lead extends DefaultModel
 			$responsible = "<b class='mr-1'>Responsável :</b>" . $responsible->name;
 		}
 
-		return Vstack::makeLinesHtmlAppend($name, $this->f_rating, $tags_origin, $responsible, $department, $vstack_tags);
+		$objection = $this->objection;
+		if ($objection) {
+			$objection = "<b class='mr-1'>Objeção :</b>" . $objection;
+		}
+
+		$other_objection = $this->other_objection;
+		if ($other_objection) {
+			$other_objection = "<b class='mr-1'>Descrição da objeção :</b>" . $other_objection;
+		}
+
+		return Vstack::makeLinesHtmlAppend($name, $this->f_rating, $tags_origin, $responsible, $department, $objection, $other_objection, $vstack_tags);
 	}
 
 	public function department()
@@ -470,7 +480,7 @@ class Lead extends DefaultModel
 			}
 		}
 		array_unshift($conversions, [
-			"obs" => @$request["obs"],
+			"obs" => null,
 			"date" =>  $now->format("d/m/Y"),
 			"desc" => $desc,
 			"user" => $user->name,

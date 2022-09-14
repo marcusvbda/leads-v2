@@ -13,6 +13,7 @@ use App\Http\Actions\Leads\{
 use App\Http\Filters\Leads\LeadsByPhone;
 use App\Http\Filters\Leads\LeadsByStatus;
 use App\Http\Models\Department;
+use App\Http\Models\Objection;
 use App\Http\Models\Status;
 use App\User;
 use marcusvbda\vstack\Fields\{
@@ -226,7 +227,11 @@ class Leads extends Resource
 			"index" => "email"
 		]);
 		$filters[] = new LeadsByPhone();
-		$filters[] = new LeadsByStatus();
+		$filters[] = new FilterByOption([
+			"label" => "Status",
+			"field" => "status_id",
+			"options" => Status::selectRaw("id as value,name as label")->get()
+		]);
 		$filters[] = new FilterByTag(Lead::class);
 		$filters[] = new FilterByText([
 			"column" => "data->source",
@@ -250,6 +255,21 @@ class Leads extends Resource
 			"multiple" => true,
 			"options" => $user_options,
 			"column" => "user_id",
+		]);
+		$filters[] = new FilterByOption([
+			"label" => "Objeções",
+			"multiple" => true,
+			"options" => Objection::selectRaw("id as value,description as label")->get(),
+			"field" => "objection",
+			"handle" =>  function ($query, $value) {
+				$objection = Objection::find($value);
+				return $query->where("data->objection", $objection?->description);
+			}
+		]);
+		$filters[] = new FilterByText([
+			"column" => "data->other_objection",
+			"label" => "Descrição da Objeção",
+			"index" => "other_objection"
 		]);
 
 		return $filters;

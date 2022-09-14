@@ -35,6 +35,14 @@ class AttendanceController extends Controller
 		$lead->department_id = $request["department_id"];
 		$lead->responsible_id = null;
 		$lead->save();
+		$department = @$lead?->department->name;
+		if ($department) {
+			$history = "Transferido para o departamento <b>{$department}</b>";
+		} else {
+			$history = "Lead retornado para <b>Sem departamento</b>";
+		}
+		$lead = Lead::logConversions($lead, Carbon::now(), Auth::user(), $lead->status, $history);
+		$lead->save();
 		return ["sucess" => true];
 	}
 

@@ -44,8 +44,8 @@ class RespostasContato extends Resource
 		$columns = [];
 		$columns["code"] = ["label" => "#", "sortable_index" => "id"];
 		$columns["description"] = ["label" => "Descrição"];
-		$columns["f_type"] = ["label" => "Tipo da Resposta"];
-		$columns["f_behavior"] = ["label" => "Comportamento"];
+		$columns["f_type"] = ["label" => "Tipo da Resposta", "sortable_index" => "type"];
+		$columns["f_behavior"] = ["label" => "Comportamento", "sortable_index" => "behavior"];
 		return $columns;
 	}
 

@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Auth\UsersController;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
-use App\Http\Controllers\WppSessionController;
 
 Route::get('', function () {
 	return redirect("/admin"); //temporário até termos uma landing page

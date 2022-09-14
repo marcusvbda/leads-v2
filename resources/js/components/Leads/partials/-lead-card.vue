@@ -1,5 +1,6 @@
 <template>
-    <div :class="`d-flex flex-row py-3 px-1 lead-card f-12 ${selected_lead.id == lead.id ? 'selected' : ''}`" @click="select">
+    <div :class="`d-flex flex-row py-3 px-1 lead-card f-12 ${selected_lead.id == lead.id ? 'selected' : ''}`"
+        @click="select">
         <h3 class="el-icon-circle-plus" />
         <div class="d-flex flex-column ml-2 flex-grow-1">
             <div class="d-flex flex-row justify-content-between">
@@ -15,8 +16,10 @@
                     <span class="text-muted d-flex flex-row">{{ lead.phone_number }}</span>
                 </div>
                 <div class="d-flex flex-column">
-                    <span class="text-muted d-flex flex-row"><b class="mr-auto pr-1">Criação : </b>{{ lead.f_created_at }}</span>
-                    <span class="text-muted d-flex flex-row" v-if="lead.f_schedule"><b class="mr-auto pr-1">Agendamento : </b> {{ lead.f_schedule }}</span>
+                    <span class="text-muted d-flex flex-row"><b class="mr-auto pr-1">Criação : </b>{{ lead.f_created_at
+                    }}</span>
+                    <span class="text-muted d-flex flex-row" v-if="lead.f_schedule"><b class="mr-auto pr-1">Agendamento
+                            : </b> {{ lead.f_schedule }}</span>
                 </div>
             </div>
         </div>
@@ -57,12 +60,15 @@ export default {
 .lead-card {
     cursor: pointer;
     border-bottom: 1px solid #eeeeee;
+
     &:hover {
         background-color: #f5f5f5;
         transition: 0.3s;
     }
+
     &.selected {
         background-color: #dff3ff;
+
         &:hover {
             background-color: #0074d921;
         }

@@ -30,14 +30,15 @@
                                 <td>
                                     <div class="d-flex flex-column">
                                         <b class="f-12 text-muted">Data de Nascimento</b>
-                                        <span class="f-12">{{ lead.f_birthdate ? lead.f_birthdate : undefined_text }}</span>
+                                        <span class="f-12">{{ lead.f_birthdate ? lead.f_birthdate : undefined_text
+                                        }}</span>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="d-flex flex-column">
                                         <b class="f-12 text-muted">Idade</b>
                                         <span class="f-12">{{
-                                            lead.age ? `${lead.age} Ano${lead.age > 1 ? "s" : ""}` : undefined_text
+                                        lead.age ? `${lead.age} Ano${lead.age > 1 ? "s" : ""}` : undefined_text
                                         }}</span>
                                     </div>
                                 </td>
@@ -53,12 +54,8 @@
                                 <td>
                                     <div class="d-flex flex-column">
                                         <b class="f-12 text-muted">WhatsApp</b>
-                                        <email-url
-                                            type="wpp"
-                                            class="f-12"
-                                            v-if="lead.cellphone_number"
-                                            :value="lead.cellphone_number"
-                                        >
+                                        <email-url type="wpp" class="f-12" v-if="lead.cellphone_number"
+                                            :value="lead.cellphone_number">
                                             {{ lead.cellphone_number }}
                                         </email-url>
                                         <span class="f-12" v-else>{{ undefined_text }}o</span>
@@ -67,7 +64,8 @@
                                 <td>
                                     <div class="d-flex flex-column">
                                         <b class="f-12 text-muted">Telefone Fixo</b>
-                                        <span class="f-12">{{ lead.phone_number ? lead.phone_number : undefined_text }}</span>
+                                        <span class="f-12">{{ lead.phone_number ? lead.phone_number : undefined_text
+                                        }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -100,7 +98,15 @@
                                         </small>
                                     </div>
                                 </td>
-                                <td></td>
+                                <td>
+                                    <div class="d-flex flex-column" v-if="lead.objection">
+                                        <b class="f-12 text-muted">Objeção</b>
+                                        <small class="f-12">
+                                            {{ lead.objection }} {{lead.other_objection ? ` - ${lead.other_objection}` :
+                                            ''}}
+                                        </small>
+                                    </div>
+                                </td>
                                 <td>
                                     <slot />
                                 </td>
@@ -174,6 +180,7 @@ export default {
 <style lang="scss" scoped>
 .table-id {
     width: 100%;
+
     td {
         padding: 5px 0px 10px 0px;
     }

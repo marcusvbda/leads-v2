@@ -9,6 +9,7 @@ use Auth;
 use App\Http\Filters\Users\UsersByTenant;
 use App\Http\Models\Department;
 use App\Http\Models\Role;
+use App\Http\Models\Tenant;
 use App\Http\Models\UserInvite;
 use marcusvbda\vstack\Fields\BelongsTo;
 use marcusvbda\vstack\Fields\Card;
@@ -16,6 +17,7 @@ use marcusvbda\vstack\Fields\Text;
 use ResourcesHelpers;
 use App\User;
 use DB;
+use marcusvbda\vstack\Filters\FilterByOption;
 
 class Usuarios extends Resource
 {
@@ -121,7 +123,16 @@ class Usuarios extends Resource
 		$user = Auth::user();
 		$filters = [];
 		if ($user->hasRole(["super-admin"])) {
-			$filters[] = new UsersByTenant();
+			$filters[] = new FilterByOption([
+				"label" => "Tenant",
+				"field" => "tenant_id",
+				"options" => Tenant::selectRaw("id as value,name as label")->get()
+			]);
+			$filters[] = new FilterByOption([
+				"label" => "Departamento",
+				"field" => "department_id",
+				"options" => Department::selectRaw("id as value,name as label")->get()
+			]);
 		}
 		return $filters;
 	}

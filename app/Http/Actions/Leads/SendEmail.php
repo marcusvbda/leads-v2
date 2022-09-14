@@ -51,7 +51,7 @@ class SendEmail extends Action
 			"label" => "Modelo de Email",
 			"description" => "Modelo pré-definido de Email que deseja enviar",
 			"field" => "template_id",
-			"rules" => ["required_if:type,template"],
+			"rules" => ["nullable", "required_if:type,template"],
 			"eval" => 'v-if="form.type == `template`"',
 			"model" => EmailTemplate::class
 		]);
@@ -59,7 +59,7 @@ class SendEmail extends Action
 			"label" => "Assunto",
 			"field" => "subject",
 			"eval" => 'v-if="form.type == `custom`"',
-			"rules" => ["required_if:type,custom"]
+			"rules" => ["nullable", "required_if:type,custom"]
 		]);
 		$fields[] = new TextArea([
 			"label" => "Corpo do Email",
@@ -67,7 +67,7 @@ class SendEmail extends Action
 			"description" => "Digite a mensagem",
 			"field" => "body",
 			"eval" => 'v-if="form.type == `custom`"',
-			"rules" => ["required_if:type,custom"]
+			"rules" => ["nullable", "required_if:type,custom"]
 		]);
 		$cards[] = new Card("Email", $fields);
 
