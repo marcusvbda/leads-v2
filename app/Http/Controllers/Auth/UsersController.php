@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Role;
 use Illuminate\Http\Request;
 use marcusvbda\vstack\Services\Messages;
-use ResourcesHelpers;
 use App\Http\Models\UserInvite;
 use marcusvbda\vstack\Services\SendMail;
 use Illuminate\Validation\Rule;
@@ -71,9 +70,6 @@ class UsersController extends Controller
 		if (@$invite->data->polo_ids) {
 			$user->polos()->sync($invite->data->polo_ids);
 		}
-		$role = Role::findOrFail($invite->data->role_id);
-		$user->assignRole($role->name);
-
 		$this->deleteOldInvitesForThisEmail($request["email"]);
 		Messages::send("success", "Convite aceito e cadastro efetuado com sucesso, você já pode acessar o sistema");
 		$this->deleteOldInvitesForThisEmail($request["email"]);
