@@ -64,13 +64,6 @@ export default {
         }
     },
     created() {
-        this.$set(this.parent_form, "sending_email", {
-            type: "template",
-            subject: null,
-            body: null,
-            template_id: null,
-            integrator_id: null
-        })
         this.init();
     },
     methods: {
@@ -83,6 +76,7 @@ export default {
                 model: "\\App\\Http\\Models\\EmailTemplate",
                 order_by: ["name", "desc"],
             }).then(({ data }) => {
+                console.log("TEMPLATE", data)
                 this.templates = data;
                 this.loading.templates = false;
             });
@@ -92,6 +86,7 @@ export default {
                 model: "\\App\\Http\\Models\\MailIntegrator",
                 order_by: ["name", "desc"],
             }).then(({ data }) => {
+                console.log("INTEGRATOR", data)
                 this.integrators = data;
                 this.loading.integrator = false;
             });

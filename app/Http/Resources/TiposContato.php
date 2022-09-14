@@ -84,6 +84,7 @@ class TiposContato extends Resource
 	public function fields()
 	{
 		$actions = [];
+		$actions[] = ["value" => "none", "label" => "Sem ação"];
 		if (getEnabledModuleToUser("email-integrator")) {
 			$actions[] = ["value" => "send-email", "label" => "Enviar Email"];
 		}
@@ -97,14 +98,13 @@ class TiposContato extends Resource
 			]),
 		];
 
-		if (count($actions)) {
-			$fields[] = new Radio([
-				"label" => "Ação",
-				"description" => "Ação adicional da seleção desta resposta",
-				"field" => "action",
-				"options" => $actions
-			]);
-		}
+		$fields[] = new Radio([
+			"label" => "Ação",
+			"description" => "Ação adicional da seleção desta resposta",
+			"field" => "action",
+			"default" => "none",
+			"options" => $actions
+		]);
 		$cards = [new Card("Informações Básicas", $fields)];
 		return $cards;
 	}

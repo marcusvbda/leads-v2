@@ -94,7 +94,7 @@ class AttendanceController extends Controller
 			}
 		})->onQueue("mail-integrator");
 
-		if (!$hide_message) {
+		if ($hide_message) {
 			Messages::send("success", "Email enviado com sucesso !");
 		}
 		return ['success' => true];
@@ -137,7 +137,7 @@ class AttendanceController extends Controller
 
 		$lead->responsible_id = $user->id;
 		$lead->save();
-		if (getEnabledModuleToUser("email-integrator")) {
+		if (getEnabledModuleToUser("email-integrator") && @$request->sending_email["integrator_id"]) {
 			$this->dispatchEmailTemplate(new Request([
 				"ids" => [$lead->id],
 				"hide_message" => true,
