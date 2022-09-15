@@ -210,8 +210,31 @@ class Leads extends Resource
 
 	public function filters()
 	{
-		$user_options = User::selectRaw("id as value,name as label")->get();
+		// $user_options = User::selectRaw("id as value,name as label")->get();
 		$filters = [];
+		// remover
+		// $filters[] = new FilterByOption([
+		// 	"label" => "Objeções",
+		// 	"multiple" => true,
+		// 	// "options" => Objection::selectRaw("id as value,description as label")->get(),
+		// 	"model" => Objection::class,
+		// 	"model_fields" =>  ["value" => "id", "label" => "description"],
+		// 	"field" => "objection",
+		// 	"handle" =>  function ($query, $value) {
+		// 		$objection = Objection::find($value);
+		// 		return $query->where("data->objection", $objection?->description);
+		// 	}
+		// ]);
+
+		// $filters[] = new FilterByOption([
+		// 	"label" => "Departamentos",
+		// 	"multiple" => true,
+		// 	"options" => Department::selectRaw("id as value,name as label")->get(),
+		// 	"column" => "department_id",
+		// ]);
+
+		// remover
+
 		$filters[] = new FilterByPresetDate([
 			"label" => "Data de Criação",
 			"field" => "leads.created_at"
@@ -230,7 +253,7 @@ class Leads extends Resource
 		$filters[] = new FilterByOption([
 			"label" => "Status",
 			"field" => "status_id",
-			"options" => Status::selectRaw("id as value,name as label")->get()
+			"model" => Status::class
 		]);
 		$filters[] = new FilterByTag(Lead::class);
 		$filters[] = new FilterByText([
@@ -241,25 +264,26 @@ class Leads extends Resource
 		$filters[] = new FilterByOption([
 			"label" => "Departamentos",
 			"multiple" => true,
-			"options" => Department::selectRaw("id as value,name as label")->get(),
+			"model" => Department::class,
 			"column" => "department_id",
 		]);
 		$filters[] = new FilterByOption([
 			"label" => "Reponsáveis",
 			"multiple" => true,
-			"options" => $user_options,
+			"model" => User::class,
 			"column" => "responsible_id",
 		]);
 		$filters[] = new FilterByOption([
 			"label" => "Cadastrado por ...",
 			"multiple" => true,
-			"options" => $user_options,
+			"model" => User::class,
 			"column" => "user_id",
 		]);
 		$filters[] = new FilterByOption([
 			"label" => "Objeções",
 			"multiple" => true,
-			"options" => Objection::selectRaw("id as value,description as label")->get(),
+			"model" => Objection::class,
+			"model_fields" =>  ["value" => "id", "label" => "description"],
 			"field" => "objection",
 			"handle" =>  function ($query, $value) {
 				$objection = Objection::find($value);

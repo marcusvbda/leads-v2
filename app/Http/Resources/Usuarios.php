@@ -126,12 +126,12 @@ class Usuarios extends Resource
 			$filters[] = new FilterByOption([
 				"label" => "Tenant",
 				"field" => "tenant_id",
-				"options" => Tenant::selectRaw("id as value,name as label")->get()
+				"model" => Tenant::class
 			]);
 			$filters[] = new FilterByOption([
 				"label" => "Departamento",
 				"field" => "department_id",
-				"options" => Department::selectRaw("id as value,name as label")->get()
+				"model" => Department::class
 			]);
 		}
 		return $filters;
