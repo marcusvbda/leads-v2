@@ -11,7 +11,6 @@ use App\Http\Actions\Leads\{
 	SendEmail,
 };
 use App\Http\Filters\Leads\LeadsByPhone;
-use App\Http\Filters\Leads\LeadsByStatus;
 use App\Http\Models\Department;
 use App\Http\Models\Objection;
 use App\Http\Models\Status;
@@ -111,6 +110,7 @@ class Leads extends Resource
 		}
 		if (hasPermissionTo("destroy-leads")) {
 			$actions[] = new MultipleDelete([
+				"model" => Lead::class,
 				"title" => "Excluir Leads",
 				"message" => "Essa ação irá excluir os leads selecionados",
 				"success_message" => 'Leads excluídos com sucesso',
@@ -210,30 +210,7 @@ class Leads extends Resource
 
 	public function filters()
 	{
-		// $user_options = User::selectRaw("id as value,name as label")->get();
 		$filters = [];
-		// remover
-		// $filters[] = new FilterByOption([
-		// 	"label" => "Objeções",
-		// 	"multiple" => true,
-		// 	// "options" => Objection::selectRaw("id as value,description as label")->get(),
-		// 	"model" => Objection::class,
-		// 	"model_fields" =>  ["value" => "id", "label" => "description"],
-		// 	"field" => "objection",
-		// 	"handle" =>  function ($query, $value) {
-		// 		$objection = Objection::find($value);
-		// 		return $query->where("data->objection", $objection?->description);
-		// 	}
-		// ]);
-
-		// $filters[] = new FilterByOption([
-		// 	"label" => "Departamentos",
-		// 	"multiple" => true,
-		// 	"options" => Department::selectRaw("id as value,name as label")->get(),
-		// 	"column" => "department_id",
-		// ]);
-
-		// remover
 
 		$filters[] = new FilterByPresetDate([
 			"label" => "Data de Criação",
@@ -311,9 +288,12 @@ class Leads extends Resource
 		$columns = $this->importColumnIndexes;
 
 		foreach ($columns as $key => $value) {
-			$new_model->{$value} = data_get($fill_data, $key, "");
+			$item_value = data_get($fill_data, $key, "");
+			if (in_array($key, ["celular", "telefone"])) {
+				$item_value = preg_replace('/\D/', '', $item_value);
+			}
+			$new_model->{$value} = $item_value;
 		}
-
 		$new_model->tenant_id = data_get($fill_data, "tenant_id", null);
 		$new_model->polo_id = data_get($fill_data, "polo_id", null);
 		$new_model->save();
