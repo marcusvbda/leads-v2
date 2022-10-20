@@ -7,10 +7,13 @@ use marcusvbda\vstack\Fields\{
 	Card,
 	HtmlEditor,
 	Text,
-	TextArea
+	TextArea,
+	HasOneOrMany,
 };
 use Auth;
 use App\Http\Models\WikiPage;
+use App\Http\Resources\Polos;
+use App\Http\Resources\Objecoes;
 
 class Wiki extends Resource
 {
@@ -97,6 +100,29 @@ class Wiki extends Resource
 
 	public function fields()
 	{
+		$fields[] = new HasOneOrMany([
+			"disabled" => false,
+			"label" => "Exames",
+			"description" => "Descrição do campo lorem ipsum",
+			"required" => true,
+			"relation" => "exame",
+			"resource" => Modulos::class,
+			"limit" => 1,
+			"children" => [
+				[
+					"limit" => 5,
+					"relation" => "questions",
+					"resource" => Polos::class,
+					"children" => [
+						[
+							"relation" => "alternatives",
+							"resource" => Objecoes::class,
+						]
+					]
+				]
+			]
+		]);
+
 		$fields[] = new Text([
 			"label" => "Título",
 			"field" => "title",

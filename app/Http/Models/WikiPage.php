@@ -23,7 +23,7 @@ class WikiPage extends DefaultModel
 		static::addGlobalScope(new OrderByScope(with(new static)->getTable()));
 	}
 
-	public static function sluggable()
+	public function sluggable(): array
 	{
 		return [
 			"source" => "title",

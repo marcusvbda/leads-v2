@@ -2634,7 +2634,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/marcusvbda/vstack.git",
-                "reference": "d52be71360551e69dc05c45616db7e852b0328f8"
+                "reference": "e23c1a570d7439808caecc70a802a3efb3b31b11"
             },
             "default-branch": true,
             "type": "library",
@@ -2656,7 +2656,7 @@
                     "email": "bassalobre.vinicius@gmail.com"
                 }
             ],
-            "time": "2022-09-19T18:35:51+00:00"
+            "time": "2022-10-17T20:14:03+00:00"
         },
         {
             "name": "markbaker/complex",
