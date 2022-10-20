@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use marcusvbda\vstack\Resource;
 use App\Http\Models\Lead;
 use App\Http\Actions\Leads\{
+	LeadResponsibleChange,
 	LeadStatusChange,
 	LeadTransfer,
 	SendWppMessage,
@@ -107,6 +108,7 @@ class Leads extends Resource
 		if (hasPermissionTo("edit-leads")) {
 			$actions[] = new LeadStatusChange();
 			$actions[] = new LeadTransfer();
+			$actions[] = new LeadResponsibleChange();
 		}
 		if (hasPermissionTo("destroy-leads")) {
 			$actions[] = new MultipleDelete([
