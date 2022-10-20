@@ -100,28 +100,28 @@ class Wiki extends Resource
 
 	public function fields()
 	{
-		$fields[] = new HasOneOrMany([
-			"disabled" => false,
-			"label" => "Exames",
-			"description" => "Descrição do campo lorem ipsum",
-			"required" => true,
-			"relation" => "exame",
-			"resource" => Modulos::class,
-			"limit" => 1,
-			"children" => [
-				[
-					"limit" => 5,
-					"relation" => "questions",
-					"resource" => Polos::class,
-					"children" => [
-						[
-							"relation" => "alternatives",
-							"resource" => Objecoes::class,
-						]
-					]
-				]
-			]
-		]);
+		// $fields[] = new HasOneOrMany([
+		// 	"disabled" => false,
+		// 	"label" => "Exames",
+		// 	"description" => "Descrição do campo lorem ipsum",
+		// 	"required" => true,
+		// 	"relation" => "exame",
+		// 	"resource" => Modulos::class,
+		// 	"limit" => 1,
+		// 	"children" => [
+		// 		[
+		// 			"limit" => 5,
+		// 			"relation" => "questions",
+		// 			"resource" => Polos::class,
+		// 			"children" => [
+		// 				[
+		// 					"relation" => "alternatives",
+		// 					"resource" => Objecoes::class,
+		// 				]
+		// 			]
+		// 		]
+		// 	]
+		// ]);
 
 		$fields[] = new Text([
 			"label" => "Título",
