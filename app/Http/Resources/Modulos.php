@@ -23,12 +23,12 @@ class Modulos extends Resource
 
 	public function label()
 	{
-		return "Modulos";
+		return "Módulos";
 	}
 
 	public function singularLabel()
 	{
-		return "Modulo";
+		return "Módulo";
 	}
 
 	public function icon()

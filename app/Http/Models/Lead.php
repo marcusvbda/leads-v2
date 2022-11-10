@@ -89,7 +89,13 @@ class Lead extends DefaultModel
 			$other_objection_text = "<b class='mr-1'>Descrição da objeção :</b>" . $other_objection;
 		}
 
-		return Vstack::makeLinesHtmlAppend($name, $this->f_rating, $tags_origin, $responsible_text, $department_text, $objection_text, $other_objection_text, $vstack_tags);
+		$interest_text = $this->interest;
+		$interest = "";
+		if ($interest_text) {
+			$interest = "<b class='mr-1'>Interesse :</b>" . $interest_text;
+		}
+
+		return Vstack::makeLinesHtmlAppend($name, $this->f_rating, $tags_origin, $responsible_text, $department_text, $objection_text, $other_objection_text, $vstack_tags,$interest);
 	}
 
 	public function department()
@@ -107,6 +113,9 @@ class Lead extends DefaultModel
 	public function getRatingAttribute()
 	{
 		$tenant = $this->tenant;
+		if (!$tenant) {
+			return 0;
+		}
 		$default = (array) $tenant->default_rating_rules;
 		$rating_rules = array_merge($default, (array)@$tenant->data->rating_rules ?? $default);
 		$total = array_sum($rating_rules);
@@ -161,8 +170,12 @@ class Lead extends DefaultModel
 
 	public function getFStatusBadgeAttribute()
 	{
+		if (!$this->status_id) {
+			return "";
+		}
 		$status = $this->status;
-		return "<b class='status-color {$status->value}'>{$status->name}</b>";
+
+		return "<b class='status-color {$status?->value}'>{$status?->name}</b>";
 	}
 
 	public function status()
@@ -172,7 +185,7 @@ class Lead extends DefaultModel
 
 	public function getFStatusAttribute()
 	{
-		return $this->status->name;
+		return @$this->status->name;
 	}
 
 	public function getEmailAttribute()

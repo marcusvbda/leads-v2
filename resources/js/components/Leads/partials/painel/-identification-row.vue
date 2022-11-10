@@ -38,7 +38,7 @@
                                     <div class="d-flex flex-column">
                                         <b class="f-12 text-muted">Idade</b>
                                         <span class="f-12">{{
-                                        lead.age ? `${lead.age} Ano${lead.age > 1 ? "s" : ""}` : undefined_text
+                                                lead.age ? `${lead.age} Ano${lead.age > 1 ? "s" : ""}` : undefined_text
                                         }}</span>
                                     </div>
                                 </td>
@@ -102,13 +102,25 @@
                                     <div class="d-flex flex-column" v-if="lead.objection">
                                         <b class="f-12 text-muted">Objeção</b>
                                         <small class="f-12">
-                                            {{ lead.objection }} {{lead.other_objection ? ` - ${lead.other_objection}` :
-                                            ''}}
+                                            {{ lead.objection }} {{ lead.other_objection ? ` - ${lead.other_objection}`
+                                                    :
+                                                    ''
+                                            }}
                                         </small>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="pt-3">
                                     <slot />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="d-flex flex-column" v-if="lead.interest">
+                                        <b class="f-12 text-muted">Interesse</b>
+                                        <small class="f-12">
+                                            {{ lead.interest }}
+                                        </small>
+                                    </div>
                                 </td>
                             </tr>
                         </table>

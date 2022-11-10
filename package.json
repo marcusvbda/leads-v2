@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@fontsource/montserrat": "^4.5.13",
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@simonwep/selection-js": "^1.5.0",
     "@tinymce/tinymce-vue": "^5.0.0",

@@ -105,20 +105,20 @@ class Wiki extends Resource
 		// 	"label" => "Exames",
 		// 	"description" => "Descrição do campo lorem ipsum",
 		// 	"required" => true,
-		// 	"relation" => "exame",
-		// 	"resource" => Modulos::class,
-		// 	"limit" => 1,
+		// 	"field" => "exame",
+		// 	"resource" => Polos::class,
+		// 	"table" => [
+		// 		"name" => ["label" => "Nome"]
+		// 	],
+		// 	"limit" => 3,
 		// 	"children" => [
 		// 		[
 		// 			"limit" => 5,
-		// 			"relation" => "questions",
-		// 			"resource" => Polos::class,
-		// 			"children" => [
-		// 				[
-		// 					"relation" => "alternatives",
-		// 					"resource" => Objecoes::class,
-		// 				]
-		// 			]
+		// 			"field" => "objections",
+		// 			"resource" => Objecoes::class,
+		// 			"table" => [
+		// 				"description" => ["label" => "Descrição"]
+		// 			],
 		// 		]
 		// 	]
 		// ]);

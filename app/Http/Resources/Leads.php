@@ -224,6 +224,11 @@ class Leads extends Resource
 			"index" => "name"
 		]);
 		$filters[] = new FilterByText([
+			"column" => "data->interest",
+			"label" => "Interesse",
+			"index" => "interest"
+		]);
+		$filters[] = new FilterByText([
 			"column" => "data->email",
 			"label" => "Email",
 			"index" => "email"

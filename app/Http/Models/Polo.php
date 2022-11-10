@@ -12,6 +12,7 @@ class Polo extends DefaultModel
 	protected $table = "polos";
 	// public $cascadeDeletes = [];
 	public $restrictDeletes = ["users"];
+	public $appends = ["code"];
 
 	public $casts = [
 		"data" => "object",
