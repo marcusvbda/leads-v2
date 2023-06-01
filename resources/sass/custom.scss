@@ -1,5 +1,9 @@
 @import "variables";
 
+html {
+    zoom: .9;
+}
+
 .status-color {
     &.canceled {
         color: #9b0404;

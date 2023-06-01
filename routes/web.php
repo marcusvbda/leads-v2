@@ -13,14 +13,12 @@ Route::group(['middleware' => ['auth']], function () {
 		require "partials/home.php";
 		require "partials/dates.php";
 		require "partials/dashboard.php";
-		require "partials/wiki.php";
 		require "partials/users.php";
 		require "partials/polos.php";
 		require "partials/notifications.php";
 		require "partials/rating.php";
 		require "partials/attendance.php";
 		require "partials/webhook.php";
-		require "partials/wpp_sessions.php";
 		Route::group(['middleware' => ['root-auth']], function () {
 			Route::get('log-viewer', [LogViewerController::class, 'index']);
 		});

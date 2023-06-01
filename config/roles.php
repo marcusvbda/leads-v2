@@ -62,14 +62,6 @@ return [
             ["create-email-templates", "Criar Modelos de Email"],
             ["edit-email-templates", "Editar Modelos de Email"],
             ["destroy-email-templates", "Excluir Modelos de Email"],
-
-            ["viewlist-wppsession", "Ver Lista de Sessões de WhatsApp"],
-            ["create-wppsession", "Criar Sessões de WhatsApp"],
-            ["destroy-wppsession", "Excluir Sessões de WhatsApp"],
-
-            ["viewlist-wppmessage", "Ver Lista de Mensagens de WhatsApp"],
-            ["create-wppmessage", "Criar Sessões de WhatsApp"],
-            ["destroy-wppmessage", "Excluir Sessões de WhatsApp"],
         ]
     ]
 ];

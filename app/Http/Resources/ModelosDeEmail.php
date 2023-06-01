@@ -42,14 +42,9 @@ class ModelosDeEmail extends Resource
         return $columns;
     }
 
-    private function canAccessModule()
-    {
-        return getEnabledModuleToUser("email-integrator") ? true : false;
-    }
-
     public function canViewList()
     {
-        return $this->canAccessModule() && hasPermissionTo("viewlist-email-templates");
+        return hasPermissionTo("viewlist-email-templates");
     }
 
     public function canView()
@@ -59,7 +54,7 @@ class ModelosDeEmail extends Resource
 
     public function canCreate()
     {
-        return $this->canAccessModule() && hasPermissionTo("create-email-templates");
+        return  hasPermissionTo("create-email-templates");
     }
 
     public function canClone()
@@ -69,12 +64,12 @@ class ModelosDeEmail extends Resource
 
     public function canUpdate()
     {
-        return $this->canAccessModule() && hasPermissionTo("edit-email-templates");
+        return hasPermissionTo("edit-email-templates");
     }
 
     public function canDelete()
     {
-        return $this->canAccessModule() && hasPermissionTo("destroy-email-templates");
+        return hasPermissionTo("destroy-email-templates");
     }
 
     public function canImport()

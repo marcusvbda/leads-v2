@@ -10,7 +10,6 @@
     "require": {
         "php": "^8.0",
         "doctrine/dbal": "^2.10",
-        "fruitcake/laravel-cors": "^3.0",
         "giggsey/libphonenumber-for-php": "^8.12",
         "guzzlehttp/guzzle": "^7.2",
         "hammerstone/fast-paginate": "^0.1.3",
@@ -40,7 +39,6 @@
         }
     ],
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.6",
         "barryvdh/laravel-ide-helper": "*",
         "fakerphp/faker": "^1.9.1",
         "laravel/dusk": "^6.24",

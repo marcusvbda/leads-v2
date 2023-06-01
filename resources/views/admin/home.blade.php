@@ -41,15 +41,6 @@
 					</a>
 				</p>
 			</div>
-			<div class="col-md-6 col-sm-12 text-right sm-center sm-mt-4">
-				<h4>Tem alguma dúvida?</h4>
-				<p>
-					<a href="/admin/wiki">
-						<i class="el-icon-link mr-1"></i>
-						Acesse nossa central de ajuda
-					</a>
-				</p>
-			</div>
 		</div>
 	</div>
 </div>

@@ -17,8 +17,10 @@ class AddRoleToUsers extends Migration
             $table->string('role')->default('user')->after('id');
         });
         $user = \App\User::find(1);
-        $user->role = "super-admin";
-        $user->save();
+        if($user) {
+            $user->role = "super-admin";
+            $user->save();
+        }
     }
 
     /**

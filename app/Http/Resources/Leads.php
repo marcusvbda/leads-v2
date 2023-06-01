@@ -8,7 +8,6 @@ use App\Http\Actions\Leads\{
 	LeadResponsibleChange,
 	LeadStatusChange,
 	LeadTransfer,
-	SendWppMessage,
 	SendEmail,
 };
 use App\Http\Filters\Leads\LeadsByPhone;
@@ -118,12 +117,7 @@ class Leads extends Resource
 				"success_message" => 'Leads excluídos com sucesso',
 			]);
 		}
-		if (getEnabledModuleToUser("whatsapp")) {
-			$actions[] = new SendWppMessage();
-		}
-		if (getEnabledModuleToUser("email-integrator")) {
-			$actions[] = new SendEmail();
-		}
+		$actions[] = new SendEmail();
 		return $actions;
 	}
 
