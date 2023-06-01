@@ -12,8 +12,8 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-storage/debugbar/*
 .idea/*
 phpunit.xml
 storage/logs/laravel.log
 todo
+/mysql
