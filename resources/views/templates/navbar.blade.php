@@ -36,11 +36,18 @@ $class .= ' disabled ';
 }
 return $class;
 }
-
+$description = config('app.description');
 @endphp
 <nav class="navbar navbar-expand-lg navbar-light bg-light py-0">
     <a class="navbar-brand py-0" href="/admin">
-        <text-logo size="30" app_name="{{ config('app.name') }}" />
+        <h1 class="logo mb-0" style="font-size: 30px;">
+            <b>{{ config('app.name') }}</b>
+            @if($description)
+            <small>
+                <b>{{ $description }}</b>
+            </small>
+            @endif
+        </h1>
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -135,7 +142,6 @@ return $class;
                     @if ($is_admin_or_super_admin)
                     <a class="dropdown-item" href="/admin/polos">Polos</a>
                     <a class="dropdown-item" href="/admin/departamentos">Departamentos</a>
-                    <a class="dropdown-item" href="/admin/modulos">Modulos</a>
                     @if($is_super_admin)
                     <a class="dropdown-item" href="/admin/log-viewer">Log Viewer</a>
                     @endif
