@@ -16,22 +16,22 @@ class Kernel extends ConsoleKernel
 		$schedule
 			->command('logs:clear')
 			->days(2)
-			->withoutOverlapping(5);
+			->runInBackground();
 
 		$schedule
 			->command('optimize:clear')
 			->days(2)
-			->withoutOverlapping(5);
+			->runInBackground();
 
 		$schedule
 			->command('config:cache')
 			->days(2)
-			->withoutOverlapping(5);
+			->runInBackground();
 
 		$schedule
 			->command('queue:work --queue=resource-import,resource-export,mail-integrator,default')
 			->everyMinute()
-			->withoutOverlapping(5);
+			->runInBackground();
 	}
 
 	protected function commands()
