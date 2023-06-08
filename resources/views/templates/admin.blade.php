@@ -2,8 +2,7 @@
 @section('body')
 @php
 @endphp
-<!-- @include("templates.navbar") -->
-<theme-navbar></theme-navbar>
+@include("templates.topbar")
 <div class="my-2 container-fluid">
     @yield("breadcrumb")
 </div>
