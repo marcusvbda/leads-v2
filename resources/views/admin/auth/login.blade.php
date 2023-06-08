@@ -1,6 +1,7 @@
-@extends("templates.default")
+@extends("templates.auth")
 @section('title',"Login")
-@section('body')
-	<auth-login>
-	</auth-login>
+@section('form')
+@section('image', '/assets/images/auth/signin.png')
+<auth-login>
+</auth-login>
 @endsection

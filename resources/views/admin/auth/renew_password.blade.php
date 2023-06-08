@@ -1,8 +1,7 @@
-@extends("templates.default")
+@extends("templates.auth")
 @section('title',"Renovação de Senha")
-@section('body')
-	<renew-password
-		token="{{ $token }}"
-	>
-	</renew-password>
+@section('image', '/assets/images/auth/signup.png')
+@section('form')
+<renew-password token="{{ $token }}">
+</renew-password>
 @endsection
