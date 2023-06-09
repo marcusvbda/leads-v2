@@ -12,7 +12,14 @@ return [
 		ExtraConfigData::class
 	],
 	"prepend_breadcrumb" => [
-		"Página Inicial" => "/admin",
+		[
+			"title" => "Página Inicial",
+			"route" => "/admin"
+		],
+		[
+			"title" => "Dashboard",
+			"route" => "/admin/dashboard"
+		]
 	],
 	"socket_service" => [
 		"port" => env('SOCKET_PORT_SERVER_PORT', "3003"),

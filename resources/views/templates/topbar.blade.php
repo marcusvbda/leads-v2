@@ -118,11 +118,6 @@ $items = [
         "visible" => $isAdminOrSuperAdmin,
       ],
       [
-        "title" => "Log Viewer",
-        "route" => "/admin/log-viewer",
-        "visible" => $isSuperAdmin,
-      ],
-      [
         "title" => "Sair",
         "route" => "/login",
         "visible" => true,

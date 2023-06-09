@@ -3,7 +3,7 @@
 @section('breadcrumb')
 <vstack-breadcrumb :items="[
 			{
-				url: '/admin',
+				route: '/admin',
 				title: 'Página Inicial'
 			},
 		]">

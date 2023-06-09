@@ -40,10 +40,10 @@
                     :key="index"
                     class="group relative flex items-center gap-x-6 rounded-lg p-2 text-sm leading-6 hover:bg-gray-50"
                 >
-                    <div class="flex-auto px-11">
+                    <div class="flex-auto w-full">
                         <a
                             :href="opItem.route"
-                            class="m-0 block font-semibold text-gray-900"
+                            class="m-0 block font-semibold text-gray-900 px-11"
                         >
                             {{ opItem.title }}
                         </a>

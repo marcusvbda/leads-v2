@@ -24,7 +24,6 @@
         "marcusvbda/vstack": "dev-master",
         "predis/predis": "^2.0",
         "pusher/pusher-php-server": "^4.1",
-        "rap2hpoutre/laravel-log-viewer": "^2.2",
         "s-ichikawa/laravel-sendgrid-driver": "^4.0",
         "tholu/php-packer": "^0.2.0"
     },

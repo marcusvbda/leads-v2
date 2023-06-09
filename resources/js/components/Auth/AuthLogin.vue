@@ -28,7 +28,7 @@
             </div>
             <div class="flex flex-col mt-3">
                 <button class="vstack-btn primary">Efetuar Login</button>
-                <a href="/esqueci-a-senha"> Esqueceu a senha ? </a>
+                <a href="/esqueci-a-senha" class="mt-3"> Esqueceu a senha ? </a>
             </div>
         </form>
         <select-dialog
