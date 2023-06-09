@@ -9,8 +9,9 @@
 		<link rel="icon" href="/favicon.ico" />
 		<title>@yield("title") | {{ config("app.name") }}</title>
 	</head>
-	<body>
-		<div id="app">			
+	<!-- carregamento do vstack mudará para display block afim de nao causar sensação de pos-rendering -->
+	<body style="display:none;">
+		<div id="app" class="h-100">			
 			@yield("body")
 			@include("templates.alerts")
 		</div>

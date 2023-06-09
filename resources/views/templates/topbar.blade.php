@@ -10,23 +10,26 @@ $resourceLeads = new Leads();
 $canViewLeads = $resourceLeads->canViewList();
 $canViewAttendance = $resourceLeads->canUpdate();
 $canViewReportLeads = $resourceLeads->canViewReport();
-$canViewObjecoes = (new Objecoes())->canView();
-$canViewIntegradores = (new Integradores())->canView();
-$canViewTiposContato = (new TiposContato())->canView();
-$canViewResposta = (new RespostasContato())->canView();
+$canViewObjecoes = (new Objecoes())->canViewList();
+$canViewIntegradores = (new Integradores())->canViewList();
+$canViewTiposContato = (new TiposContato())->canViewList();
+$canViewResposta = (new RespostasContato())->canViewList();
 $user = Auth::user();
+$polo = $user->polo;
 $isAdmin = $user->hasRole(['admin']);
 $isSuperAdmin = $user->hasRole(['super-admin']);
 $isAdminOrSuperAdmin = $isAdmin || $isSuperAdmin;
 
 $items = [
   [
+    "position" => "center",
     "title" => "Dashboard",
     "route" => "/admin/dashboard",
     "visible" => true,
     "items" => []
   ],
   [
+    "position" => "center",
     "title" => "Oportunidades",
     "visible" => $canViewLeads || $canViewAttendance,
     "items" => [
@@ -43,6 +46,7 @@ $items = [
     ],
   ],
   [
+    "position" => "center",
     "title" => "Relatórios",
     "visible" => $canViewReportLeads,
     "items" => [
@@ -54,6 +58,7 @@ $items = [
     ]
   ],
   [
+    "position" => "center",
     "title" => "Captação",
     "visible" => $isAdminOrSuperAdmin,
     "items" => [
@@ -70,6 +75,7 @@ $items = [
     ]
   ],
   [
+    "position" => "center",
     "title" => "Configurações",
     "visible" => $canViewObjecoes || $canViewTiposContato || $canViewResposta || $canViewIntegradores,
     "items" => [
@@ -94,7 +100,37 @@ $items = [
         "visible" => $canViewIntegradores,
       ],
     ]
+  ],
+  [
+    "position" => "right",
+    "title" => $user->email,
+    "visible" => true,
+    "custom_style" => "left: -66px;",
+    "items" => [
+      [
+        "title" => "Polos",
+        "route" => "/admin/polos",
+        "visible" => $isAdminOrSuperAdmin,
+      ],
+      [
+        "title" => "Departamentos",
+        "route" => "/admin/departamentos",
+        "visible" => $isAdminOrSuperAdmin,
+      ],
+      [
+        "title" => "Log Viewer",
+        "route" => "/admin/log-viewer",
+        "visible" => $isSuperAdmin,
+      ],
+      [
+        "title" => "Sair",
+        "route" => "/login",
+        "visible" => true,
+      ],
+    ]
   ]
 ];
 ?>
-<theme-navbar :items='@json($items)'></theme-navbar>
+<theme-navbar :items='@json($items)'>
+  <select-polo polo_name='{{$polo->name}}' :user_id='{{$user->id}}' :logged_id='{{$polo->id}}'></select-polo>
+</theme-navbar>

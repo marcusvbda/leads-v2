@@ -3,10 +3,10 @@
 @php
 @endphp
 @include("templates.topbar")
-<div class="my-2 container-fluid">
+<div class="px-4 mt-4 mx-auto max-w-screen-xl lg:px-6">
     @yield("breadcrumb")
-</div>
-<div class="container-fluid pb-5">
-    @yield("content")
+    <div class="px-1 mt-4">
+        @yield("content")
+    </div>
 </div>
 @endsection

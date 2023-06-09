@@ -3,7 +3,7 @@
     <div class="relative">
         <a
             type="button"
-            class="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
+            :class="[a_class, isActive(item) ? 'text-neutral-400' : '']"
             aria-expanded="false"
             href="#"
             @click.prevent="clicked"
@@ -12,7 +12,7 @@
             {{ item.title }}
             <svg
                 v-if="item.items.length"
-                class="h-5 w-5 flex-none text-gray-400"
+                class="h-5 w-5 flex-none text-gray-400 ml-auto"
                 viewBox="0 0 20 20"
                 fill="currentColor"
                 aria-hidden="true"
@@ -27,9 +27,10 @@
         <div
             v-if="item.items.length && visible"
             :class="[
-                'absolute -left-8 top-full z-10 mt-3 max-w-md overflow-hidden',
-                'rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5',
+                'sm:absolute -left-8 top-full z-10 mt-3 max-w-md overflow-hidden',
+                'rounded md:rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5',
             ]"
+            :style="item.custom_style || ''"
         >
             <div class="p-4">
                 <div
@@ -55,7 +56,7 @@
 <script>
 import ClickOutside from 'vue-click-outside';
 export default {
-    props: ['item'],
+    props: ['item', 'a_class'],
     data() {
         return {
             visible: false,
@@ -65,6 +66,13 @@ export default {
         ClickOutside,
     },
     methods: {
+        isActive(item) {
+            return (
+                (item?.items || []).some((x) =>
+                    window.location.pathname.startsWith(x.route)
+                ) || window.location.pathname.startsWith(item.route)
+            );
+        },
         hide() {
             this.visible = false;
         },

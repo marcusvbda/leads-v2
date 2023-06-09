@@ -1,7 +1,7 @@
 <template>
     <h1
         class="text-neutral-900 font-bold text-lg flex items-baseline"
-        :style="{ fontSize: `${size}px` }"
+        :style="{ fontSize: `${size}px`, color }"
     >
         <b>{{ app_name }}</b>
         <small v-if="complete" class="font-semibold text-blue-700 text-sm">
@@ -19,6 +19,10 @@ export default {
         complete: {
             type: Boolean,
             default: true,
+        },
+        color: {
+            type: String,
+            default: 'black',
         },
     },
     computed: {
