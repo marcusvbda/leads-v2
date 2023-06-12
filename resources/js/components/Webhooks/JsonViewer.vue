@@ -13,10 +13,14 @@
             <transition name="fade">
                 <div v-if="page == 'json'">
                     <div class="mb-2 mt-0 text-muted" v-if="!approved">
-                        Selecione a chave que deverá ser considerada como referência de comparação de polo e em seguida o polo
+                        Selecione a chave que deverá ser considerada como
+                        referência de comparação de polo e em seguida o polo
                         para registros com conteúdo semelhante será enviado.
                     </div>
-                    <div v-if="hasSelectedValues" class="mb-3 d-flex flex-column">
+                    <div
+                        v-if="hasSelectedValues"
+                        class="mb-3 d-flex flex-column"
+                    >
                         <div class="mb-2">
                             <b>Elementos selecionados :</b>
                         </div>
@@ -32,9 +36,14 @@
                             </ElTag>
                         </div>
                     </div>
-                    <div class="d-flex flex-row mt-3 justify-content-end" v-if="hasSelectedValues">
+                    <div
+                        class="d-flex flex-row mt-3 justify-content-end"
+                        v-if="hasSelectedValues"
+                    >
                         <div>
-                            <ElButton type="success" @click="page = 'compare'">Selecionar o Polo</ElButton>
+                            <ElButton type="success" @click="page = 'compare'"
+                                >Selecionar o Polo</ElButton
+                            >
                         </div>
                     </div>
                     <div v-bind:class="{ clickable: !approved }">
@@ -44,15 +53,25 @@
                 <div v-if="page == 'compare'" class="d-flex flex-column">
                     <div class="mb-4 mt-0 text-muted" v-if="!approved">
                         <div class="d-flex flex-row justify-content-end">
-                            <a href="#" @click.prevent="page = 'json'" class="mb-4">
+                            <a
+                                href="#"
+                                @click.prevent="page = 'json'"
+                                class="mb-4"
+                            >
                                 Voltar ao request
                             </a>
                         </div>
                         <div class="mb-2">
-                            Todos os requests que conter as <b>tags abaixo </b> serão enviados para o <b>polo selecionado</b>
+                            Todos os requests que conter as
+                            <b>tags abaixo </b> serão enviados para o
+                            <b>polo selecionado</b>
                         </div>
                         <div class="mb-2">
-                            <ElTag v-for="(key, i) in Object.keys(clickedValue)" :key="i" class="mb-2">
+                            <ElTag
+                                v-for="(key, i) in Object.keys(clickedValue)"
+                                :key="i"
+                                class="mb-2"
+                            >
                                 <b>{{ key }}</b> : {{ clickedValue[key] }}
                             </ElTag>
                         </div>
@@ -61,17 +80,29 @@
                                 v-model="selectedPolo"
                                 filterable
                                 placeholder="Selecione o polo ..."
-                                class="w-100"
+                                class="w-full"
                                 clearable
                             >
-                                <ElOption v-for="(polo, i) in polos" :key="i" :label="polo.name" :value="polo.id" />
+                                <ElOption
+                                    v-for="(polo, i) in polos"
+                                    :key="i"
+                                    :label="polo.name"
+                                    :value="polo.id"
+                                />
                             </ElSelect>
                         </div>
                         <div class="d-flex flex-row mt-3 justify-content-end">
                             <div>
                                 <ElButtonGroup>
-                                    <ElButton type="info" @click="page = 'json'">Voltar</ElButton>
-                                    <ElButton type="success" :disabled="!selectedPolo" @click="submit">Salvar</ElButton>
+                                    <ElButton type="info" @click="page = 'json'"
+                                        >Voltar</ElButton
+                                    >
+                                    <ElButton
+                                        type="success"
+                                        :disabled="!selectedPolo"
+                                        @click="submit"
+                                        >Salvar</ElButton
+                                    >
                                 </ElButtonGroup>
                             </div>
                         </div>
@@ -82,22 +113,22 @@
     </div>
 </template>
 <script>
-import VueJsonPretty from "vue-json-pretty";
-import "vue-json-pretty/lib/styles.css";
+import VueJsonPretty from 'vue-json-pretty';
+import 'vue-json-pretty/lib/styles.css';
 export default {
-    props: ["content", "approved", "webhook", "tenant_id"],
+    props: ['content', 'approved', 'webhook', 'tenant_id'],
     data() {
         return {
             visible: false,
             clickedValue: {},
             selectedPolo: null,
-            page: "json",
+            page: 'json',
             polos: [],
-            loading: true
+            loading: true,
         };
     },
     components: {
-        VueJsonPretty
+        VueJsonPretty,
     },
     created() {
         if (!this.polos.length) {
@@ -107,7 +138,7 @@ export default {
     computed: {
         hasSelectedValues() {
             return Object.keys(this.clickedValue).length;
-        }
+        },
     },
     methods: {
         handleCloseTag(key) {
@@ -118,11 +149,11 @@ export default {
         getPolos() {
             this.loading = true;
             this.$http
-                .post("/vstack/json-api", {
-                    model: "\\App\\Http\\Models\\Polo",
+                .post('/vstack/json-api', {
+                    model: '\\App\\Http\\Models\\Polo',
                     filters: {
-                        where: [["tenant_id", "=", this.tenant_id]]
-                    }
+                        where: [['tenant_id', '=', this.tenant_id]],
+                    },
                 })
                 .then(({ data }) => {
                     this.polos = data;
@@ -130,12 +161,12 @@ export default {
                 });
         },
         clearSelection() {
-            this.page = "json";
+            this.page = 'json';
             this.clickedValue = {};
         },
         closeHandler() {
             this.clearSelection();
-            this.page = "json";
+            this.page = 'json';
         },
         showModal() {
             this.visible = true;
@@ -148,40 +179,42 @@ export default {
             let index = this.processFieldIndex(val);
 
             let value = eval(`this.content${index}`);
-            if (["object", "array"].includes(typeof value)) {
-                return this.$message.error("Conteúdo do registro selecionado inválido !!");
+            if (['object', 'array'].includes(typeof value)) {
+                return this.$message.error(
+                    'Conteúdo do registro selecionado inválido !!'
+                );
             }
-            this.$message.info("Regra adicionada !!!");
+            this.$message.info('Regra adicionada !!!');
             this.$set(this.clickedValue, index, value);
         },
         processFieldIndex(val) {
             let index = val
-                .replace("root.", "")
-                .split(".")
-                .map(x => {
-                    if (x.indexOf("[") == -1) {
+                .replace('root.', '')
+                .split('.')
+                .map((x) => {
+                    if (x.indexOf('[') == -1) {
                         return `['${x}']`;
                     }
-                    let splited = x.split("[");
+                    let splited = x.split('[');
                     return `['${splited[0]}'][${splited[1]}`;
                 })
-                .join("");
+                .join('');
             return index;
         },
         submit() {
-            this.$loading({ text: "Salvando configuração ..." });
+            this.$loading({ text: 'Salvando configuração ...' });
             this.$http
                 .post(`/admin/webhooks/${this.webhook.token}/store-settings`, {
                     value: this.clickedValue,
-                    polo_id: this.selectedPolo
+                    polo_id: this.selectedPolo,
                 })
                 .then(({ data }) => {
                     if (data.success) {
                         window.location.reload();
                     }
                 });
-        }
-    }
+        },
+    },
 };
 </script>
 <style lang="scss">
