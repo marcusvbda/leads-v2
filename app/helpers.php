@@ -1,7 +1,4 @@
 <?php
-
-use App\Http\Models\Module;
-
 if (!function_exists('formatPhoneNumber')) {
 	function formatPhoneNumber($tel)
 	{
@@ -29,18 +26,6 @@ if (!function_exists('hasPermissionTo')) {
 		}
 		$permission = trim($permission);
 		return $user->can($permission);
-	}
-}
-
-if (!function_exists('getEnabledModuleToUser')) {
-	function getEnabledModuleToUser($module)
-	{
-		$user = Auth::user();
-		if (!$user) {
-			return false;
-		}
-		$module = Module::where("slug", $module)->whereJsonContains("polo_ids", (string)$user->polo_id)->first();
-		return $module;
 	}
 }
 

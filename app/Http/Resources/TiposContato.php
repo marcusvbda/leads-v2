@@ -85,9 +85,7 @@ class TiposContato extends Resource
 	{
 		$actions = [];
 		$actions[] = ["value" => "none", "label" => "Sem ação"];
-		if (getEnabledModuleToUser("email-integrator")) {
-			$actions[] = ["value" => "send-email", "label" => "Enviar Email"];
-		}
+		$actions[] = ["value" => "send-email", "label" => "Enviar Email"];
 
 		$fields = [
 			new Text([

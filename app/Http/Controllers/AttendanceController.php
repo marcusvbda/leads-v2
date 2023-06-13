@@ -137,7 +137,7 @@ class AttendanceController extends Controller
 
 		$lead->responsible_id = $user->id;
 		$lead->save();
-		if (getEnabledModuleToUser("email-integrator") && @$request->sending_email["integrator_id"]) {
+		if (@$request->sending_email["integrator_id"]) {
 			$this->dispatchEmailTemplate(new Request([
 				"ids" => [$lead->id],
 				"hide_message" => true,

@@ -18,8 +18,8 @@ use App\User;
 use marcusvbda\vstack\Fields\{
 	BelongsTo,
 	Card,
+	DateTime,
 	Text,
-	TextArea,
 };
 use Auth;
 use marcusvbda\vstack\Actions\MultipleDelete;
@@ -310,15 +310,15 @@ class Leads extends Resource
 				"label" => "Status",
 				"required" => true,
 				"field" => "status_id",
-				"options" => Status::select("id as id", "name as value")->get()
+				"options" => Status::select("id as id", "name as value")->get(),
 			]);
 		}
 		$fields[] = new Text([
 			"label" => "Nome Completo",
 			"field" => "name",
-			"rules" => ["required", "max:255"]
+			"rules" => ["required", "max:255"],
 		]);
-		$fields[] = 	new Text([
+		$fields[] = 	new DateTime([
 			"type" => "date",
 			"label" => "Data de Nascimento",
 			"field" => "birthdate",
@@ -329,11 +329,12 @@ class Leads extends Resource
 			"field" => "profession",
 			"rules" => ["max:255"]
 		]);
-		$fields[] = new TextArea([
+		$fields[] = new Text([
 			"label" => "Interesse",
 			"field" => "interest",
 			"rows" => 10,
-			"rules" => ["max:255"]
+			"rules" => ["max:255"],
+			"type" => "textarea"
 		]);
 		$cards[] = new Card("Informações Básicas", $fields);
 
@@ -387,13 +388,13 @@ class Leads extends Resource
 		]);
 
 		$cards[] = new Card("Extras", [
-			new TextArea([
+			new Text([
 				"label" => "Comentários",
 				"field" => "comment",
 				"rows" => 10,
 				"rules" => ["max:255"]
 			]),
-			new TextArea([
+			new Text([
 				"label" => "Observações",
 				"field" => "obs",
 				"rows" => 10,

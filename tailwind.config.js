@@ -2,11 +2,12 @@
 module.exports = {
     content: [
         "./resources/**/*.blade.php",
-        "./resources/**/*.js",
         "./resources/**/*.vue",
+        "./vendor/marcusvbda/vstack/**/*.vue",
+        "./vendor/marcusvbda/vstack/**/*.blade.php",
     ],
     theme: {
-        extend: {},
+        extend: { },
     },
     plugins: [],
 }

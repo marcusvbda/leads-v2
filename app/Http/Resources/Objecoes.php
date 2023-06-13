@@ -9,7 +9,6 @@ use marcusvbda\vstack\Fields\{
 	Text,
 	Check
 };
-use marcusvbda\vstack\Filters\FilterByText;
 
 class Objecoes extends Resource
 {
@@ -114,28 +113,32 @@ class Objecoes extends Resource
 	// 	return $filters;
 	// }
 
-	public function lenses()
-	{
-		return [
-			"Apenas Ativos" => ["field" => "active", "value" => true],
-			// "Apenas Inativos" => ["field" => "active", "value" => false],
-			"Apenas Inativos" => ["field" => "active", "value" => false, "handler" => function ($q) {
-				return $q->where("active", false);
-			}],
-		];
-	}
 
-	public function tableAfterRow($row)
-	{
-		return "<h1>TESTE</h1>";
-	}
+	// public function useTags()
+	// {
+	// 	return true;
+	// }
 
-	public function actions()
-	{
-		$actions = [];
-		if (hasPermissionTo("edit-leads")) {
-			$actions[] = new LeadStatusChange();
-		}
-		return $actions;
-	}
+	// public function lenses()
+	// {
+	// 	return [
+	// 		"Apenas Ativos" => ["field" => "active", "value" => true],
+	// 		// "Apenas Inativos" => ["field" => "active", "value" => false],
+	// 		"Apenas Inativos" => ["field" => "active", "value" => false, "handler" => function ($q) {
+	// 			return $q->where("active", false);
+	// 		}],
+	// 	];
+	// }
+
+	// public function tableAfterRow($row)
+	// {
+	// 	return "<h1>TESTE</h1>";
+	// }
+
+	// public function actions()
+	// {
+	// 	$actions = [];
+	// 	$actions[] = new LeadStatusChange();
+	// 	return $actions;
+	// }
 }
