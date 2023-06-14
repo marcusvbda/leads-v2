@@ -10,7 +10,8 @@ use App\Http\Models\{
 	Department,
 	LeadAnswer,
 	Objection,
-	Polo
+	Polo,
+	Status
 };
 use Illuminate\Support\Facades\DB;
 
@@ -28,9 +29,51 @@ class StartUpSeeder extends Seeder
 		$this->createContactType();
 		$this->createObjection();
 		$this->createAnswer();
+		$this->createStatuses();
 		DB::statement('SET AUTOCOMMIT=1;');
 		DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 		DB::statement('COMMIT;');
+	}
+
+	private function createStatuses()
+	{
+		Status::truncate();
+		Status::create([
+			"value" => "canceled",
+			"name" => "Cancelado",
+		]);
+		Status::create([
+			"value" => "schedule",
+			"name" => "Contato Agendado",
+		]);
+		Status::create([
+			"value" => "waiting",
+			"name" => "Aguardando",
+		]);
+		Status::create([
+			"value" => "neutral",
+			"name" => "Neutro",
+		]);
+		Status::create([
+			"value" => "interest",
+			"name" => "Interessado",
+		]);
+		Status::create([
+			"value" => "objection",
+			"name" => "Com Objeçao",
+		]);
+		Status::create([
+			"value" => "interest_with_objection",
+			"name" => "Interessado com Objeção",
+		]);
+		Status::create([
+			"value" => "schedule_test",
+			"name" => "Vestibular Agendado",
+		]);
+		Status::create([
+			"value" => "finished",
+			"name" => "Finalizado",
+		]);
 	}
 
 	private function createDepartments()

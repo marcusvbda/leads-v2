@@ -29,26 +29,29 @@
                                 @foreach ($data as $row)
                                     <tr>
                                         <td>
-                                            <request-hide-action token="{{ $webhook->code }}" :row='@json($row)' >
+                                            <request-hide-action token="{{ $webhook->code }}"
+                                                :row='@json($row)'>
                                             </request-hide-action>
                                         </td>
                                         <td class="f-12">{!! $row->f_approved !!}</td>
                                         <td class="f-12">
-                                            <json-viewer :content='@json($row->content)' :webhook='@json($webhook)' :approved='@json($row->approved)'
+                                            <json-viewer :content='@json($row->content)'
+                                                :webhook='@json($webhook)'
+                                                :approved='@json($row->approved)'
                                                 tenant_id="{{ $tenant_id }}">
                                             </json-viewer>
                                         </td>
                                         <td class="f-12">{!! $row->f_created_at_badge !!}</td>
                                         <td class="f-12">
-                                            <list-action-btns resource="requests" row_id="{{ $row->id }}" campaign_code="{{ $webhook->code }}">
+                                            <list-action-btns resource="requests" row_id="{{ $row->id }}"
+                                                campaign_code="{{ $webhook->code }}">
                                             </list-action-btns>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $data->appends(request()->only(["request_status","requests_page"]))->links() }}
-
+                        {{ $data->appends(request()->only(['request_status', 'requests_page']))->links() }}
                     @else
                         <small class="text-muted my-5">Sem Requests Recebidos</small>
                     @endif

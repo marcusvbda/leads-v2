@@ -19,6 +19,7 @@ use marcusvbda\vstack\Fields\{
 	BelongsTo,
 	Card,
 	DateTime,
+	Tags,
 	Text,
 };
 use Auth;
@@ -305,14 +306,19 @@ class Leads extends Resource
 	{
 		$cards = [];
 		$fields = [];
-		if (request("page_type") == "edit") {
-			$fields[] = new BelongsTo([
-				"label" => "Status",
-				"required" => true,
-				"field" => "status_id",
-				"options" => Status::select("id as id", "name as value")->get(),
-			]);
-		}
+
+		$fields[] = new Tags([
+			"label" => "Nome Completo",
+			"field" => "name",
+			"rules" => ["required", "max:255"],
+		]);
+		$fields[] = new BelongsTo([
+			"label" => "Status",
+			"required" => true,
+			"field" => "status_id",
+			"model" => Status::class,
+			"default" => Status::where(["value" => "waiting"])?->first()?->id,
+		]);
 		$fields[] = new Text([
 			"label" => "Nome Completo",
 			"field" => "name",

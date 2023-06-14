@@ -1,4 +1,4 @@
-@extends("templates.admin")
+@extends('templates.admin')
 @section('title', $qty > 0 ? "($qty) Notificações" : 'Notificações')
 
 @section('breadcrumb')

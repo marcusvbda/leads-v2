@@ -32,7 +32,8 @@
                                         </td>
                                         <td class="align-center">{{ $row->polo->name }}</td>
                                         <td>
-                                            <list-action-btns resource="settings" row_id="{{ $row->id }}" campaign_code="{{ $webhook->code }}">
+                                            <list-action-btns resource="settings" row_id="{{ $row->id }}"
+                                                campaign_code="{{ $webhook->code }}">
                                             </list-action-btns>
                                         </td>
                                     </tr>
