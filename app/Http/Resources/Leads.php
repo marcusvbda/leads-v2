@@ -19,7 +19,6 @@ use marcusvbda\vstack\Fields\{
 	BelongsTo,
 	Card,
 	DateTime,
-	Tags,
 	Text,
 };
 use Auth;
@@ -306,12 +305,6 @@ class Leads extends Resource
 	{
 		$cards = [];
 		$fields = [];
-
-		$fields[] = new Tags([
-			"label" => "Nome Completo",
-			"field" => "name",
-			"rules" => ["required", "max:255"],
-		]);
 		$fields[] = new BelongsTo([
 			"label" => "Status",
 			"required" => true,
