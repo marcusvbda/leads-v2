@@ -1,13 +1,12 @@
 <!-- eslint-disable max-len -->
 <template>
-    <div class="relative">
+    <div class="relative" @click="clicked" ref="item">
         <a
             type="button"
             :class="[a_class, isActive(item) ? 'text-neutral-400' : '']"
             aria-expanded="false"
             href="#"
-            @click.prevent="clicked"
-            v-click-outside="hide"
+            @click.prevent="clickLink"
         >
             {{ item.title }}
             <svg
@@ -54,7 +53,6 @@
     </div>
 </template>
 <script>
-import ClickOutside from 'vue-click-outside';
 export default {
     props: ['item', 'a_class'],
     data() {
@@ -62,10 +60,21 @@ export default {
             visible: false,
         };
     },
-    directives: {
-        ClickOutside,
+    created() {
+        this.$nextTick(() => {
+            document.addEventListener('click', (evt) => {
+                if (!this.$refs.item.contains(evt.target)) {
+                    this.visible = false;
+                }
+            });
+        });
     },
     methods: {
+        clickLink() {
+            if (this.item.route) {
+                window.location.href = this.item.route;
+            }
+        },
         isActive(item) {
             return (
                 (item?.items || []).some((x) =>
@@ -73,14 +82,11 @@ export default {
                 ) || window.location.pathname.startsWith(item.route)
             );
         },
-        hide() {
-            this.visible = false;
-        },
         clicked() {
-            if (!this.item.items.length) {
-                return (window.location.href = this.item.route);
+            if(this.item.route) return;
+            if (this.item.items.length) {
+                this.visible = !this.visible;
             }
-            this.visible = !this.visible;
         },
     },
 };

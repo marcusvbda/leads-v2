@@ -37,7 +37,7 @@
             </div>
             <div class="flex flex-col mt-3">
                 <button class="vstack-btn primary">Renovar a senha</button>
-                <a href="/login" class="mt-3">Voltar ao login</a>
+                <a href="/login" class="my-3 text-sm">Voltar ao login</a>
             </div>
         </form>
     </div>

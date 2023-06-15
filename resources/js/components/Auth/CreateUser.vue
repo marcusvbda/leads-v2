@@ -45,7 +45,7 @@
                     required
                 />
             </div>
-            <div class="flex flex-col mt-3">
+            <div class="flex flex-col my-3">
                 <button class="vstack-btn primary">Cadastrar</button>
             </div>
         </form>

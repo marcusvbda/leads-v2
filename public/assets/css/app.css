@@ -997,10 +997,6 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
-.bg-gray-200{
-  --tw-bg-opacity: 1;
-  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
-}
 .p-0{
   padding: 0px;
 }
@@ -1072,10 +1068,6 @@ video {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
 }
-.py-4{
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-}
 .py-5{
   padding-top: 1.25rem;
   padding-bottom: 1.25rem;
@@ -1128,14 +1120,14 @@ video {
 .font-bold{
   font-weight: 700;
 }
+.font-light{
+  font-weight: 300;
+}
 .font-medium{
   font-weight: 500;
 }
 .font-semibold{
   font-weight: 600;
-}
-.font-light{
-  font-weight: 300;
 }
 .leading-6{
   line-height: 1.5rem;
@@ -1159,6 +1151,10 @@ video {
 .text-gray-900{
   --tw-text-opacity: 1;
   color: rgb(17 24 39 / var(--tw-text-opacity));
+}
+.text-green-600{
+  --tw-text-opacity: 1;
+  color: rgb(22 163 74 / var(--tw-text-opacity));
 }
 .text-neutral-400{
   --tw-text-opacity: 1;
@@ -1191,10 +1187,6 @@ video {
 .text-white{
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-.text-green-600{
-  --tw-text-opacity: 1;
-  color: rgb(22 163 74 / var(--tw-text-opacity));
 }
 .underline{
   text-decoration-line: underline;
@@ -1243,10 +1235,6 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-html {
-  zoom: 0.9;
-}
-
 .vstack-form .form-label{
   margin-bottom: 0.5rem;
   font-size: 0.75rem;
@@ -1461,15 +1449,22 @@ html {
   margin-right: 0 !important;
 }
 
+.vstack-resource-list tr *{
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+#resource-import-link, #resource-report-btn, #resource-report-btn{
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
 body{
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
 
 a{
-  margin-top: 0px;
-  font-size: 0.75rem;
-  line-height: 1rem;
   --tw-text-opacity: 1;
   color: rgb(29 78 216 / var(--tw-text-opacity));
 }
@@ -1529,9 +1524,6 @@ a:hover{
   }
   .md\:block{
     display: block;
-  }
-  .md\:flex{
-    display: flex;
   }
   .md\:table-row{
     display: table-row;

@@ -24,7 +24,7 @@
                 <button class="vstack-btn primary">
                     Me enviar um link de renovação
                 </button>
-                <a href="/login" class="mt-3"> Voltar ao login </a>
+                <a href="/login" class="my-3 text-sm"> Voltar ao login </a>
             </div>
         </form>
     </div>
