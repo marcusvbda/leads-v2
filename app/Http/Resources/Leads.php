@@ -416,8 +416,11 @@ class Leads extends Resource
 
 	public function prepareImportData($data)
 	{
-		return ["success" => true, "data" => [
-			"polo_id" => Auth::user()->polo_id,
-		]];
+		return [
+			"success" => true,
+			"data" => [
+				"polo_id" => Auth::user()->polo_id,
+			]
+		];
 	}
 }
