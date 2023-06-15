@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Actions\Leads\LeadStatusChange;
 use marcusvbda\vstack\Resource;
 use marcusvbda\vstack\Fields\{
 	Card,
@@ -48,6 +47,25 @@ class Objecoes extends Resource
 		return $columns;
 	}
 
+	public function canViewReport()
+	{
+		return true;
+	}
+
+	public function canExport()
+	{
+		return true;
+	}
+
+	public function exportColumns()
+	{
+		return [
+			["label" => "Código", "handler" => fn ($item) => $item->code],
+			["label" => "Id", "handler" => fn ($item) => $item->id],
+			["label" => "description", "handler" => fn ($item) => $item->description]
+		];
+	}
+
 	public function canCreate()
 	{
 		return hasPermissionTo("create-objections");
@@ -64,11 +82,6 @@ class Objecoes extends Resource
 	}
 
 	public function canImport()
-	{
-		return false;
-	}
-
-	public function canExport()
 	{
 		return false;
 	}
