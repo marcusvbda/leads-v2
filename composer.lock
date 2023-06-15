@@ -2775,38 +2775,6 @@
             "time": "2022-12-08T12:29:14+00:00"
         },
         {
-            "name": "marcusvbda/validador-cpf-cnpj",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/marcusvbda/validador-cpf-cnpj.git",
-                "reference": "95f2ee24460cddb78710003ca65be383f98f3e96"
-            },
-            "require": {
-                "php": "^7.2 || ^8.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^8.5"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "marcusvbda\\ValidadorCpfCnpj\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Marcus Vinicius Bassalobre de Assis",
-                    "email": "bassalobre.vinicius@gmail.com"
-                }
-            ],
-            "time": "2022-07-12T14:26:56+00:00"
-        },
-        {
             "name": "marcusvbda/vstack",
             "version": "dev-master",
             "source": {
@@ -10460,7 +10428,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "marcusvbda/validador-cpf-cnpj": 20,
         "marcusvbda/vstack": 20
     },
     "prefer-stable": true,
