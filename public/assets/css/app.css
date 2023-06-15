@@ -1097,6 +1097,10 @@ video {
   font-size: 1.875rem;
   line-height: 2.25rem;
 }
+.text-4xl{
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
 .text-5xl{
   font-size: 3rem;
   line-height: 1;
@@ -1116,10 +1120,6 @@ video {
 .text-xs{
   font-size: 0.75rem;
   line-height: 1rem;
-}
-.text-4xl{
-  font-size: 2.25rem;
-  line-height: 2.5rem;
 }
 .font-bold{
   font-weight: 700;
@@ -1332,46 +1332,6 @@ video {
 
 .text-9xl {
   font-size: 8rem;
-}
-
-.vstack-pagination{
-  margin-bottom: 0.5rem;
-  margin-top: 0.5rem;
-  display: flex;
-  justify-content: flex-end;
-}
-.vstack-pagination nav ul{
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-}
-.vstack-pagination nav ul li{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  --tw-bg-opacity: 1;
-  background-color: rgb(75 85 99 / var(--tw-bg-opacity));
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
-  height: 30px;
-}
-.vstack-pagination nav ul li.disabled {
-  display: none;
-}
-.vstack-pagination nav ul li.active{
-  --tw-bg-opacity: 1;
-  background-color: rgb(107 114 128 / var(--tw-bg-opacity));
-}
-.vstack-pagination nav ul li a, .vstack-pagination nav ul li .page-link{
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
 @media screen and (max-width: 767px) {
