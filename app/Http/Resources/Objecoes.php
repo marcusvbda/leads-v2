@@ -8,6 +8,7 @@ use marcusvbda\vstack\Fields\{
 	Text,
 	Check
 };
+use marcusvbda\vstack\Filters\FilterByText;
 
 class Objecoes extends Resource
 {
@@ -116,15 +117,15 @@ class Objecoes extends Resource
 		return $cards;
 	}
 
-	// public function filters()
-	// {
-	// 	$filters[] = new FilterByText([
-	// 		"column" => "description",
-	// 		"label" => "description",
-	// 		"index" => "description"
-	// 	]);
-	// 	return $filters;
-	// }
+	public function filters()
+	{
+		$filters[] = new FilterByText([
+			"column" => "description",
+			"label" => "description",
+			"index" => "description"
+		]);
+		return $filters;
+	}
 
 
 	// public function useTags()
