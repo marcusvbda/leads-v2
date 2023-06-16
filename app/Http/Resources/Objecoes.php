@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Actions\Leads\LeadStatusChange;
 use marcusvbda\vstack\Resource;
 use marcusvbda\vstack\Fields\{
 	Card,
@@ -128,31 +129,46 @@ class Objecoes extends Resource
 	}
 
 
-	// public function useTags()
-	// {
-	// 	return true;
-	// }
+	public function useTags()
+	{
+		return true;
+	}
 
-	// public function lenses()
-	// {
-	// 	return [
-	// 		"Apenas Ativos" => ["field" => "active", "value" => true],
-	// 		// "Apenas Inativos" => ["field" => "active", "value" => false],
-	// 		"Apenas Inativos" => ["field" => "active", "value" => false, "handler" => function ($q) {
-	// 			return $q->where("active", false);
-	// 		}],
-	// 	];
-	// }
+	public function lenses()
+	{
+		return [
+			"Apenas Ativos" => ["field" => "active", "value" => true],
+			// "Apenas Inativos" => ["field" => "active", "value" => false],
+			"Apenas Inativos" => ["field" => "active", "value" => false, "handler" => function ($q) {
+				return $q->where("active", false);
+			}],
+		];
+	}
 
-	// public function tableAfterRow($row)
-	// {
-	// 	return "<h1>TESTE</h1>";
-	// }
+	public function tableAfterRow($row)
+	{
+		return "<h1>TESTE</h1>";
+	}
 
-	// public function actions()
-	// {
-	// 	$actions = [];
-	// 	$actions[] = new LeadStatusChange();
-	// 	return $actions;
-	// }
+	public function actions()
+	{
+		$actions = [];
+		$actions[] = new LeadStatusChange();
+		return $actions;
+	}
+
+	public function listItemsContent($query)
+	{
+		$items[] = [
+			'label' => 'QTDE DE VENDAS',
+			'value' => 12,
+		];
+
+		$items[] = [
+			'label' => 'TOTAL',
+			'value' => 15,
+		];
+
+		return $items;
+	}
 }

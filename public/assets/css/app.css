@@ -679,9 +679,6 @@ video {
 .collapse{
   visibility: collapse;
 }
-.static{
-  position: static;
-}
 .fixed{
   position: fixed;
 }
@@ -778,9 +775,6 @@ video {
 .ml-3{
   margin-left: 0.75rem;
 }
-.ml-5{
-  margin-left: 1.25rem;
-}
 .ml-auto{
   margin-left: auto;
 }
@@ -795,9 +789,6 @@ video {
 }
 .mr-4{
   margin-right: 1rem;
-}
-.mr-5{
-  margin-right: 1.25rem;
 }
 .mr-8{
   margin-right: 2rem;
@@ -849,9 +840,6 @@ video {
 }
 .table-row{
   display: table-row;
-}
-.list-item{
-  display: list-item;
 }
 .hidden{
   display: none;
@@ -1057,10 +1045,6 @@ video {
 .px-8{
   padding-left: 2rem;
   padding-right: 2rem;
-}
-.py-0{
-  padding-top: 0px;
-  padding-bottom: 0px;
 }
 .py-1{
   padding-top: 0.25rem;
@@ -1374,11 +1358,11 @@ video {
   border-bottom-width: 1px;
 }
 .vstack-crud-card .crud-card-body .table-crud .field-title{
+  width: 100%;
   border-bottom-width: 1px;
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
   padding: 1rem;
-  width: 100%;
 }
 @media (min-width: 768px){
   .vstack-crud-card .crud-card-body .table-crud .field-title{
@@ -1404,10 +1388,6 @@ video {
 
 .break-words {
   word-break: break-word;
-}
-
-.w-full {
-  width: 100% !important;
 }
 
 .z-999 {
@@ -1437,6 +1417,10 @@ video {
   .el-drawer{
     width: 25% !important;
   }
+}
+
+.el-message-box .el-button.el-button--default.el-button--small.el-button--primary {
+  background-color: #409EFF;
 }
 
 body{
@@ -1516,6 +1500,9 @@ a:hover{
   }
   .md\:w-1\/2{
     width: 50%;
+  }
+  .md\:w-2\/12{
+    width: 16.666667%;
   }
   .md\:w-3\/12{
     width: 25%;
