@@ -2,13 +2,13 @@
     use App\Http\Resources\Integradores;
     use App\Http\Resources\Leads;
     use App\Http\Resources\Usuarios;
-    use App\Http\Resources\Funis;
+    use App\Http\Resources\Campanhas;
     
     $resourceLeads = new Leads();
     $canViewLeads = $resourceLeads->canViewList();
     $canViewReportLeads = $resourceLeads->canViewReport();
     $canViewUsuarios = (new Usuarios())->canViewList();
-    $canViewFunils = (new Funis())->canViewList();
+    $canViewCampanha = (new Campanhas())->canViewList();
     $user = Auth::user();
     $polo = $user->polo;
     $hasMorePolos = $user->polos->count() > 1;
@@ -27,12 +27,12 @@
         [
             'position' => 'center',
             'title' => 'Oportunidades',
-            'visible' => $canViewLeads || $canViewFunils,
+            'visible' => $canViewLeads || $canViewCampanha,
             'items' => [
                 [
-                    'title' => 'Funis',
-                    'route' => '/admin/funis',
-                    'visible' => $canViewFunils,
+                    'title' => 'Campanhas',
+                    'route' => '/admin/campanhas',
+                    'visible' => $canViewCampanha,
                 ],
                 [
                     'title' => 'Leads',

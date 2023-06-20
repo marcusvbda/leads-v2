@@ -21,6 +21,7 @@ class CreateUsers extends Migration
 			$table->string('name');
 			$table->string('email');
 			$table->string('password');
+			$table->string('role')->default('user');
 			$table->jsonb('data')->nullable();
 			$table->string('recovery_token')->nullable();
 			$table->unsignedBigInteger('department_id')->nullable();
@@ -38,6 +39,8 @@ class CreateUsers extends Migration
 				->references('id')
 				->on('tenants')
 				->onDelete('restrict');
+			$table->datetime('logged_at')->nullable();
+			$table->datetime('last_logged_at')->nullable();
 			$table->rememberToken();
 			$table->softDeletes();
 			$table->timestamps();

@@ -261,6 +261,11 @@ class Leads extends Resource
 				"rules" => ["max:255"]
 			]),
 			new Text([
+				"label" => "Estado",
+				"field" => "state",
+				"rules" => ["max:150"]
+			]),
+			new Text([
 				"label" => "Cidade",
 				"field" => "city",
 				"rules" => ["max:150"]
@@ -294,6 +299,14 @@ class Leads extends Resource
 		]);
 
 		return $cards;
+	}
+
+	public static function getFieldListOption()
+	{
+		return collect((new Leads)->fields())->map(fn ($row) =>  collect($row->inputs)->map(fn ($input) => [
+			"value" => data_get($input, "options.raw_label"),
+			"id" => data_get($input, "options.field")
+		]))->collapse()->unique("id")->values()->toArray();
 	}
 
 	public function useTags()

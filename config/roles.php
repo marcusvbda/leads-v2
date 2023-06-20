@@ -9,10 +9,10 @@ return [
     "user" => [
         "title" => "Usuário",
         "permissions" => [
-            ["viewlist-funnel", "Ver Lista de Funis"],
-            ["create-funnel", "Criar Funis"],
-            ["edit-funnel", "Editar Funis"],
-            ["destroy-funnel", "Excluir Funis"],
+            ["viewlist-campaign", "Ver Lista de Campanhas"],
+            ["create-campaign", "Criar Campanhas"],
+            ["edit-campaign", "Editar Campanhas"],
+            ["destroy-campaign", "Excluir Campanhas"],
 
             ["viewlist-leads", "Ver Lista de Leads"],
             ["create-leads", "Criar Leads"],
