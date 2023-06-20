@@ -9,6 +9,7 @@ Route::get('', function () {
 require "partials/auth.php";
 Route::group(['middleware' => ['auth']], function () {
 	Route::group(['prefix' => "admin"], function () {
+		require "partials/campaign.php";
 		require "partials/home.php";
 		require "partials/dashboard.php";
 		require "partials/users.php";

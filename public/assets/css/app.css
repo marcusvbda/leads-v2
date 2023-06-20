@@ -865,6 +865,12 @@ video {
 .w-full{
   width: 100%;
 }
+.w-4\/12{
+  width: 33.333333%;
+}
+.w-3\/12{
+  width: 25%;
+}
 .max-w-7xl{
   max-width: 80rem;
 }
@@ -1101,6 +1107,10 @@ video {
 .text-xs{
   font-size: 0.75rem;
   line-height: 1rem;
+}
+.text-xl{
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }
 .font-bold{
   font-weight: 700;
@@ -1495,6 +1505,10 @@ a:hover{
   .dark\:text-white{
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity));
+  }
+  .dark\:text-gray-200{
+    --tw-text-opacity: 1;
+    color: rgb(229 231 235 / var(--tw-text-opacity));
   }
   .dark\:hover\:bg-gray-700:hover{
     --tw-bg-opacity: 1;

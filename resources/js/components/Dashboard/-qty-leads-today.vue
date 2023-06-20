@@ -1,6 +1,6 @@
 <template>
     <loading-shimmer :loading="loading" :h="120" class="h-100">
-        <DashCard
+        <dashboard-card
             title="Novos Leads"
             :qty="new_leads_qty"
             :subtitle="`Considerando todos cadastrados no sistema com data de cadastro ${today.format(
@@ -11,16 +11,12 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import DashCard from './-dash-card.vue';
 
 export default {
     data() {
         return {
             loading: true,
         };
-    },
-    components: {
-        DashCard,
     },
     computed: {
         ...mapGetters('dashboard', ['new_leads_qty']),

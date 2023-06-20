@@ -117,7 +117,6 @@ class Leads extends Resource
 		return hasPermissionTo("create-leads");
 	}
 
-
 	public function canExport()
 	{
 		return hasPermissionTo("viewlist-leads");
@@ -313,11 +312,6 @@ class Leads extends Resource
 	{
 		return true;
 	}
-
-	// public function tableAfterRow($row)
-	// {
-	// 	return view("admin.leads.after_row", compact("row"))->render();
-	// }
 
 	public function prepareImportData($data)
 	{

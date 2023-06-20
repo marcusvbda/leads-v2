@@ -43,6 +43,25 @@ class Campanhas extends Resource
 		return $columns;
 	}
 
+	public function extraActionButtons($row)
+	{
+		return [
+			[
+				"icon" => "el-icon-pie-chart",
+				"title" => "Dashboard",
+				"action_type" => "redirect",
+				"url" => "/admin/campanhas/" . @$row->code . "/dashboard",
+			]
+		];
+	}
+
+	public function tableAfterRow($row)
+	{
+		$after_row = true;
+		$resource = $this;
+		return view("admin.campaign.campaign_dashboard", compact("row", "after_row", "resource"))->render();
+	}
+
 	public function canCreate()
 	{
 		return hasPermissionTo("create-campaign");
