@@ -5,13 +5,9 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\User;
 use App\Http\Models\{
-	ContactType,
 	Tenant,
 	Department,
-	LeadAnswer,
-	Objection,
-	Polo,
-	Status
+	Polo
 };
 use Illuminate\Support\Facades\DB;
 
@@ -26,54 +22,9 @@ class StartUpSeeder extends Seeder
 		$this->createPolos();
 		$this->createDepartments();
 		$this->createUsers();
-		$this->createContactType();
-		$this->createObjection();
-		$this->createAnswer();
-		$this->createStatuses();
 		DB::statement('SET AUTOCOMMIT=1;');
 		DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 		DB::statement('COMMIT;');
-	}
-
-	private function createStatuses()
-	{
-		Status::truncate();
-		Status::create([
-			"value" => "canceled",
-			"name" => "Cancelado",
-		]);
-		Status::create([
-			"value" => "schedule",
-			"name" => "Contato Agendado",
-		]);
-		Status::create([
-			"value" => "waiting",
-			"name" => "Aguardando",
-		]);
-		Status::create([
-			"value" => "neutral",
-			"name" => "Neutro",
-		]);
-		Status::create([
-			"value" => "interest",
-			"name" => "Interessado",
-		]);
-		Status::create([
-			"value" => "objection",
-			"name" => "Com Objeçao",
-		]);
-		Status::create([
-			"value" => "interest_with_objection",
-			"name" => "Interessado com Objeção",
-		]);
-		Status::create([
-			"value" => "schedule_test",
-			"name" => "Vestibular Agendado",
-		]);
-		Status::create([
-			"value" => "finished",
-			"name" => "Finalizado",
-		]);
 	}
 
 	private function createDepartments()
@@ -115,9 +66,7 @@ class StartUpSeeder extends Seeder
 		$this->tenant->polos()->create([
 			"name" => "Sede Marilia - SP",
 			"data" => [
-				"head" => true,
 				"city" => "Marilia - SP",
-				"surrounding" => [],
 			]
 		]);
 	}
@@ -134,28 +83,5 @@ class StartUpSeeder extends Seeder
 		$user->save();
 		$polo_ids = Polo::pluck("id")->toArray();
 		$user->polos()->sync($polo_ids);
-	}
-
-	private function createAnswer()
-	{
-		LeadAnswer::truncate();
-		LeadAnswer::create(["description" => "Dúvida", "type" => "neutral", "tenant_id" => 1, "behavior" => "need_schedule"]);
-		LeadAnswer::create(["description" => "Sem Interesse", "type" => "negative", "tenant_id" => 1, "behavior" => "need_objection"]);
-		LeadAnswer::create(["description" => "Interessado", "type" => "positive", "tenant_id" => 1, "behavior" => "need_schedule"]);
-	}
-
-	private function createObjection()
-	{
-		Objection::truncate();
-		Objection::create(["description" => "Financeiro", "need_description" => false, "tenant_id" => 1]);
-		Objection::create(["description" => "Outro", "need_description" => true, "tenant_id" => 1]);
-	}
-
-	private function createContactType()
-	{
-		ContactType::truncate();
-		ContactType::create(["description" => "Telefone", "tenant_id" => 1]);
-		ContactType::create(["description" => "Whatsapp", "tenant_id" => 1]);
-		ContactType::create(["description" => "Email", "tenant_id" => 1]);
 	}
 }

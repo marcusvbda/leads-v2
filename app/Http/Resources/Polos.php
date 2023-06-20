@@ -52,7 +52,6 @@ class Polos extends Resource
 			},
 			"sortable" => false
 		];
-		$columns["f_head"] = ["label" => "Sede", "sortable_index" => "data->head"];
 		return $columns;
 	}
 
@@ -107,11 +106,6 @@ class Polos extends Resource
 				"required" => true,
 				"rules" => "max:255"
 			]),
-			new Check([
-				"label" => "Sede",
-				"field" => "head"
-			])
-
 		];
 		$cards = [new Card("Informações Básicas", $fields)];
 		return $cards;

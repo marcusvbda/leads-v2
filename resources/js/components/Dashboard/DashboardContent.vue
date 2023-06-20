@@ -1,6 +1,6 @@
 <template>
     <div class="dashboard-content">
-        <div class="flex gap-5 flex-col md:flex-row" v-if="is_head">
+        <div class="flex gap-5 flex-col md:flex-row">
             <div class="w-full md:w-3/12">
                 <qty-leads-today />
             </div>
@@ -18,7 +18,7 @@
 </template>
 <script>
 export default {
-    props: ['title', 'selected_polo_ids', 'user_id', 'is_head'],
+    props: ['title', 'selected_polo_ids', 'user_id'],
     components: {
         'qty-polos': require('./-qty-polos.vue').default,
         'qty-users': require('./-qty-users.vue').default,

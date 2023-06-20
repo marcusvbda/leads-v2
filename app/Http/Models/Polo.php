@@ -44,11 +44,6 @@ class Polo extends DefaultModel
 		return @$this->data->head ? true : false;
 	}
 
-	public function getFHeadAttribute()
-	{
-		return $this->head ? "Polo Sede" : "Polo Comum";
-	}
-
 	public function getCityAttribute()
 	{
 		return $this->data->city;
@@ -59,28 +54,5 @@ class Polo extends DefaultModel
 		$data =  @$this->attributes["data"] ? json_decode($this->attributes["data"]) : (object)[];
 		$data->city = $value;
 		$this->attributes["data"] = json_encode($data);
-	}
-
-	public function setHeadAttribute($value)
-	{
-		$data =  @$this->attributes["data"] ? json_decode($this->attributes["data"]) : (object) [];
-		$data->head = $value;
-		$this->attributes["data"] = json_encode($data);
-	}
-
-	public function poloNotifications()
-	{
-		return $this->hasMany(UserNotification::class, "polo_id");
-	}
-
-	public function getQyNewNotifications()
-	{
-		return $this->poloNotifications()->isNew()->count();
-	}
-
-	public function enabled_modules()
-	{
-		return $this->belongsToMany(Module::class, RelationModule::class, "model_id", "module_id")
-			->where("model_type", static::class)->where("enabled", true);
 	}
 }

@@ -6,7 +6,6 @@ namespace App\Http\Resources;
 use App\Http\Controllers\Auth\UsersController;
 use marcusvbda\vstack\Resource;
 use Auth;
-use App\Http\Filters\Users\UsersByTenant;
 use App\Http\Models\Department;
 use App\Http\Models\Role;
 use App\Http\Models\Tenant;
@@ -142,8 +141,8 @@ class Usuarios extends Resource
 		$resource = ResourcesHelpers::find("convites");
 		$data = $resource->model;
 		if (Auth::user()->hasRole(["super-admin"])) {
-			if (@$_GET["tenant_id"]) {
-				$data = $data->whereTenantId($_GET["tenant_id"]);
+			if (request()->has("tenant_id")) {
+				$data = $data->whereTenantId(request()->tenant_id);
 			}
 		}
 		$data = $data->paginate($this->getPerPage($resource));
@@ -152,12 +151,10 @@ class Usuarios extends Resource
 		} else {
 			$view =  view("vStack::resources.partials._table", compact("resource", "data"))->render();
 		}
-		return "
-        <div class='my-5'>
+		return "<div class='my-5'>
             <h4 class='mb-4'><span class='el-icon-s-promotion mr-2'></span> Convites Pendentes</h4>
             $view
-        </div>
-        ";
+        </div>";
 	}
 
 	protected function getPerPage($resource)

@@ -1,20 +1,17 @@
 @php
     use App\Http\Resources\Integradores;
     use App\Http\Resources\Leads;
-    use App\Http\Resources\Objecoes;
-    use App\Http\Resources\RespostasContato;
-    use App\Http\Resources\TiposContato;
+    use App\Http\Resources\Usuarios;
+    use App\Http\Resources\Funis;
     
     $resourceLeads = new Leads();
     $canViewLeads = $resourceLeads->canViewList();
-    $canViewAttendance = $resourceLeads->canUpdate();
     $canViewReportLeads = $resourceLeads->canViewReport();
-    $canViewObjecoes = (new Objecoes())->canViewList();
-    $canViewIntegradores = (new Integradores())->canViewList();
-    $canViewTiposContato = (new TiposContato())->canViewList();
-    $canViewResposta = (new RespostasContato())->canViewList();
+    $canViewUsuarios = (new Usuarios())->canViewList();
+    $canViewFunils = (new Funis())->canViewList();
     $user = Auth::user();
     $polo = $user->polo;
+    $hasMorePolos = $user->polos->count() > 1;
     $isAdmin = $user->hasRole(['admin']);
     $isSuperAdmin = $user->hasRole(['super-admin']);
     $isAdminOrSuperAdmin = $isAdmin || $isSuperAdmin;
@@ -30,17 +27,17 @@
         [
             'position' => 'center',
             'title' => 'Oportunidades',
-            'visible' => $canViewLeads || $canViewAttendance,
+            'visible' => $canViewLeads || $canViewFunils,
             'items' => [
+                [
+                    'title' => 'Funis',
+                    'route' => '/admin/funis',
+                    'visible' => $canViewFunils,
+                ],
                 [
                     'title' => 'Leads',
                     'route' => '/admin/leads',
                     'visible' => $canViewLeads,
-                ],
-                [
-                    'title' => 'Atendimento',
-                    'route' => '/admin/atendimento',
-                    'visible' => $canViewAttendance,
                 ],
             ],
         ],
@@ -57,54 +54,10 @@
             ],
         ],
         [
-            'position' => 'center',
-            'title' => 'Captação',
-            'visible' => $isAdminOrSuperAdmin,
-            'items' => [
-                [
-                    'title' => 'Webhook',
-                    'route' => '/admin/webhook',
-                    'visible' => $isAdminOrSuperAdmin,
-                ],
-                [
-                    'title' => 'Integradores',
-                    'route' => '/admin/integradores',
-                    'visible' => $isAdminOrSuperAdmin,
-                ],
-            ],
-        ],
-        [
-            'position' => 'center',
-            'title' => 'Configurações',
-            'visible' => $canViewObjecoes || $canViewTiposContato || $canViewResposta || $canViewIntegradores,
-            'items' => [
-                [
-                    'title' => 'Objeções',
-                    'route' => '/admin/objecoes',
-                    'visible' => $canViewObjecoes,
-                ],
-                [
-                    'title' => 'Tipos de contato',
-                    'route' => '/admin/tipos-contato',
-                    'visible' => $canViewTiposContato,
-                ],
-                [
-                    'title' => 'Respostas de contato',
-                    'route' => '/admin/respostas-contato',
-                    'visible' => $canViewResposta,
-                ],
-                [
-                    'title' => 'Respostas de contato',
-                    'route' => '/admin/integradores-de-email/',
-                    'visible' => $canViewIntegradores,
-                ],
-            ],
-        ],
-        [
             'position' => 'right',
             'title' => $user->email,
             'visible' => true,
-            'custom_style' => 'left: -66px;',
+            'custom_style' => 'left: -100px;',
             'items' => [
                 [
                     'title' => 'Polos',
@@ -117,6 +70,11 @@
                     'visible' => $isAdminOrSuperAdmin,
                 ],
                 [
+                    'title' => 'Usuários',
+                    'route' => '/admin/usuarios',
+                    'visible' => $canViewUsuarios,
+                ],
+                [
                     'title' => 'Sair',
                     'route' => '/login',
                     'visible' => true,
@@ -126,6 +84,7 @@
     ];
 @endphp
 <theme-navbar :items='@json($items)'>
-    <select-polo polo_name='{{ $polo->name }}' :user_id='{{ $user->id }}' :logged_id='{{ $polo->id }}'>
+    <select-polo polo_name='{{ $polo->name }}' :user_id='{{ $user->id }}' :logged_id='{{ $polo->id }}'
+        :has_more_polos='@json($hasMorePolos)'>
     </select-polo>
 </theme-navbar>

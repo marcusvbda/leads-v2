@@ -83,6 +83,9 @@ export default {
                     } else {
                         if (data.polos) {
                             this.loading = false;
+                            if (data.polos.length == 1) {
+                                return this.selectPolo(data.polos[0].id);
+                            }
                             this.showPolosList(data.polos);
                         }
                     }

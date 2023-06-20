@@ -1,6 +1,7 @@
 <template>
     <div>
         <el-tooltip
+            v-if="has_more_polos"
             class="item"
             effect="dark"
             content="Clique para selecionar o polo que deseja visualizar"
@@ -17,6 +18,15 @@
                 </span>
             </a>
         </el-tooltip>
+        <span
+            v-else
+            :class="[
+                'inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs',
+                'font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10',
+            ]"
+        >
+            {{ polo_name }}
+        </span>
         <select-dialog
             ref="select-polo"
             title="Selecione o polo que deseja logar"
@@ -28,7 +38,7 @@
 </template>
 <script>
 export default {
-    props: ['polo_name', 'user_id', 'logged_id'],
+    props: ['polo_name', 'user_id', 'logged_id', 'has_more_polos'],
     data() {
         return {
             visible: false,

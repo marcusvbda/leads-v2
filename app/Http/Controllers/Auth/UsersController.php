@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Models\Role;
 use Illuminate\Http\Request;
 use marcusvbda\vstack\Services\Messages;
 use App\Http\Models\UserInvite;
@@ -15,14 +14,6 @@ use Auth;
 
 class UsersController extends Controller
 {
-	public function resendInvite($id, Request $request)
-	{
-		$invite = UserInvite::findOrFail($id);
-		$this->inviteEmail($invite);
-		Messages::send("success", "Convite de usuário reenviado para o email <b>" . $invite->email . "</b>");
-		return redirect(redirect()->back()->getTargetUrl());
-	}
-
 	public function cancelInvite($id, Request $request)
 	{
 		$invite = UserInvite::findOrFail($id);

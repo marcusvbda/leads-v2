@@ -6,14 +6,8 @@ use marcusvbda\vstack\Resource;
 use App\Http\Models\Lead;
 use App\Http\Actions\Leads\{
 	LeadResponsibleChange,
-	LeadStatusChange,
-	LeadTransfer,
-	SendEmail,
 };
-use App\Http\Filters\Leads\LeadsByPhone;
 use App\Http\Models\Department;
-use App\Http\Models\Objection;
-use App\Http\Models\Status;
 use App\User;
 use marcusvbda\vstack\Fields\{
 	BelongsTo,
@@ -34,39 +28,11 @@ class Leads extends Resource
 	public $importColumnIndexes = [
 		"nome" => "name",
 		"email" => "email",
-		"nascimento" => "birthdate",
-		"telefone" => "phone_number",
-		"celular" => "cellphone_number",
-		"profissão" => "profession",
-
-		"cep" => "zipcode",
-		"cidade" => "city",
-		"bairro" => "district",
-		"número" => "address_number",
-		"complemente" => "complementary",
-		"interesse" => "interest",
-		"comentários" => "comment",
-		"observações" => "obs",
 	];
 
 	public function label()
 	{
 		return "Leads";
-	}
-
-	public function resultsPerPage()
-	{
-		return [20, 50, 100, 200, 500];
-	}
-
-	public function maxRowsExportSync()
-	{
-		return 1000;
-	}
-
-	public function canClone()
-	{
-		return false;
 	}
 
 	public function singularLabel()
@@ -81,18 +47,15 @@ class Leads extends Resource
 
 	public function search()
 	{
-		return ["data->name", "data->email"];
+		return ["name", "email", "doc_number"];
 	}
 
 	public function table()
 	{
 		$columns = [];
 		$columns["code"] = ["label" => "Código", "sortable_index" => "id", "size" => "100px"];
-		$columns["label"] = ["label" => "Nome", "sortable_index" => "data->name"];
-		$columns["contact"] = ["label" => "Contato", "sortable_index" => "data->email"];
-		$columns["f_status_badge"] = ["label" => "Status", "sortable_index" => "status_id"];
-		$columns["responsible->name"] = ["label" => "Responsável", "sortable_index" => "responsible_id"];
-		$columns["f_updated_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
+		$columns["label"] = ["label" => "Nome", "sortable_index" => "name"];
+		$columns["f_updated_at_badge"] = ["label" => "Data", "sortable_index" => "created_at", "size" => "200px"];
 		return $columns;
 	}
 
@@ -105,8 +68,6 @@ class Leads extends Resource
 	{
 		$actions = [];
 		if (hasPermissionTo("edit-leads")) {
-			$actions[] = new LeadStatusChange();
-			$actions[] = new LeadTransfer();
 			$actions[] = new LeadResponsibleChange();
 		}
 		if (hasPermissionTo("destroy-leads")) {
@@ -117,7 +78,6 @@ class Leads extends Resource
 				"success_message" => 'Leads excluídos com sucesso',
 			]);
 		}
-		$actions[] = new SendEmail();
 		return $actions;
 	}
 
@@ -165,42 +125,12 @@ class Leads extends Resource
 
 	public function exportColumns()
 	{
-		$fields[] = ["label" => "Código", "handler" => function ($item) {
-			return $item->code;
-		}];
-		$fields[] = ["label" => "Nome", "handler" => function ($item) {
-			return $item->name;
-		}];
-		$fields[] = ["label" => "Origens", "handler" => function ($row) {
-			return @implode(", ", (array)data_get($row, "data.source", []));
-		}];
-		$fields[] = ["label" => "Status", "handler" => function ($row) {
-			return @$row->status->name;
-		}];
-		$fields[] = ["label" => "Profissão", "handler" => function ($row) {
-			return @$row->profession;
-		}];
-		$fields[] = ["label" => "Email", "handler" => function ($row) {
-			return @$row->email;
-		}];
-		$fields[] = ["label" => "Telefone", "handler" => function ($row) {
-			return @$row->primary_phone;
-		}];
-		$fields[] = ["label" => "Telefone Limpo", "handler" => function ($row) {
-			return preg_replace("/[^0-9]/", "", $row->primary_phone_number);
-		}];
-		$fields[] =  ["label" => "Tel. Secundário", "handler" => function ($row) {
-			return $row->secondary_phone_number;
-		}];
-		$fields[] =  ["label" => "Tel. Secundário Limpo", "handler" => function ($row) {
-			return  preg_replace("/[^0-9]/", "", $row->secondary_phone_number);
-		}];
-		$fields[] = ["label" => "Interesse", "handler" => function ($row) {
-			return @$row->interest;
-		}];
-		$fields[] = ["label" => "Data", "handler" => function ($row) {
-			return formatDate($row->created_at);
-		}];
+		$fields = [
+			["label" => "Código", "handler" => fn ($item) => $item->code],
+			["label" => "Name", "handler" => fn ($item) => $item->name],
+			["label" => "Profissão", "handler" => fn ($item) => $item->profession],
+			["label" => "Email", "handler" => fn ($item) => $item->email],
+		];
 		return $fields;
 	}
 
@@ -210,35 +140,19 @@ class Leads extends Resource
 
 		$filters[] = new FilterByPresetDate([
 			"label" => "Data de Criação",
-			"field" => "leads.created_at"
+			"field" => "created_at"
 		]);
 		$filters[] = new FilterByText([
-			"column" => "data->name",
+			"column" => "name",
 			"label" => "Nome",
 			"index" => "name"
 		]);
 		$filters[] = new FilterByText([
-			"column" => "data->interest",
-			"label" => "Interesse",
-			"index" => "interest"
-		]);
-		$filters[] = new FilterByText([
-			"column" => "data->email",
+			"column" => "email",
 			"label" => "Email",
 			"index" => "email"
 		]);
-		$filters[] = new LeadsByPhone();
-		$filters[] = new FilterByOption([
-			"label" => "Status",
-			"field" => "status_id",
-			"model" => Status::class
-		]);
 		$filters[] = new FilterByTag(Lead::class);
-		$filters[] = new FilterByText([
-			"column" => "data->source",
-			"label" => "Origem",
-			"index" => "source"
-		]);
 		$filters[] = new FilterByOption([
 			"label" => "Departamentos",
 			"multiple" => true,
@@ -252,26 +166,10 @@ class Leads extends Resource
 			"column" => "responsible_id",
 		]);
 		$filters[] = new FilterByOption([
-			"label" => "Cadastrado por ...",
+			"label" => "Autor",
 			"multiple" => true,
 			"model" => User::class,
 			"column" => "user_id",
-		]);
-		$filters[] = new FilterByOption([
-			"label" => "Objeções",
-			"multiple" => true,
-			"model" => Objection::class,
-			"model_fields" =>  ["value" => "id", "label" => "description"],
-			"field" => "objection",
-			"handle" =>  function ($query, $value) {
-				$objection = Objection::find($value);
-				return $query->where("data->objection", $objection?->description);
-			}
-		]);
-		$filters[] = new FilterByText([
-			"column" => "data->other_objection",
-			"label" => "Descrição da Objeção",
-			"index" => "other_objection"
 		]);
 
 		return $filters;
@@ -290,9 +188,6 @@ class Leads extends Resource
 
 		foreach ($columns as $key => $value) {
 			$item_value = data_get($fill_data, $key, "");
-			if (in_array($key, ["celular", "telefone"])) {
-				$item_value = preg_replace('/\D/', '', $item_value);
-			}
 			$new_model->{$value} = $item_value;
 		}
 		$new_model->tenant_id = data_get($fill_data, "tenant_id", null);
@@ -305,35 +200,25 @@ class Leads extends Resource
 	{
 		$cards = [];
 		$fields = [];
-		$fields[] = new BelongsTo([
-			"label" => "Status",
-			"required" => true,
-			"field" => "status_id",
-			"model" => Status::class,
-			"default" => Status::where(["value" => "waiting"])?->first()?->id,
-		]);
 		$fields[] = new Text([
 			"label" => "Nome Completo",
 			"field" => "name",
 			"rules" => ["required", "max:255"],
 		]);
+		$fields[] = new Text([
+			"label" => "RG ou CPF",
+			"field" => "doc_number",
+			"rules" => ["max:255"],
+		]);
 		$fields[] = 	new DateTime([
 			"type" => "date",
 			"label" => "Data de Nascimento",
 			"field" => "birthdate",
-			"rules" => ["max:255"],
 		]);
 		$fields[] = new Text([
 			"label" => "Profissão",
 			"field" => "profession",
-			"rules" => ["max:255"]
-		]);
-		$fields[] = new Text([
-			"label" => "Interesse",
-			"field" => "interest",
-			"rows" => 10,
-			"rules" => ["max:255"],
-			"type" => "textarea"
+			"rules" => ["max:100"]
 		]);
 		$cards[] = new Card("Informações Básicas", $fields);
 
@@ -341,23 +226,34 @@ class Leads extends Resource
 			new Text([
 				"label" => "Email",
 				"field" => "email",
-				"rules" => ["nullable", "max:255", "email"]
+				"rules" => ["max:255", "email"]
 			]),
 			new Text([
-				"label" => "Telefone",
-				"field" => "phone_number",
+				"label" => "Telefone Primário",
+				"field" => "phone",
 				"mask" => ["(##) ####-####", "(##) #####-####"],
-				"rules" => ["max:255"]
 			]),
 			new Text([
-				"label" => "Celular",
-				"field" => "cellphone_number",
+				"label" => "Telefone Secundário",
+				"field" => "secondary_phone",
 				"mask" => ["(##) ####-####", "(##) #####-####"],
-				"rules" => ["max:255"]
 			]),
 		]);
 
 		$cards[] = new Card("Localidade", [
+			new BelongsTo([
+				"label" => "País",
+				"field" => "country",
+				"disabled" => true,
+				"default" => "BR",
+				"options" => [
+					[
+						"value" => "BR",
+						"label" => "Brasil"
+					]
+				],
+				"rules" => ["required", "max:255"]
+			]),
 			new Text([
 				"label" => "Cep",
 				"field" => "zipcode",
@@ -367,17 +263,17 @@ class Leads extends Resource
 			new Text([
 				"label" => "Cidade",
 				"field" => "city",
-				"rules" => ["max:255"]
+				"rules" => ["max:150"]
 			]),
 			new Text([
 				"label" => "Bairro",
 				"field" => "district",
-				"rules" => ["max:255"]
+				"rules" => ["max:100"]
 			]),
 			new Text([
 				"label" => "Número",
-				"field" => "address_number",
-				"rules" => ["max:255"]
+				"field" => "number",
+				"rules" => ["max:50"]
 			]),
 			new Text([
 				"label" => "Complemento",
@@ -388,16 +284,12 @@ class Leads extends Resource
 
 		$cards[] = new Card("Extras", [
 			new Text([
-				"label" => "Comentários",
-				"field" => "comment",
-				"rows" => 10,
-				"rules" => ["max:255"]
-			]),
-			new Text([
 				"label" => "Observações",
+				"type" => "textarea",
 				"field" => "obs",
 				"rows" => 10,
-				"rules" => ["max:255"]
+				"rules" => ["max:500"],
+				"show_value_length" => true,
 			]),
 		]);
 
@@ -409,10 +301,10 @@ class Leads extends Resource
 		return true;
 	}
 
-	public function tableAfterRow($row)
-	{
-		return view("admin.leads.after_row", compact("row"))->render();
-	}
+	// public function tableAfterRow($row)
+	// {
+	// 	return view("admin.leads.after_row", compact("row"))->render();
+	// }
 
 	public function prepareImportData($data)
 	{

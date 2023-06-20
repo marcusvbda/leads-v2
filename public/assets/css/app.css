@@ -793,9 +793,6 @@ video {
 .mr-8{
   margin-right: 2rem;
 }
-.mr-auto{
-  margin-right: auto;
-}
 .mt-0{
   margin-top: 0px;
 }
@@ -1065,14 +1062,8 @@ video {
 .pl-3{
   padding-left: 0.75rem;
 }
-.pr-1{
-  padding-right: 0.25rem;
-}
 .pr-4{
   padding-right: 1rem;
-}
-.pt-3{
-  padding-top: 0.75rem;
 }
 .pt-4{
   padding-top: 1rem;
