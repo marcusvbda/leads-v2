@@ -60,8 +60,8 @@
             'custom_style' => 'left: -100px;',
             'items' => [
                 [
-                    'title' => 'Polos',
-                    'route' => '/admin/polos',
+                    'title' => 'Empresas',
+                    'route' => '/admin/empresas',
                     'visible' => $isAdminOrSuperAdmin,
                 ],
                 [

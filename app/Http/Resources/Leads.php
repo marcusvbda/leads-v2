@@ -6,6 +6,7 @@ use marcusvbda\vstack\Resource;
 use App\Http\Models\Lead;
 use App\Http\Actions\Leads\{
 	LeadResponsibleChange,
+	LeadTransfer,
 };
 use App\Http\Models\Department;
 use App\User;
@@ -71,6 +72,9 @@ class Leads extends Resource
 			$actions[] = new LeadResponsibleChange();
 		}
 		if (hasPermissionTo("destroy-leads")) {
+			if (Auth::user()->polos()->count() > 1) {
+				$actions[] = new LeadTransfer();
+			}
 			$actions[] = new MultipleDelete([
 				"model" => Lead::class,
 				"title" => "Excluir Leads",

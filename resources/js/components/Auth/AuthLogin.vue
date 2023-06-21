@@ -35,7 +35,7 @@
         </form>
         <select-dialog
             ref="select-polo"
-            title="Selecione o polo que deseja logar"
+            title="Selecione a empresa que deseja logar"
             btn_text="Entrar"
             @selected="selectPolo"
         />

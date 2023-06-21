@@ -1,9 +1,9 @@
 <template>
     <loading-shimmer :loading="loading" :h="120" class="h-100">
         <dashboard-card
-            title="Polos"
+            title="Empresas"
             :qty="polos_qty"
-            subtitle="Polos atualmente ativos no sistema"
+            subtitle="Empresas atualmente ativas no sistema"
         />
     </loading-shimmer>
 </template>

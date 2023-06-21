@@ -1,40 +1,22 @@
 <template>
     <div class="flex gap-5 flex-col md:flex-row">
-        <div class="w-full md:w-3/12">
-            <dashboard-card
-                title="Novos Leads"
-                :qty="12"
-                subtitle="Considerando todos cadastrados no sistema com data de cadastro"
-            />
-        </div>
-        <div class="w-full md:w-3/12">
-            <dashboard-card
-                title="Novos Leads"
-                :qty="12"
-                subtitle="Considerando todos cadastrados no sistema com data de cadastro"
-            />
-        </div>
-        <div class="w-full md:w-3/12">
-            <dashboard-card
-                title="Novos Leads"
-                :qty="12"
-                subtitle="Considerando todos cadastrados no sistema com data de cadastro"
-            />
-        </div>
-        <div class="w-full md:w-3/12">
-            <dashboard-card
-                title="Novos Leads"
-                :qty="12"
-                subtitle="Considerando todos cadastrados no sistema com data de cadastro"
-            />
-        </div>
+        <QtyLeads />
     </div>
 </template>
 <script>
+import { mapMutations } from 'vuex';
+import QtyLeads from './-qty-leads.vue';
+
 export default {
     props: ['campaign'],
+    components: {
+        QtyLeads,
+    },
     created() {
-        console.log(this.campaign);
+        this.setCampaign(this.campaign);
+    },
+    methods: {
+        ...mapMutations('campaign', ['setCampaign']),
     },
 };
 </script>

@@ -59,7 +59,7 @@ class Usuarios extends Resource
 		$columns["code"] = ["label" => "Código", "sortable_index" => "id"];
 		$columns["name"] = ["label" => "Nome"];
 		$columns["email"] = ["label" => "E-mail"];
-		$columns["qty_polos"] = ["label" => "Polos Vinculados", "sortable" => false, "handler" => function ($row) {
+		$columns["qty_polos"] = ["label" => "Empresas Vinculados", "sortable" => false, "handler" => function ($row) {
 			return $row->polos()->count();
 		}];
 		$columns["role_name"] = ["label" => "Grupo de Acesso", "sortable" => false];
@@ -208,9 +208,9 @@ class Usuarios extends Resource
 				"options" => $this->getRoleOptions()
 			]),
 			new BelongsTo([
-				"label" => "Polos",
+				"label" => "Empresas",
 				"field" => "polo_ids",
-				"description" => "Polos os quais este usuário faz parte",
+				"description" => "Empresas as quais este usuário faz parte",
 				"multiple" => true,
 				"options" => $user->tenant->polos()->select("id as id", "name as value")->get()
 			]),
@@ -256,9 +256,9 @@ class Usuarios extends Resource
 				"required" => true,
 			]),
 			new BelongsTo([
-				"label" => "Polos",
+				"label" => "Empresas",
 				"field" => "polo_ids",
-				"description" => "Polos os quais este usuário faz parte",
+				"description" => "Empresas as quais este usuário faz parte",
 				"multiple" => true,
 				"default" => array_map(function ($row) {
 					return strval($row);

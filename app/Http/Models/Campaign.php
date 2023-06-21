@@ -16,6 +16,8 @@ class Campaign extends DefaultModel
 		"fields" => "array",
 	];
 
+	public $appends = ["code"];
+
 	public static function boot()
 	{
 		parent::boot();
@@ -54,5 +56,10 @@ class Campaign extends DefaultModel
 	public function polo()
 	{
 		return $this->belongsTo(Polo::class);
+	}
+
+	public function leads()
+	{
+		return $this->belongsToMany(Lead::class, 'campaign_leads', 'campaign_id', 'lead_id');
 	}
 }
