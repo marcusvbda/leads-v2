@@ -6,6 +6,7 @@
             </a>
         </div>
     @endif
-    <campaign-dashboard @if (@$after_row) class="px-4" @endif :campaign='@json($row)'>
+    <campaign-dashboard :after_row='@json(@$after_row)' @if (@$after_row) class="px-4" @endif
+        :campaign='@json($row)' :fields='@json($leads_fields)'>
     </campaign-dashboard>
 </div>

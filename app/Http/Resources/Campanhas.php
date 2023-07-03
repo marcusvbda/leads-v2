@@ -38,6 +38,10 @@ class Campanhas extends Resource
 		$columns = [];
 		$columns["code"] = ["label" => "Código", "sortable_index" => "id", "size" => "100px"];
 		$columns["label"] = ["label" => "Nome", "sortable_index" => "name"];
+		$columns["qty"] = ["label" => "Leads", "sortable" => false, "handler" => function ($row) {
+			$qty =  $row->leads()->count();
+			return $qty . " " . ($qty == 1 ? "lead" : "leads");
+		}];
 		$columns["user->name"] = ["label" => "Autor", "sortable_index" => "user_id"];
 		$columns["f_updated_at_badge"] = ["label" => "Data", "sortable_index" => "created_at", "size" => "200px"];
 		return $columns;
@@ -59,7 +63,8 @@ class Campanhas extends Resource
 	{
 		$after_row = true;
 		$resource = $this;
-		return view("admin.campaign.campaign_dashboard", compact("row", "after_row", "resource"))->render();
+		$leads_fields = Leads::getFieldListOption();
+		return view("admin.campaign.campaign_dashboard", compact("row", "after_row", "resource", "leads_fields"))->render();
 	}
 
 	public function canCreate()

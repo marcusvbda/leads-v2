@@ -60,6 +60,6 @@ class Campaign extends DefaultModel
 
 	public function leads()
 	{
-		return $this->belongsToMany(Lead::class, 'campaign_leads', 'campaign_id', 'lead_id');
+		return $this->belongsToMany(Lead::class, 'campaign_leads', 'campaign_id', 'lead_id')->orderBy("campaign_leads.updated_at", "desc");
 	}
 }

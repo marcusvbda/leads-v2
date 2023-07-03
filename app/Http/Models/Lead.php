@@ -34,4 +34,14 @@ class Lead extends DefaultModel
 	{
 		return Vstack::makeLinesHtmlAppend($this->name, $this->email);
 	}
+
+	public function campaigns()
+	{
+		return $this->belongsToMany(Campaign::class, 'campaign_leads', 'lead_id', 'campaign_id');
+	}
+
+	public function getampaignIdsAttribute()
+	{
+		return $this->campaigns->pluck("id");
+	}
 }

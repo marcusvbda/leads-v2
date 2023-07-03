@@ -8,6 +8,7 @@ use App\Http\Actions\Leads\{
 	LeadResponsibleChange,
 	LeadTransfer,
 };
+use App\Http\Models\Campaign;
 use App\Http\Models\Department;
 use App\User;
 use marcusvbda\vstack\Fields\{
@@ -203,6 +204,15 @@ class Leads extends Resource
 	{
 		$cards = [];
 		$fields = [];
+		$fields[] = new BelongsTo([
+			"label" => "Campanhas",
+			"field" => "campaign_ids",
+			"model" => Campaign::class,
+			"multiple" => true,
+		]);
+		$cards[] = new Card("Operação", $fields);
+
+		$fields = [];
 		$fields[] = new Text([
 			"label" => "Nome Completo",
 			"field" => "name",
@@ -229,7 +239,7 @@ class Leads extends Resource
 			new Text([
 				"label" => "Email",
 				"field" => "email",
-				"rules" => ["max:255", "email"]
+				"rules" => ["max:255", "email", "nullable"]
 			]),
 			new Text([
 				"label" => "Telefone Primário",
@@ -325,5 +335,15 @@ class Leads extends Resource
 				"polo_id" => Auth::user()->polo_id,
 			]
 		];
+	}
+
+	public function storeMethod($id, $data)
+	{
+		$campaignIds = data_get($data, "data.campaign_ids", []);
+		unset($data["data"]["campaign_ids"]);
+		$result = parent::storeMethod($id, $data);
+		$lead = data_get($result, "model");
+		$lead->campaigns()->sync($campaignIds);
+		return $result;
 	}
 }

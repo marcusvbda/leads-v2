@@ -25,7 +25,8 @@ return new class extends Migration
             $table->foreign('campaign_id')
                 ->references('id')
                 ->on('campaigns');
-            $table->string("stage");
+            $table->integer("stage_position")->default(0);
+            $table->timestamp("updated_at")->default("now()");
             $table->primary(['campaign_id', 'lead_id']);
         });
     }
