@@ -41,8 +41,8 @@ class Campanhas extends Resource
 		$columns["qty"] = ["label" => "Leads", "sortable" => false, "handler" => function ($row) {
 			$qty =  $row->leads()->count();
 			return $qty . " " . ($qty == 1 ? "lead" : "leads");
-		}];
-		$columns["user->name"] = ["label" => "Autor", "sortable_index" => "user_id"];
+		}, "size" => "100px"];
+		$columns["user->name"] = ["label" => "Autor", "sortable_index" => "user_id", "size" => "100px"];
 		$columns["f_updated_at_badge"] = ["label" => "Data", "sortable_index" => "created_at", "size" => "200px"];
 		return $columns;
 	}
@@ -105,6 +105,11 @@ class Campanhas extends Resource
 	public function canExport()
 	{
 		return false;
+	}
+
+	public function canUpdateRow($row)
+	{
+		return $row->leads()->count() == 0;
 	}
 
 	public function fields()
