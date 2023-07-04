@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Auth\UsersController;
-use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 
 Route::get('', function () {
 	return redirect("/admin"); //temporário até termos uma landing page
@@ -10,18 +9,11 @@ Route::get('', function () {
 require "partials/auth.php";
 Route::group(['middleware' => ['auth']], function () {
 	Route::group(['prefix' => "admin"], function () {
+		require "partials/campaign.php";
 		require "partials/home.php";
-		require "partials/dates.php";
 		require "partials/dashboard.php";
 		require "partials/users.php";
 		require "partials/polos.php";
-		require "partials/notifications.php";
-		require "partials/rating.php";
-		require "partials/attendance.php";
-		require "partials/webhook.php";
-		Route::group(['middleware' => ['root-auth']], function () {
-			Route::get('log-viewer', [LogViewerController::class, 'index']);
-		});
 	});
 });
 

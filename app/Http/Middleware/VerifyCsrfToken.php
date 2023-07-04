@@ -20,7 +20,6 @@ class VerifyCsrfToken extends Middleware
 	 */
 	protected $except = [
 		"api",
-		"webhook",
 		"vstack/*",
 		"admin/dashboard/get-data/*",
 	];

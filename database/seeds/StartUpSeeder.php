@@ -5,11 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\User;
 use App\Http\Models\{
-	ContactType,
 	Tenant,
 	Department,
-	LeadAnswer,
-	Objection,
 	Polo
 };
 use Illuminate\Support\Facades\DB;
@@ -25,9 +22,6 @@ class StartUpSeeder extends Seeder
 		$this->createPolos();
 		$this->createDepartments();
 		$this->createUsers();
-		$this->createContactType();
-		$this->createObjection();
-		$this->createAnswer();
 		DB::statement('SET AUTOCOMMIT=1;');
 		DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 		DB::statement('COMMIT;');
@@ -72,9 +66,7 @@ class StartUpSeeder extends Seeder
 		$this->tenant->polos()->create([
 			"name" => "Sede Marilia - SP",
 			"data" => [
-				"head" => true,
 				"city" => "Marilia - SP",
-				"surrounding" => [],
 			]
 		]);
 	}
@@ -91,28 +83,5 @@ class StartUpSeeder extends Seeder
 		$user->save();
 		$polo_ids = Polo::pluck("id")->toArray();
 		$user->polos()->sync($polo_ids);
-	}
-
-	private function createAnswer()
-	{
-		LeadAnswer::truncate();
-		LeadAnswer::create(["description" => "Dúvida", "type" => "neutral", "tenant_id" => 1, "behavior" => "need_schedule"]);
-		LeadAnswer::create(["description" => "Sem Interesse", "type" => "negative", "tenant_id" => 1, "behavior" => "need_objection"]);
-		LeadAnswer::create(["description" => "Interessado", "type" => "positive", "tenant_id" => 1, "behavior" => "need_schedule"]);
-	}
-
-	private function createObjection()
-	{
-		Objection::truncate();
-		Objection::create(["description" => "Financeiro", "need_description" => false, "tenant_id" => 1]);
-		Objection::create(["description" => "Outro", "need_description" => true, "tenant_id" => 1]);
-	}
-
-	private function createContactType()
-	{
-		ContactType::truncate();
-		ContactType::create(["description" => "Telefone", "tenant_id" => 1]);
-		ContactType::create(["description" => "Whatsapp", "tenant_id" => 1]);
-		ContactType::create(["description" => "Email", "tenant_id" => 1]);
 	}
 }

@@ -43,7 +43,7 @@ class Departamentos extends Resource
 	{
 		$columns = [];
 		$columns["name"] = ["label" => "Nome"];
-		$columns["f_created_at_badge"] = ["label" => "Data", "sortable_index" => "created_at"];
+		$columns["f_created_at_badge"] = ["label" => "Data", "sortable_index" => "created_at", "size" => "200px"];
 		return $columns;
 	}
 

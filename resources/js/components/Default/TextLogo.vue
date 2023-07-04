@@ -1,8 +1,11 @@
 <template>
-    <h1 class="logo" :style="{ fontSize: `${size}px` }">
-        {{ app_name }}
-        <small v-if="complete">
-            <b>{{ app_description }}</b>
+    <h1
+        class="text-neutral-900 font-bold text-lg flex items-baseline"
+        :style="{ fontSize: `${size}px`, color }"
+    >
+        <b>{{ app_name }}</b>
+        <small v-if="complete" class="font-semibold text-blue-700 text-sm">
+            {{ app_description }}
         </small>
     </h1>
 </template>
@@ -17,34 +20,18 @@ export default {
             type: Boolean,
             default: true,
         },
+        color: {
+            type: String,
+            default: 'black',
+        },
     },
     computed: {
         app_name() {
-            return laravel.config.name
+            return laravel.config.name;
         },
         app_description() {
-            return laravel.config.description
+            return laravel.config.description;
         },
     },
-}
+};
 </script>
-<style lang="scss" scoped>
-@import '../../../sass/variables';
-
-.logo {
-    letter-spacing: -2px;
-    color: inherit;
-    display: flex;
-    align-items: center;
-    position: relative;
-    color: #001737;
-    // text-transform: lowercase;
-    font-weight: bolder;
-    margin-bottom: 0;
-    b {
-        color: $primary;
-        font-size: 50%;
-        margin-left: 10%;
-    }
-}
-</style>

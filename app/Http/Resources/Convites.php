@@ -50,11 +50,12 @@ class Convites extends Resource
 		$user = Auth::user();
 		$columns = [];
 		$columns["email"] = ["label" => "Email", "sortable" => false];
-		if ($user->hasRole(["super-admin"])) $columns["tenant->name"] = ["label" => "Tenant", "sortable" => false];
+		if ($user->hasRole(["super-admin"])) {
+			$columns["tenant->name"] = ["label" => "Tenant", "sortable" => false];
+		}
 		$columns["f_route"] = ["label" => "", "sortable" => false];
 		$columns["f_time"] = ["label" => "", "sortable" => false];
 		$columns["cancel_invite"] = ["label" => "", "sortable" => false];
-		$columns["resend_route"] = ["label" => "", "sortable" => false];
 		return $columns;
 	}
 }

@@ -13,14 +13,14 @@ use marcusvbda\vstack\Services\Messages;
 class LeadTransfer extends Action
 {
 	public $run_btn = "Transferir";
-	public $title = "Transferência entre polos";
+	public $title = "Transferência entre empresas";
 	public $polo = null;
 	public function __construct()
 	{
 		$user = Auth::user();
 		$this->polo = @$user->polo;
 		if (@$this->polo) {
-			$this->message = "Estes leads pertencem ao polo {$this->polo->name}, selecione o polo para qual deseja transferir os leads selecionados";
+			$this->message = "Estes leads pertencem a empresa {$this->polo->name}, selecione a empresa para qual deseja transferir os leads selecionados";
 		}
 	}
 
@@ -28,8 +28,8 @@ class LeadTransfer extends Action
 	{
 		$fields = [];
 		$fields[] = new BelongsTo([
-			"label" => "Polo",
-			"description" => "Polo o qual receberá este lead",
+			"label" => "Empresa",
+			"description" => "Empresa o qual receberá este lead",
 			"field" => "polo_id",
 			"rules" => ["required"],
 			"model" => Polo::class

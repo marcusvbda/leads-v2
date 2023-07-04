@@ -1,5 +1,9 @@
-@import "variables";
 @import "./vendor/marcusvbda/vstack/src/Assets/scss/autoload.scss";
-@import "theme";
-@import "custom";
-@import "responsive";
+
+body {
+  @apply bg-gray-100;
+}
+
+a {
+  @apply text-blue-700 hover:text-blue-900;
+}
