@@ -1,7 +1,7 @@
 <div class="flex flex-col">
     @if (@$after_row)
         <div class="p-3 text-sm flex justify-end">
-            <a href="/admin/campanhas/{{ $row->code }}/dashboard">
+            <a href="/admin/campanhas/{{ $row->code }}/dashboard" class="vstack-link">
                 Abrir em tela cheia
             </a>
         </div>

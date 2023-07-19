@@ -87,4 +87,5 @@
     <select-polo polo_name='{{ $polo->name }}' :user_id='{{ $user->id }}' :logged_id='{{ $polo->id }}'
         :has_more_polos='@json($hasMorePolos)'>
     </select-polo>
+    <theme-switcher></theme-switcher>
 </theme-navbar>

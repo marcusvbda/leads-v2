@@ -3,7 +3,11 @@
     <div class="relative" @click="clicked" ref="item">
         <a
             type="button"
-            :class="[a_class, isActive(item) ? 'text-neutral-400' : '']"
+            :class="[
+                a_class,
+                isActive(item) ? 'text-neutral-400' : '',
+                'dark:text-neutral-200',
+            ]"
             aria-expanded="false"
             href="#"
             @click.prevent="clickLink"
@@ -28,6 +32,7 @@
             :class="[
                 'sm:absolute -left-8 top-full z-10 mt-3 max-w-md overflow-hidden',
                 'rounded md:rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5',
+                'dark:bg-gray-500',
             ]"
             :style="item.custom_style || ''"
         >
@@ -37,12 +42,12 @@
                         (x) => x.visible
                     )"
                     :key="index"
-                    class="group relative flex items-center gap-x-6 rounded-lg p-2 text-sm leading-6 hover:bg-gray-50"
+                    class="group relative flex items-center gap-x-6 rounded-lg p-2 text-sm leading-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition ease-in-out duration-150"
                 >
                     <div class="flex-auto w-full">
                         <a
                             :href="opItem.route"
-                            class="m-0 block font-semibold text-gray-900 px-11"
+                            class="m-0 block font-semibold text-gray-900 px-11 dark:text-white"
                         >
                             {{ opItem.title }}
                         </a>
@@ -83,7 +88,7 @@ export default {
             );
         },
         clicked() {
-            if(this.item.route) return;
+            if (this.item.route) return;
             if (this.item.items.length) {
                 this.visible = !this.visible;
             }

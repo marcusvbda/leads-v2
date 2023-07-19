@@ -22,7 +22,7 @@
     </vstack-breadcrumb>
 @endsection
 @section('content')
-    <h4 id="resource-label" class="text-3xl mb-4 md:text-2xl font-bold text-neutral-800">
+    <h4 id="resource-label" class="text-3xl mb-4 md:text-2xl font-bold text-neutral-800 dark:text-neutral-200">
         @if ($resource->icon())
             <span class="{{ $resource->icon() }} mr-2"></span>
         @endif {{ $campaign->name }}

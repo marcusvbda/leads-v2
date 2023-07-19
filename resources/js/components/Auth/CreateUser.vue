@@ -5,8 +5,8 @@
         element-loading-text="Verificando credenciais"
     >
         <text-logo />
-        <b class="mt-4">Cadastro de Usuário</b>
-        <small>Cadastre-se para ter acesso</small>
+        <b class="mt-4 dark:text-neutral-200">Cadastro de Usuário</b>
+        <small class="dark:text-neutral-300">Cadastre-se para ter acesso</small>
         <form v-on:submit.prevent="checkUser" class="vstack-form">
             <div class="flex flex-col mt-8">
                 <label class="form-label">Email</label>

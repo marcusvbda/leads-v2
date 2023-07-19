@@ -5,8 +5,8 @@
         element-loading-text="Verificando credenciais"
     >
         <text-logo />
-        <b class="mt-4">Renove sua senha</b>
-        <small>
+        <b class="mt-4 dark:text-neutral-200">Renove sua senha</b>
+        <small class="dark:text-neutral-300">
             Digite o seu Email cadastrado e iremos enviar um link para recuperar
             sua senha
         </small>

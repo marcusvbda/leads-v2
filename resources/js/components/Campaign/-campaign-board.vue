@@ -2,7 +2,7 @@
     <div class="board-row">
         <div
             v-for="(stage, i) in stages"
-            :class="`board-col p-2 gap-4 pb-10 ${
+            :class="`board-col p-2 gap-4 pb-10 bg-gray-100 dark:bg-gray-800 ${
                 is_dragging ? 'dragging' : ''
             } ${over_index == i ? 'over' : ''}`"
             :style="{ '--color': stage.color }"
@@ -11,7 +11,7 @@
             @dragover.prevent="onOver($event, i)"
             @dragenter.prevent
         >
-            <div class="title">
+            <div class="title text-neutral-800 dark:text-neutral-100">
                 {{ stage.name }}
             </div>
             <StageLead
@@ -149,6 +149,21 @@ export default {
 </script>
 
 <style lang="scss">
+.dark .board-row {
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #545454;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #212121;
+        border-radius: 9px;
+        border: 5px none #616161;
+    }
+}
 .board-row {
     gap: 10px;
     display: flex;
@@ -162,7 +177,6 @@ export default {
         width: 350px;
         min-width: 350px;
         max-width: 350px;
-        background-color: #ededed;
         border-radius: 8px;
         display: flex;
         flex-direction: column;
@@ -185,7 +199,6 @@ export default {
             width: 100%;
             text-align: center;
             padding: 5px;
-            color: #353535;
         }
     }
 }

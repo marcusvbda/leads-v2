@@ -1,12 +1,12 @@
 <template>
     <div
-        class="max-w-sm rounded overflow-hidden shadow-lg bg-white"
+        class="max-w-sm rounded overflow-hidden shadow-lg bg-white dark:bg-gray-950"
         draggable
         @dragstart="startDrag"
     >
         <div class="px-6 py-4">
             <p
-                class="text-gray-700 text-xs"
+                class="text-gray-700 dark:text-neutral-200 text-xs"
                 v-for="(field, i) in campaign.fields.filter(
                     (x) => !['campaign_ids', 'id'].includes(x)
                 )"

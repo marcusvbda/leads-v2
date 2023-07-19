@@ -14,7 +14,7 @@
 </head>
 <!-- carregamento do vstack mudará para display block afim de nao causar sensação de pos-rendering -->
 
-<body style="display:none;">
+<body style="display:none;" class="dark:bg-gray-900">
     <div id="app" class="h-100">
         @yield('body')
         @include('templates.alerts')

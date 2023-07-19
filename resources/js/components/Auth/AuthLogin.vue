@@ -5,8 +5,10 @@
         element-loading-text="Verificando credenciais"
     >
         <text-logo />
-        <b class="mt-4">Login</b>
-        <small>Bem Vindo de volta! Efetue o login para continuar</small>
+        <b class="mt-4 dark:text-neutral-200">Login</b>
+        <small class="dark:text-neutral-300">
+            Bem Vindo de volta! Efetue o login para continuar
+        </small>
         <form v-on:submit.prevent="checkUser" class="vstack-form">
             <div class="flex flex-col mt-8">
                 <label class="form-label">Email</label>

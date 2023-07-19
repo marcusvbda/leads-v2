@@ -1,6 +1,6 @@
 <!-- eslint-disable max-len -->
 <template>
-    <header class="bg-white border">
+    <header class="bg-white border dark:bg-gray-800 dark:border-none">
         <nav
             class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8 flex-col"
             aria-label="Global"
@@ -18,7 +18,7 @@
                         @click="visible = !visible"
                     >
                         <svg
-                            class="h-6 w-6"
+                            class="h-6 w-6 dark:text-white"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke-width="1.5"

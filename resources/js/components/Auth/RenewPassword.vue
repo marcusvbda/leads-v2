@@ -5,8 +5,10 @@
         element-loading-text="Verificando credenciais"
     >
         <text-logo />
-        <b class="mt-4">Renove sua senha</b>
-        <small>Digite a nova senha e a confirme para renovar</small>
+        <b class="mt-4 dark:text-neutral-200">Renove sua senha</b>
+        <small class="dark:text-neutral-300">
+            Digite a nova senha e a confirme para renovar
+        </small>
         <form v-on:submit.prevent="checkUser" class="vstack-form">
             <div class="flex flex-col mt-8">
                 <label class="form-label">Email</label>
