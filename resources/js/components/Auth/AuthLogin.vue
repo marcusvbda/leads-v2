@@ -30,7 +30,7 @@
             </div>
             <div class="flex flex-col mt-3">
                 <button class="vstack-btn primary">Efetuar Login</button>
-                <a href="/esqueci-a-senha" class="my-3 text-sm">
+                <a href="/esqueci-a-senha" class="my-3 text-sm vstack-link">
                     Esqueceu a senha ?
                 </a>
             </div>
