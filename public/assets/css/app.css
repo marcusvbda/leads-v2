@@ -1638,6 +1638,13 @@ video {
   opacity: 0.1;
 }
 
+.dark .el-button {
+  filter: brightness(0.7);
+}
+.dark .el-button:hover {
+  filter: brightness(0.8);
+}
+
 body{
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
